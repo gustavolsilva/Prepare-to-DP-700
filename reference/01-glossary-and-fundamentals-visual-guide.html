@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ref 01: Glossário Visual do Zero ao Microsoft Fabric</title>
+  <link rel="stylesheet" href="../assets/tufte.css?v=totc4">
+  <link rel="stylesheet" href="../assets/vark.css?v=totc4">
+  <script src="../assets/lens.js?v=totc4"></script>
+  <style>
+    .ref-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.25rem 0;
+      font-size: 0.92rem;
+    }
+    .ref-table th, .ref-table td {
+      border: 1px solid var(--border-color);
+      padding: 0.75rem 1rem;
+      text-align: left;
+      vertical-align: top;
+      color: var(--text-primary);
+    }
+    .ref-table th {
+      background-color: var(--bg-surface-alt);
+      font-family: var(--font-display);
+      font-weight: 600;
+      color: var(--text-heading);
+    }
+    .ref-table tr:nth-child(even) { background-color: var(--bg-surface-alt); }
+    .tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      border-radius: 50px;
+      font-family: var(--font-display);
+    }
+    .tag-engine  { background: var(--pill-blue-bg); color: var(--text-primary); }
+    .tag-storage { background: var(--pill-teal-bg); color: var(--brand-teal); }
+    .tag-compute { background: var(--pill-orange-bg); color: var(--text-primary); }
+    .tag-gov     { background: var(--pill-coral-bg); color: var(--text-primary); }
+  </style>
+</head>
+<body>
+
+  <header class="course-header-banner">
+    <div class="landing-container">
+      <div class="banner-top-row">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <a href="../lessons/0001-data-engineering-foundations-oltp-olap-fabric.html" class="back-square-btn" style="background: rgba(255,255,255,0.2); box-shadow: none;" title="Voltar para a Lição 0001">←</a>
+          <div>
+            <h1 class="banner-title">Folha de Referência 01: Glossário Visual & Fundamentos</h1>
+            <p class="banner-subtitle">Unidade comprimida de consulta rápida e revisão pré-prova DP-700</p>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <button onclick="window.print()" class="banner-time-badge" style="border: none; cursor: pointer;">🖨️ Imprimir / PDF</button>
+          <button type="button" class="theme-toggle-btn" onclick="window.toggleAppTheme()">🌙 Modo Dark</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="landing-container" style="padding-top: 2rem; padding-bottom: 4rem;">
+
+    <section class="totc-card">
+      <h2 style="margin-top: 0;">1. Conceitos Fundamentais de Armazenamento e Computação</h2>
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th style="width: 22%;">Termo</th>
+            <th style="width: 15%;">Categoria</th>
+            <th>Definição Clara (Para Iniciantes e Liderança)</th>
+            <th style="width: 25%;">Equivalente / Contexto Técnico</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>OLTP</strong></td>
+            <td><span class="tag tag-storage">Conceito</span></td>
+            <td>Processamento transacional online. Otimizado para milhares de operações rápidas de linha única (INSERT, UPDATE).</td>
+            <td>PostgreSQL, MySQL, SQL Server transacional, ERPs.</td>
+          </tr>
+          <tr>
+            <td><strong>OLAP</strong></td>
+            <td><span class="tag tag-storage">Conceito</span></td>
+            <td>Processamento analítico online. Otimizado para agregar milhões de linhas lendo apenas colunas específicas.</td>
+            <td>Data Warehouses, Data Lakes, Fabric Lakehouse/Warehouse.</td>
+          </tr>
+          <tr>
+            <td><strong>OneLake</strong></td>
+            <td><span class="tag tag-storage">Storage</span></td>
+            <td>O data lake corporativo único e lógico de todo o tenant da organização ("O OneDrive para dados analíticos").</td>
+            <td>Construído sobre ADLS Gen2; acessível nativamente via protocolo ABFS (Azure Blob File System).</td>
+          </tr>
+          <tr>
+            <td><strong>Capacity Unit (CU)</strong></td>
+            <td><span class="tag tag-compute">Compute</span></td>
+            <td>Unidade de medida de poder computacional compartilhada por todas as cargas de trabalho no Fabric.</td>
+            <td>Equivalente aos vCores/DBUs unificados. SKUs variam de F2 (2 CUs) até F2048.</td>
+          </tr>
+          <tr>
+            <td><strong>Smoothing</strong></td>
+            <td><span class="tag tag-compute">FinOps</span></td>
+            <td>Mecanismo que distribui picos curtos de uso de computação ao longo de uma janela móvel de 24 horas.</td>
+            <td>Evita contratação de capacidade pelo pico máximo; reduz custos operacionais.</td>
+          </tr>
+          <tr>
+            <td><strong>Throttling</strong></td>
+            <td><span class="tag tag-compute">FinOps</span></td>
+            <td>Penalização automática imposta quando a capacidade excede 100% dos limites acumulados de CUs.</td>
+            <td>Fases: Atraso interativo (60s) → Rejeição interativa → Rejeição de jobs de background.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="totc-card">
+      <h2 style="margin-top: 0;">2. Motores Analíticos (Engines) do Fabric</h2>
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th style="width: 22%;">Motor / Artefato</th>
+            <th style="width: 15%;">Categoria</th>
+            <th>Definição e Quando Usar</th>
+            <th style="width: 25%;">Linguagens Suportadas</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Lakehouse</strong></td>
+            <td><span class="tag tag-engine">Engine</span></td>
+            <td>Armazenamento aberto em pastas e tabelas Delta Lake. Ideal para engenharia de dados exploratória e pipelines Spark.</td>
+            <td>PySpark, Spark SQL, Scala, R, e T-SQL somente leitura via SQL Endpoint.</td>
+          </tr>
+          <tr>
+            <td><strong>Warehouse</strong></td>
+            <td><span class="tag tag-engine">Engine</span></td>
+            <td>Data warehouse relacional SaaS com suporte transacional multi-tabela completo (ACID) gravando nativamente em Delta.</td>
+            <td>T-SQL completo (DDL, DML, transações explícitas BEGIN/COMMIT).</td>
+          </tr>
+          <tr>
+            <td><strong>Eventhouse (KQL DB)</strong></td>
+            <td><span class="tag tag-engine">Engine</span></td>
+            <td>Motor analítico colunar ultra-rápido otimizado para ingestão contínua de streaming, logs, métricas e séries temporais.</td>
+            <td>KQL (Kusto Query Language) e subconjunto de T-SQL.</td>
+          </tr>
+          <tr>
+            <td><strong>Data Factory (Pipelines)</strong></td>
+            <td><span class="tag tag-compute">Orchestration</span></td>
+            <td>Motor de orquestração de fluxos de dados baseado em atividades (Copy, Lookup, Notebook, ForEach, Web).</td>
+            <td>Interface gráfica no-code / low-code com expressões dinâmicas em JSON.</td>
+          </tr>
+          <tr>
+            <td><strong>Dataflows Gen2</strong></td>
+            <td><span class="tag tag-compute">Ingestion</span></td>
+            <td>Transformação visual de dados baseada em Power Query com suporte a publicação direta no OneLake e staging Lakehouse.</td>
+            <td>Linguagem M (Power Query).</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="totc-card">
+      <h2 style="margin-top: 0;">3. Formatos, Acelerações e Governança</h2>
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th style="width: 22%;">Recurso</th>
+            <th style="width: 15%;">Categoria</th>
+            <th>O que faz na prática</th>
+            <th style="width: 25%;">Impacto DP-700 / Produção</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>V-Order</strong></td>
+            <td><span class="tag tag-engine">Optimization</span></td>
+            <td>Otimização no momento da escrita de arquivos Parquet que reordena dados em row-groups para leitura ultrarrápida.</td>
+            <td>Reduz tempo de query em Spark e SQL; essencial para viabilizar Direct Lake sem fallback.</td>
+          </tr>
+          <tr>
+            <td><strong>OneLake Shortcut</strong></td>
+            <td><span class="tag tag-storage">Virtualization</span></td>
+            <td>Ponteiro virtual (link simbólico) para dados externos (S3, ADLS Gen2, GCS) sem mover ou copiar fisicamente arquivos.</td>
+            <td>Evita custos de tráfego de dados e elimina pipelines ETL redundantes de cópia.</td>
+          </tr>
+          <tr>
+            <td><strong>Database Mirroring</strong></td>
+            <td><span class="tag tag-storage">Zero-ETL</span></td>
+            <td>Replicação contínua e quase em tempo real de bases operacionais (Azure SQL, Snowflake, Cosmos DB) para Delta no OneLake.</td>
+            <td>Zero pipeline de extração; dados sincronizados por CDC gerenciado pela Microsoft.</td>
+          </tr>
+          <tr>
+            <td><strong>Direct Lake</strong></td>
+            <td><span class="tag tag-engine">BI / Serving</span></td>
+            <td>Modo de conexão do Power BI que lê tabelas Delta Parquet diretamente do OneLake na memória sem importar nem consultar via SQL.</td>
+            <td>Performance idêntica ao Import Mode com a escala de dados e atualização do DirectQuery.</td>
+          </tr>
+          <tr>
+            <td><strong>Domain</strong></td>
+            <td><span class="tag tag-gov">Governance</span></td>
+            <td>Agrupamento lógico de workspaces para apoiar a arquitetura de Data Mesh centrada em domínios de negócio.</td>
+            <td>Permite designar donos de domínio e políticas centralizadas de conformidade.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+</body>
+</html>

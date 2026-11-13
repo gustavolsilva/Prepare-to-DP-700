@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ref 02: Storage, Delta Lake, Medallion & Zero-Copy Integration</title>
+  <link rel="stylesheet" href="../assets/tufte.css?v=totc6">
+  <link rel="stylesheet" href="../assets/vark.css?v=totc6">
+  <script src="../assets/lens.js?v=totc6"></script>
+  <style>
+    .ref-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.25rem 0;
+      font-size: 0.92rem;
+    }
+    .ref-table th, .ref-table td {
+      border: 1px solid var(--border-color);
+      padding: 0.75rem 1rem;
+      text-align: left;
+      vertical-align: top;
+      color: var(--text-primary);
+    }
+    .ref-table th {
+      background-color: var(--bg-surface-alt);
+      font-family: var(--font-display);
+      font-weight: 600;
+      color: var(--text-heading);
+    }
+    .ref-table tr:nth-child(even) { background-color: var(--bg-surface-alt); }
+    .tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      border-radius: 50px;
+      font-family: var(--font-display);
+    }
+    .tag-storage { background: var(--pill-teal-bg); color: var(--brand-teal); }
+    .tag-compute { background: var(--pill-orange-bg); color: var(--text-primary); }
+    .tag-gov     { background: var(--pill-coral-bg); color: var(--text-primary); }
+  </style>
+</head>
+<body>
+
+  <header class="course-header-banner">
+    <div class="landing-container">
+      <div class="banner-top-row">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <a href="../index.html?v=totc6" class="back-square-btn" style="background: rgba(255,255,255,0.2); box-shadow: none;" title="Voltar ao Portal">←</a>
+          <div>
+            <h1 class="banner-title">Folha de Referência 02: Storage, Delta Lake, Medallion & Zero-Copy</h1>
+            <p class="banner-subtitle">Cheat-sheet oficial para o Exame DP-700 (Domínio 1 e Domínio 2)</p>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <button onclick="window.print()" class="banner-time-badge" style="border: none; cursor: pointer;">🖨️ Imprimir / PDF</button>
+          <button type="button" class="theme-toggle-btn" onclick="window.toggleAppTheme()">🌙 Modo Dark</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="landing-container" style="padding-top: 2rem; padding-bottom: 4rem;">
+
+    <section class="totc-card">
+      <h2 style="margin-top: 0;">1. Arquitetura de Armazenamento: Parquet & Delta Lake</h2>
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th style="width: 22%;">Componente</th>
+            <th style="width: 15%;">Tipo</th>
+            <th>Como Funciona / Regra de Ouro</th>
+            <th style="width: 25%;">Impacto no Exame DP-700</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Apache Parquet</strong></td>
+            <td><span class="tag tag-storage">Storage</span></td>
+            <td>Formato colunar binário com Row Groups, Column Chunks e compressão por dicionário (Snappy/ZSTD).</td>
+            <td>Base universal de todos os itens do Fabric no OneLake.</td>
+          </tr>
+          <tr>
+            <td><strong>_delta_log</strong></td>
+            <td><span class="tag tag-storage">Protocol</span></td>
+            <td>Pasta de commits atômicos em JSON ordenados sequencialmente (ex: <code>000000.json</code>), com checkpoints periódicos em Parquet.</td>
+            <td>Garante propriedades ACID; quem lê a tabela consulta o log primeiro antes dos dados.</td>
+          </tr>
+          <tr>
+            <td><strong>Time Travel</strong></td>
+            <td><span class="tag tag-compute">Feature</span></td>
+            <td>Consultar snapshots históricos usando <code>TIMESTAMP AS OF</code> ou <code>VERSION AS OF</code>.</td>
+            <td>Permite auditoria e recuperação de erros sem restaurar backups.</td>
+          </tr>
+          <tr>
+            <td><strong>VACUUM</strong></td>
+            <td><span class="tag tag-gov">Maintenance</span></td>
+            <td>Exclui fisicamente arquivos tombstoned obsoletos. Limiar padrão = 7 dias (168 horas).</td>
+            <td>Executar com retenção zero destrói permanentemente o Time Travel!</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="totc-card" style="margin-top: 2rem;">
+      <h2>2. Arquitetura Medallion no Microsoft Fabric</h2>
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th style="width: 20%;">Camada</th>
+            <th style="width: 20%;">Padrão de Dados</th>
+            <th>Objetivo & Responsabilidade</th>
+            <th style="width: 25%;">Itens Fabric Recomendados</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Bronze (Raw)</strong></td>
+            <td>Dados brutos, imutáveis, cópia exata da origem (append-only).</td>
+            <td>Preservar histórico completo sem perda de fidelidade, com colunas de metadados (_ingestion_timestamp).</td>
+            <td>Lakehouse Files / Lakehouse Tables (Delta Parquet).</td>
+          </tr>
+          <tr>
+            <td><strong>Silver (Cleansed)</strong></td>
+            <td>Dados validados, enriquecidos, desduplicados e tipados.</td>
+            <td>Ponto único da verdade corporativa para analistas e cientistas de dados (SCD Tipo 1 e 2).</td>
+            <td>Fabric Lakehouse (Notebooks PySpark / Dataflows Gen2).</td>
+          </tr>
+          <tr>
+            <td><strong>Gold (Curated)</strong></td>
+            <td>Modelos dimensionais Star Schema (Fatos e Dimensões) e agregações prontas.</td>
+            <td>Consumo analítico de alta performance por relatórios do Power BI e modelos semânticos executivos.</td>
+            <td>Fabric Lakehouse / Fabric Data Warehouse.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="totc-card" style="margin-top: 2rem;">
+      <h2>3. Integração Zero-Copy: Shortcuts vs. Database Mirroring</h2>
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th style="width: 22%;">Funcionalidade</th>
+            <th style="width: 15%;">Origens Suportadas</th>
+            <th>Mecanismo Técnico</th>
+            <th style="width: 25%;">Quando Escolher no DP-700</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>OneLake Shortcuts</strong></td>
+            <td>ADLS Gen2, Amazon S3, Google Cloud Storage, Dataverse, outros Lakehouses.</td>
+            <td>Ponteiros simbólicos (links virtuais). Não há cópia nem movimentação de dados em repouso.</td>
+            <td>Quando os dados já estão em formato Parquet/Delta em outra nuvem e deve-se evitar duplicação.</td>
+          </tr>
+          <tr>
+            <td><strong>Database Mirroring</strong></td>
+            <td>Azure SQL Database, Azure Cosmos DB, Snowflake.</td>
+            <td>Replicação contínua e assíncrona baseada em CDC (Change Data Capture) gravando em Delta Parquet no OneLake.</td>
+            <td>Quando se precisa de dados operacionais relacionais quase em tempo real sem impacto no banco OLTP.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+</body>
+</html>
+

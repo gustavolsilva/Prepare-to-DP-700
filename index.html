@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fabric Academy DP-700 — Plataforma Interativa de Engenharia de Dados</title>
+  <link rel="stylesheet" href="assets/tufte.css?v=totc8">
+  <link rel="stylesheet" href="assets/vark.css?v=totc8">
+  <script src="assets/lens.js?v=totc8"></script>
+  <style>
+    /* Grade de Seleção de Perfil */
+    .profile-buttons-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 1rem;
+      margin-top: 1.25rem;
+    }
+    .profile-card-btn {
+      padding: 1.1rem 1.25rem;
+      border-radius: 16px;
+      border: 2px solid var(--border-color);
+      background: var(--bg-surface-alt);
+      color: var(--text-primary);
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .profile-card-btn span {
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+    .profile-card-btn:hover {
+      border-color: var(--brand-teal);
+      transform: translateY(-2px);
+    }
+    .profile-card-btn.active {
+      background: var(--brand-teal) !important;
+      border-color: var(--brand-teal) !important;
+      color: #FFFFFF !important;
+      box-shadow: 0 10px 25px rgba(73, 187, 189, 0.35);
+    }
+    .profile-card-btn.active span {
+      color: rgba(255, 255, 255, 0.9) !important;
+    }
+
+    /* ÍNDICE RÁPIDO SUPERIOR */
+    .quick-jump-container {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 1.5rem 1.75rem;
+      margin-top: 2rem;
+      margin-bottom: 2.5rem;
+      box-shadow: var(--shadow-card);
+    }
+    .quick-jump-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .quick-jump-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 1.25rem;
+    }
+    .quick-jump-card {
+      background: var(--bg-surface-alt);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 1rem 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      transition: all 0.2s ease;
+    }
+    .quick-jump-card:hover {
+      border-color: var(--brand-teal);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+    }
+    .quick-jump-card-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .quick-jump-card-title:hover {
+      color: var(--brand-teal);
+    }
+    .quick-chips-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+    .quick-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.35rem 0.65rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+    .quick-chip:hover {
+      background: var(--brand-teal);
+      border-color: var(--brand-teal);
+      color: #FFFFFF !important;
+      transform: translateY(-1px);
+    }
+    .quick-chip.chip-sim {
+      border-color: rgba(244, 140, 6, 0.4);
+    }
+    .quick-chip.chip-sim:hover {
+      background: var(--brand-orange);
+      border-color: var(--brand-orange);
+      color: #FFFFFF !important;
+    }
+    .quick-chip.chip-ref {
+      border-color: rgba(106, 17, 203, 0.4);
+    }
+    .quick-chip.chip-ref:hover {
+      background: #6A11CB;
+      border-color: #6A11CB;
+      color: #FFFFFF !important;
+    }
+
+    /* SEÇÕES DE MÓDULOS */
+    .module-section {
+      margin-top: 3.5rem;
+      scroll-margin-top: 5rem;
+    }
+    .module-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border-color);
+    }
+    .module-badge {
+      padding: 0.35rem 0.85rem;
+      border-radius: 50px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    .badge-mod0 { background: rgba(73, 187, 189, 0.15); color: var(--brand-teal); }
+    .badge-mod1 { background: rgba(0, 180, 219, 0.15); color: #0083B0; }
+    .badge-mod2 { background: rgba(127, 0, 255, 0.15); color: #7F00FF; }
+    .badge-mod3 { background: rgba(244, 140, 6, 0.15); color: var(--brand-orange); }
+    .badge-sim  { background: rgba(238, 100, 91, 0.15); color: var(--brand-coral); }
+    .badge-ref  { background: rgba(106, 17, 203, 0.15); color: #6A11CB; }
+
+    .module-desc {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      margin-top: 0.25rem;
+      margin-bottom: 1.5rem;
+      max-width: 820px;
+      line-height: 1.5;
+    }
+
+    /* CARDS DE LIÇÃO */
+    .course-catalog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 1.75rem;
+      margin-top: 1rem;
+    }
+    .course-item-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.2s ease;
+    }
+    .course-item-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-float);
+      border-color: var(--brand-teal);
+    }
+    .course-banner-thumb {
+      height: 140px;
+      border-radius: 14px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #FFFFFF;
+      margin-bottom: 1.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* NOVO DESIGN DO BOTÃO E RODAPÉ DO CARD */
+    .card-footer-action {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      padding-top: 1.1rem;
+      margin-top: 1.1rem;
+      border-top: 1px solid var(--border-color);
+    }
+    .card-meta-tags {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .btn-access-lesson {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.75rem 1.25rem;
+      border-radius: 12px;
+      background: var(--brand-teal);
+      color: #FFFFFF !important;
+      font-family: var(--font-display);
+      font-size: 0.92rem;
+      font-weight: 700;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(73, 187, 189, 0.3);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-sizing: border-box;
+    }
+    .btn-access-lesson:hover {
+      background: var(--brand-teal-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(73, 187, 189, 0.45);
+      color: #FFFFFF !important;
+    }
+    .btn-access-lesson span.arrow {
+      display: inline-block;
+      transition: transform 0.2s ease;
+    }
+    .btn-access-lesson:hover span.arrow {
+      transform: translateX(4px);
+    }
+    .btn-access-lesson.btn-simulado {
+      background: linear-gradient(135deg, #F48C06 0%, #EE645B 100%);
+      box-shadow: 0 4px 14px rgba(244, 140, 6, 0.35);
+    }
+    .btn-access-lesson.btn-simulado:hover {
+      box-shadow: 0 6px 20px rgba(244, 140, 6, 0.5);
+    }
+    .btn-access-lesson.btn-reference {
+      background: linear-gradient(135deg, #2575FC 0%, #6A11CB 100%);
+      box-shadow: 0 4px 14px rgba(37, 117, 252, 0.3);
+    }
+    .btn-access-lesson.btn-reference:hover {
+      box-shadow: 0 6px 20px rgba(37, 117, 252, 0.45);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HERO HEADER INSPIRADO NO FIGMA (NODE 10:986) -->
+  <header class="landing-hero">
+    <div class="landing-container">
+      <nav class="landing-navbar">
+        <div class="brand-logo">
+          <div class="brand-diamond"><span>DP</span></div>
+          <div>FABRIC <span style="font-weight: 300;">ACADEMY</span></div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.85rem; flex-wrap: wrap;">
+          <a href="#quick-index" style="color: #FFFFFF; font-size: 0.88rem; font-weight: 600;">📋 Índice Rápido</a>
+          <a href="#modulo-0" style="color: #FFFFFF; font-size: 0.88rem; font-weight: 500;">Módulo 0</a>
+          <a href="#modulo-1" style="color: #FFFFFF; font-size: 0.88rem; font-weight: 500;">Módulo 1</a>
+          <a href="#modulo-2" style="color: #FFFFFF; font-size: 0.88rem; font-weight: 500;">Módulo 2</a>
+          <a href="#modulo-3" style="color: #FFFFFF; font-size: 0.88rem; font-weight: 500;">Módulo 3</a>
+          <a href="#simulados" style="color: #F48C06; font-size: 0.88rem; font-weight: 600;">🎯 Simulados</a>
+          <a href="#referencias" style="color: #FFFFFF; font-size: 0.88rem; font-weight: 500;">📑 Referências</a>
+          <button type="button" class="theme-toggle-btn" onclick="window.toggleAppTheme()">🌙 Modo Dark</button>
+        </div>
+      </nav>
+
+      <div class="hero-grid">
+        <div>
+          <h1 class="hero-headline">
+            <span class="highlight-orange">Domine</span> Engenharia de Dados no Microsoft Fabric & Exame DP-700
+          </h1>
+          <p class="hero-lead">
+            Uma plataforma adaptativa do zero ao C-Level, unindo <strong>Áudio Neural</strong>, <strong>Diagramas Interativos</strong>, <strong>Simuladores Cinestésicos</strong> e <strong>Laboratórios Práticos</strong> alinhados ao Guia Oficial da Microsoft.
+          </p>
+          <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;">
+            <a href="simulados/index.html?v=totc8" class="cta-pill-btn" style="background: linear-gradient(135deg, #F48C06 0%, #EE645B 100%);">
+              🎯 Centro de Simulados (182 Questões)
+            </a>
+            <a href="lessons/0001-data-engineering-foundations-oltp-olap-fabric.html?v=totc8" class="cta-pill-btn">
+              ▶️ Iniciar Lição 0001 Agora
+            </a>
+            <a href="#quick-index" style="color: #FFFFFF; font-weight: 600; font-size: 0.95rem; padding: 0.5rem 1rem;">
+              📋 Explorar Todos os Módulos ↓
+            </a>
+          </div>
+        </div>
+
+        <!-- Floating Glass Cards do Figma (Nodes 10:993, 10:1002) -->
+        <div class="hero-glass-stack">
+          <div class="glass-badge-card">
+            <div class="glass-icon-box" style="background: #F48C06;">🎯</div>
+            <div>
+              <div style="font-weight: 700; font-size: 1.05rem; color: inherit;">100% Guia Oficial DP-700</div>
+              <div style="font-size: 0.85rem; opacity: 0.85;">Cobertura integral dos 3 domínios do exame</div>
+            </div>
+          </div>
+
+          <div class="glass-badge-card">
+            <div class="glass-icon-box" style="background: #F3627C;">🎧</div>
+            <div>
+              <div style="font-weight: 700; font-size: 1.05rem; color: inherit;">Aprendizado Multi-Sensorial VARK</div>
+              <div style="font-size: 0.85rem; opacity: 0.85;">Visual, Auditivo Neural, Leitura e Cinestésico</div>
+            </div>
+          </div>
+
+          <div class="glass-badge-card">
+            <div class="glass-icon-box" style="background: #2F327D;">🌱</div>
+            <div>
+              <div style="font-weight: 700; font-size: 1.05rem; color: inherit;">Trilha Adaptativa em 6 Lentes</div>
+              <div style="font-size: 0.85rem; opacity: 0.85;">Do Júnior (0 anos) ao Staff Engineer e C-Level</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="landing-container" style="padding-top: 2.5rem; padding-bottom: 4rem;">
+
+    <!-- ÍNDICE RÁPIDO SUPERIOR INTERATIVO -->
+    <section id="quick-index" class="quick-jump-container">
+      <div class="quick-jump-header">
+        <div>
+          <h2 style="margin: 0; font-size: 1.35rem;">🚀 Navegação Direta por Módulos & Lições</h2>
+          <p style="margin: 0.25rem 0 0 0; font-size: 0.9rem; color: var(--text-secondary);">
+            Acesse diretamente qualquer lição ou clique no título do módulo para rolar até sua seção detalhada:
+          </p>
+        </div>
+        <span class="module-badge badge-mod0">15 Lições • 182 Questões • 6 Referências</span>
+      </div>
+
+      <div class="quick-jump-grid">
+        <!-- Card Quick Módulo 0 -->
+        <div class="quick-jump-card">
+          <a href="#modulo-0" class="quick-jump-card-title">
+            <span>📦 Módulo 0: Fundamentos</span>
+            <span style="font-size: 0.8rem; color: var(--brand-teal);">Ir p/ Seção ↓</span>
+          </a>
+          <div class="quick-chips-list">
+            <a href="lessons/0001-data-engineering-foundations-oltp-olap-fabric.html?v=totc8" class="quick-chip">Lição 0001</a>
+            <a href="lessons/0002-storage-fundamentals-parquet-delta-medallion.html?v=totc8" class="quick-chip">Lição 0002</a>
+            <a href="lessons/0003-dimensional-modeling-and-three-languages-sql-spark-kql.html?v=totc8" class="quick-chip">Lição 0003</a>
+          </div>
+        </div>
+
+        <!-- Card Quick Módulo 1 -->
+        <div class="quick-jump-card">
+          <a href="#modulo-1" class="quick-jump-card-title">
+            <span>🏛️ Módulo 1: Implementar & Gerenciar</span>
+            <span style="font-size: 0.8rem; color: #0083B0;">Ir p/ Seção ↓</span>
+          </a>
+          <div class="quick-chips-list">
+            <a href="lessons/0004-onelake-capacities-smoothing-domains-spark-pools.html?v=totc8" class="quick-chip">Lição 0004</a>
+            <a href="lessons/0005-architectural-decision-guide-lakehouse-warehouse-eventhouse.html?v=totc8" class="quick-chip">Lição 0005</a>
+            <a href="lessons/0006-shortcuts-and-mirroring-zero-copy-integration.html?v=totc8" class="quick-chip">Lição 0006</a>
+          </div>
+        </div>
+
+        <!-- Card Quick Módulo 2 -->
+        <div class="quick-jump-card">
+          <a href="#modulo-2" class="quick-jump-card-title">
+            <span>⚙️ Módulo 2: Ingerir & Transformar</span>
+            <span style="font-size: 0.8rem; color: #7F00FF;">Ir p/ Seção ↓</span>
+          </a>
+          <div class="quick-chips-list">
+            <a href="lessons/0007-orchestration-pipelines-dataflows-dag.html?v=totc8" class="quick-chip">Lição 0007</a>
+            <a href="lessons/0008-incremental-loading-watermark-scd.html?v=totc8" class="quick-chip">Lição 0008</a>
+            <a href="lessons/0009-batch-transformations-sql-spark-clones.html?v=totc8" class="quick-chip">Lição 0009</a>
+            <a href="lessons/0010-streaming-eventstreams-spark-windows.html?v=totc8" class="quick-chip">Lição 0010</a>
+            <a href="lessons/0011-kql-eventhouse-update-policies-materialized-views.html?v=totc8" class="quick-chip">Lição 0011</a>
+          </div>
+        </div>
+
+        <!-- Card Quick Módulo 3 -->
+        <div class="quick-jump-card">
+          <a href="#modulo-3" class="quick-jump-card-title">
+            <span>🚀 Módulo 3: Monitorar & Otimizar</span>
+            <span style="font-size: 0.8rem; color: var(--brand-orange);">Ir p/ Seção ↓</span>
+          </a>
+          <div class="quick-chips-list">
+            <a href="lessons/0012-security-governance-rls-cls-direct-lake-fallback.html?v=totc8" class="quick-chip">Lição 0012</a>
+            <a href="lessons/0013-cicd-git-deployment-pipelines-sqlproj.html?v=totc8" class="quick-chip">Lição 0013</a>
+            <a href="lessons/0014-performance-vorder-liquid-clustering-tuning.html?v=totc8" class="quick-chip">Lição 0014</a>
+            <a href="lessons/0015-monitoring-hub-capacity-metrics-troubleshooting.html?v=totc8" class="quick-chip">Lição 0015</a>
+          </div>
+        </div>
+
+        <!-- Card Quick Simulados -->
+        <div class="quick-jump-card">
+          <a href="#simulados" class="quick-jump-card-title">
+            <span>🎯 Centro de Simulados DP-700</span>
+            <span style="font-size: 0.8rem; color: var(--brand-coral);">Ir p/ Seção ↓</span>
+          </a>
+          <div class="quick-chips-list">
+            <a href="simulados/index.html?v=totc8" class="quick-chip chip-sim">🎯 Abrir Simulado Pearson VUE (182 Questões)</a>
+          </div>
+        </div>
+
+        <!-- Card Quick Referências -->
+        <div class="quick-jump-card">
+          <a href="#referencias" class="quick-jump-card-title">
+            <span>📑 Folhas de Referência</span>
+            <span style="font-size: 0.8rem; color: #6A11CB;">Ir p/ Seção ↓</span>
+          </a>
+          <div class="quick-chips-list">
+            <a href="reference/01-glossary-and-fundamentals-visual-guide.html?v=totc8" class="quick-chip chip-ref">Ref 01</a>
+            <a href="reference/02-storage-delta-medallion-shortcuts-guide.html?v=totc8" class="quick-chip chip-ref">Ref 02</a>
+            <a href="reference/03-architectural-engines-decision-matrix.html?v=totc8" class="quick-chip chip-ref">Ref 03</a>
+            <a href="reference/04-three-languages-sql-pyspark-kql-cheatsheet.html?v=totc8" class="quick-chip chip-ref">Ref 04</a>
+            <a href="reference/05-security-governance-purview-fallback-guide.html?v=totc8" class="quick-chip chip-ref">Ref 05</a>
+            <a href="reference/06-performance-vorder-clustering-monitoring-cheatsheet.html?v=totc8" class="quick-chip chip-ref">Ref 06</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO ALL-IN-ONE FEATURE CARDS DO FIGMA (NODE 10:904) -->
+    <section style="text-align: center; margin-bottom: 3.5rem;">
+      <h2 style="font-size: 1.9rem;">
+        Metodologia <span class="text-accent-cyan">VARK + Multi-Lens</span> Integrada
+      </h2>
+      <p style="max-width: 720px; margin: 0 auto;">
+        Cada lição se adapta à sua senioridade e ativa os 4 canais de retenção cognitiva de longo prazo.
+      </p>
+
+      <div class="feature-cards-grid">
+        <div class="totc-feature-card">
+          <div class="floating-circle-icon" style="background: #5B72EE;">👁️</div>
+          <h3 style="margin-top: 0.5rem;">Visual & Auditivo Neural</h3>
+          <p style="font-size: 0.92rem; margin-bottom: 0;">
+            Diagramas SVG com <em>hotspots</em> clicáveis combinados com narração em português de alta fidelidade e dicção técnica nativa em inglês.
+          </p>
+        </div>
+
+        <div class="totc-feature-card">
+          <div class="floating-circle-icon" style="background: #00CBB8;">🖐️</div>
+          <h3 style="margin-top: 0.5rem;">Simuladores Cinestésicos</h3>
+          <p style="font-size: 0.92rem; margin-bottom: 0;">
+            Manipule sliders de Capacity Units (CUs), janelas de Smoothing de 24h e scripts em <code>.venv</code> para ver a física da plataforma ao vivo.
+          </p>
+        </div>
+
+        <div class="totc-feature-card">
+          <div class="floating-circle-icon" style="background: #29B9E7;">🎓</div>
+          <h3 style="margin-top: 0.5rem;">Simulados Padrão DP-700</h3>
+          <p style="font-size: 0.92rem; margin-bottom: 0;">
+            182 questões com banco randomizado, 8 estudos de caso em Split-Screen e explicações detalhadas de cada distrator.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SELETOR GLOBAL DE PERFIL / LENTE -->
+    <section id="seletor-nivel" class="totc-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+        <div>
+          <h2 style="margin: 0; font-size: 1.45rem;">🎯 Configure Seu Nível para Todo o Curso</h2>
+          <p style="margin: 0.25rem 0 0 0; font-size: 0.92rem;">
+            Sua escolha fica salva automaticamente e personaliza a explicação teórica de todas as lições:
+          </p>
+        </div>
+        <div style="background: var(--pill-teal-bg); padding: 0.45rem 1rem; border-radius: 50px; font-size: 0.85rem; font-weight: 600; color: var(--brand-teal);">
+          Ativo: <span id="current-profile-label">Visão Unificada Completa</span>
+        </div>
+      </div>
+
+      <div class="profile-buttons-grid">
+        <button class="lens-btn profile-card-btn active" data-lens="unificado">
+          🌐 Visão Unificada
+          <span>O curso completo em texto contínuo, sem divisões artificiais.</span>
+        </button>
+        <button class="lens-btn profile-card-btn" data-lens="junior">
+          🌱 Júnior
+          <span>Fundamentos a partir do zero e analogias visuais claras.</span>
+        </button>
+        <button class="lens-btn profile-card-btn" data-lens="pleno">
+          🛠️ Pleno
+          <span>Implementação prática, pastas do Lakehouse e pipelines.</span>
+        </button>
+        <button class="lens-btn profile-card-btn" data-lens="senior">
+          🎯 Sênior & DP-700
+          <span>Arquitetura avançada, matrizes de decisão e pegadinhas da prova.</span>
+        </button>
+        <button class="lens-btn profile-card-btn" data-lens="staff">
+          ⚙️ Staff / Especialista
+          <span>Internals de baixo nível, Velox C++, V-Order e protocolo Delta.</span>
+        </button>
+        <button class="lens-btn profile-card-btn" data-lens="clevel">
+          🏛️ C-Level / FinOps
+          <span>Economia de CUs, redução de TCO, Egress e governança Purview.</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- MÓDULO 0: FUNDAMENTOS & ARMAZENAMENTO                          -->
+    <!-- ============================================================== -->
+    <section id="modulo-0" class="module-section">
+      <div class="module-header">
+        <h2 style="font-size: 1.55rem; margin: 0;">
+          📦 Módulo 0: Fundamentos de Engenharia & Armazenamento
+        </h2>
+        <span class="module-badge badge-mod0">3 Lições • Base da Arquitetura</span>
+      </div>
+      <p class="module-desc">
+        Compreenda a evolução de OLTP para OLAP, a arquitetura do OneLake, o formato colunar Parquet, a pasta <code>_delta_log</code> com commits ACID e os princípios de modelagem dimensional.
+      </p>
+
+      <div class="course-catalog-grid">
+        <!-- Card Lição 0001 -->
+        <article class="course-item-card">
+          <div>
+            <div class="course-banner-thumb" style="background: linear-gradient(135deg, #2F327D 0%, #49BBBD 100%);">
+              <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 600; opacity: 0.95;">
+                <span>📦 MÓDULO 0 • LIÇÃO 0001</span>
+                <span>⏱ 20 mins</span>
+              </div>
+              <div style="font-size: 1.2rem; font-weight: 700; line-height: 1.3;">
+                Fundamentos de Engenharia de Dados & Ecossistema Fabric
+              </div>
+            </div>
+            <p style="font-size: 0.92rem;">
+              A crise dos silos de dados, OLTP vs. OLAP, arquitetura unificada do OneLake, diferenças entre Lakehouse e Warehouse na prova DP-700 e simulador interativo de Smoothing (24h).
+            </p>
+          </div>
+          <div class="card-footer-action">
+            <div class="card-meta-tags">
+              <span style="color: var(--brand-orange);">🎧 Áudio Neural</span>
+              <span style="color: var(--brand-teal);">⚡ Simulador CUs</span>
+            </div>
+            <a href="lessons/0001-data-engineering-foundations-oltp-olap-fabric.html?v=totc8" class="btn-access-lesson">
+              Acessar Lição 0001 <span class="arrow">→</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Card Lição 0002 -->
+        <article class="course-item-card">
+          <div>
+            <div class="course-banner-thumb" style="background: linear-gradient(135deg, #49BBBD 0%, #2F327D 100%);">
+              <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 600; opacity: 0.95;">
+                <span>📦 MÓDULO 0 • LIÇÃO 0002</span>
+                <span>⏱ 25 mins</span>
+              </div>
+              <div style="font-size: 1.2rem; font-weight: 700; line-height: 1.3;">
+                Anatomia de Parquet, Delta Lake (_delta_log) & Medallion
+              </div>
+            </div>
+            <p style="font-size: 0.92rem;">
+              Arquivos colunares Parquet, protocolo Delta Lake, commits atômicos em _delta_log, Time Travel, VACUUM, V-Order e camadas Bronze, Silver e Gold no Fabric.
+            </p>
+          </div>
+          <div class="card-footer-action">
+            <div class="card-meta-tags">
+              <span style="color: var(--brand-teal);">🎧 Áudio Neural</span>
+              <span style="color: var(--brand-orange);">🐍 Lab Prático Python</span>
+            </div>
+            <a href="lessons/0002-storage-fundamentals-parquet-delta-medallion.html?v=totc8" class="btn-access-lesson">
+              Acessar Lição 0002 <span class="arrow">→</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Card Lição 0003 -->
+        <article class="course-item-card">
+          <div>
+            <div class="course-banner-thumb" style="background: linear-gradient(135deg, #11998E 0%, #38EF7D 100%);">
+              <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 600; opacity: 0.95;">
+                <span>📦 MÓDULO 0 • LIÇÃO 0003</span>
+                <span>⏱ 25 mins</span>
+              </div>
+              <div style="font-size: 1.2rem; font-weight: 700; line-height: 1.3;">
+                Modelagem Dimensional & As 3 Linguagens (SQL, Spark, KQL)
+              </div>
+            </div>
+            <p style="font-size: 0.92rem;">
+              Star Schema, Fatos e Dimensões, Surrogate Keys inteiras e a matriz de decisão entre T-SQL (Warehouse), PySpark (Lakehouse) e KQL (Eventhouse).
+            </p>
+          </div>
+          <div class="card-footer-action">
+            <div class="card-meta-tags">
+              <span style="color: var(--brand-coral);">🎧 Áudio Neural</span>
+              <span style="color: var(--brand-teal);">⚡ Lab 3 Linguagens</span>
+            </div>
+            <a href="lessons/0003-dimensional-modeling-and-three-languages-sql-spark-kql.html?v=totc8" class="btn-access-lesson">
+              Acessar Lição 0003 <span class="arrow">→</span>
+            </a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- MÓDULO 1: IMPLEMENTAR E GERENCIAR UM AMBIENTE ANALÍTICO        -->
+    <!-- ============================================================== -->
+    <section id="modulo-1" class="module-section">
+      <div class="module-header">
+        <h2 style="font-size: 1.55rem; margin: 0;">
+          🏛️ Módulo 1: Implementar & Gerenciar um Ambiente Analítico
+        </h2>
+        <span class="module-badge badge-mod1">Domínio 1 • 15-20% do Exame DP-700</span>
+      </div>
+      <p class="module-desc">
+        Capacidades F-SKU, algoritmo de amortização de CUs em 24h (Smoothing), governança com Fabric Domains (Data Mesh), seleção arquitetural de motores analíticos e integração Zero-Copy com Shortcuts e Mirroring.
+      </p>
+
+      <div class="course-catalog-grid">
+        <!-- Card Lição 0004 -->
+        <article class="course-item-card">
+          <div>
+            <div class="course-banner-thumb" style="background: linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%);">
+              <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 600; opacity: 0.95;">
+                <span>🏛️ MÓDULO 1 • LIÇÃO 0004</span>
+                <span>⏱ 25 mins</span>
+              </div>
+              <div style="font-size: 1.2rem; font-weight: 700; line-height: 1.3;">
+                Capacidades F-SKU, Smoothing, Domínios & Spark Pools
+              </div>
+            </div>
+            <p style="font-size: 0.92rem;">
+              Capacity Units (CUs), o algoritmo de amortização de 24h (Smoothing), estágios de Throttling, governança com Domínios (Data Mesh) e dimensionamento de Starter vs. Custom Spark Pools.
+            </p>
+          </div>
+          <div class="card-footer-action">
+            <div class="card-meta-tags">
+              <span style="color: var(--brand-blue);">🎧 Áudio Neural</span>
+              <span style="color: var(--brand-teal);">⚡ Lab Sizing & CUs</span>
+            </div>
+            <a href="lessons/0004-onelake-capacities-smoothing-domains-spark-pools.html?v=totc8" class="btn-access-lesson">
+              Acessar Lição 0004 <span class="arrow">→</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Card Lição 0005 -->
+        <article class="course-item-card">
+          <div>
+            <div class="course-banner-thumb" style="background: linear-gradient(135deg, #00B4DB 0%, #0083B0 100%);">
+              <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 600; opacity: 0.95;">
+                <span>🏛️ MÓDULO 1 • LIÇÃO 0005</span>
+                <span>⏱ 30 mins</span>
+              </div>
+              <div style="font-size: 1.2rem; font-weight: 700; line-height: 1.3;">
+                Guia de Decisão: Lakehouse vs. Warehouse vs. Eventhouse
+              </div>
+            </div>
+            <p style="font-size: 0.92rem;">
+              Matriz arquitetural rigorosa: diferenças de escrita (DML), por que o SQL Endpoint do Lakehouse é estritamente somente leitura e quando escolher Eventhouse para séries temporais e telemetria.
+            </p>
+          </div>
+          <div class="card-footer-action">
+            <div class="card-meta-tags">
+              <span style="color: var(--brand-teal);">🎧 Áudio Neural</span>
+              <span style="color: var(--brand-coral);">⚡ Lab Matriz de Decisão</span>
+            </div>
+            <a href="lessons/0005-architectural-decision-guide-lakehouse-warehouse-eventhouse.html?v=totc8" class="btn-access-lesson">
+              Acessar Lição 0005 <span class="arrow">→</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Card Lição 0006 -->
+        <article class="course-item-card">
+          <div>
+            <div class="course-banner-thumb" style="background: linear-gradient(135deg, #FF512F 0%, #DD2476 100%);">
+              <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 600; opacity: 0.95;">
+                <span>🏛️ MÓDULO 1 • LIÇÃO 0006</span>
+                <span>⏱ 25 mins</span>
+              </div>
+              <div style="font-size: 1.2rem; font-weight: 700; line-height: 1.3;">
+                Integração Zero-Copy: OneLake Shortcuts & Mirroring
+              </div>
+            </div>
+            <p style="font-size: 0.92rem;">
+              Ponteiros virtuais no OneLake sem replicação física de dados (ADLS Gen2, Amazon S3, Google Cloud, Dataverse) e replicação contínua CDC via Database Mirroring (Azure SQL, Snowflake, Cosmos DB).
+            </p>
+          </div>
+          <div class="card-footer-action">
+            <div class="card-meta-tags">
+              <span style="color: var(--brand-coral);">🎧 Áudio Neural</span>
+              <span style="color: var(--brand-teal);">⚡ Lab Zero-Copy</span>
+            </div>
+            <a href="lessons/0006-shortcuts-and-mirroring-zero-copy-integration.html?v=totc8" class="btn-access-lesson">
+              Acessar Lição 0006 <span class="arrow">→</span>
+            </a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- MÓDULO 2: INGERIR E TRANSFORMAR DADOS                          -->
+    <!-- ============================================================== -->
+    <section id="modulo-2" class="module-section">
+      <div class="module-header">
+        <h2 style="font-size: 1.55rem; margin: 0;">
+          ⚙️ Módulo 2: Ingerir & Transformar Dados
+        </h2>
+        <span class="module-badge badge-mod2">Domínio 2 • 40-45% do Exame DP-700</span>
+      </div>
+      <p class="module-desc">
+        O maior peso do exame oficial: orquestração com Data Factory e Dataflows Gen2, padrões de carga incremental com Watermarking e SCD 1/2, transformações em batch, streaming em tempo real e consultas analíticas ultrarrápidas com KQL no Eventhouse.
+      </p>
+
+      <div class="course-catalog-grid">
+        <!-- Card Lição 0007 -->
+        <article class="course-item-card">
+          <div>
+            <div class="course-banner-thumb" style="background: linear-gradient(135deg, #7F00FF 0%, #E100FF 100%);">
+              <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 600; opacity: 0.95;">
+                <span>⚙️ MÓDULO 2 • LIÇÃO 0007</span>
+                <span>⏱ 30 mins</span>
+              </div>
+              <div style="font-size: 1.2rem; font-weight: 700; line-height: 1.3;">
+                Orquestração: Data Factory, Dataflows Gen2 & DAGs
+              </div>
+            </div>
+            <p style="font-size: 0.92rem;">
+              Pipelines com controle de fluxo e triggers, Dataflows Gen2 com Lakehouse de Staging oculto e orquestração avançada em código com Grafos Acíclicos Dirigidos (mssparkutils.notebook.runMultiple).
+            </p>
+          </div>
+          <div class="card-footer-action">
+            <div class="card-meta-tags">
+              <span style="color: var(--brand-purple);">🎧 Áudio Neural</span>
+              <span style="color: var(--brand-teal);">⚡ Lab DAG & Pipelines</span>
+            </div>
+            <a href="lessons/0007-orchestration-pipelines-dataflows-dag.html?v=totc8" class="btn-access-lesson">
+              Acessar Lição 0007 <span class="arrow">→</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Card Lição 0008 -->
+        <article class="course-item-card">
+          <div>
+            <div class="course-banner-thumb" style="background: linear-gradient(135deg, #F857A6 0%, #FF5858 100%);">
+              <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 600; opacity: 0.95;">
+                <span>⚙️ MÓDULO 2 • LIÇÃO 0008</span>
+                <span>⏱ 25 mins</span>
+              </div>
+              <div style="font-size: 1.2rem; font-weight: 700; line-height: 1.3;">
+                Carga Incremental, Watermarking, CDC & SCD 1, 2 e 3
+              </div>
+            </div>
+            <p style="font-size: 0.92rem;">
+              Padrões de extração incremental com High Watermarking (UTC) e Change Data Capture, e modelagem de Slowly Changing Dimensions (SCD 1 vs. SCD 2 com Surrogate Keys e IsCurrent).
+            </p>
+          </div>
+          <div class="card-footer-action">
+            <div class="card-meta-tags">
+              <span style="color: var(--brand-orange);">🎧 Áudio Neural</span>
+              <span style="color: var(--brand-teal);">⚡ Lab SCD Tipo 2</span>
+            </div>
+            <a href="lessons/0008-incremental-loading-watermark-scd.html?v=totc8" class="btn-access-lesson">
+              Acessar Lição 0008 <span class="arrow">→</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Card Lição 0009 -->
+        <article class="course-item-card">
+          <div>
+            <div class="course-banner-thumb" style="background: linear-gradient(135deg, #1D2671 0%, #C33764 100%);">
+              <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 600; opacity: 0.95;">
+                <span>⚙️ MÓDULO 2 • LIÇÃO 0009</span>
+                <span>⏱ 30 mins</span>
+              </div>
+              <div style="font-size: 1.2rem; font-weight: 700; line-height: 1.3;">
+                Transformações Batch, Clones & MERGE
+              </div>
+            </div>
+            <p style="font-size: 0.92rem;">
+              Instruções atômicas MERGE INTO e COPY INTO no Warehouse, evolução de esquema com mergeSchema=true no Spark e ambientes de teste com Zero-Copy Table Clones (CREATE TABLE AS CLONE OF).
+            </p>
+          </div>
+          <div class="card-footer-action">
+            <div class="card-meta-tags">
+              <span style="color: var(--brand-teal);">🎧 Áudio Neural</span>
+              <span style="color: var(--brand-coral);">⚡ Lab Clones & MERGE</span>
+            </div>
+            <a href="lessons/0009-batch-transformations-sql-spark-clones.html?v=totc8" class="btn-access-lesson">
+              Acessar Lição 0009 <span class="arrow">→</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Card Lição 0010 -->
+        <article class="course-item-card">
+          <div>
+            <div class="course-banner-thumb" style="background: linear-gradient(135deg, #11998E 0%, #38EF7D 100%);">
+              <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 600; opacity: 0.95;">
+                <span>⚙️ MÓDULO 2 • LIÇÃO 0010</span>
+                <span>⏱ 30 mins</span>
+              </div>
+              <div style="font-size: 1.2rem; font-weight: 700; line-height: 1.3;">
+                Engenharia de Streaming & Janelas Temporais
+              </div>
+            </div>
+            <p style="font-size: 0.92rem;">
+              Eventstreams com roteamento visual e Spark Structured Streaming com controle de dados atrasados via withWatermark e as 4 janelas temporais: Tumbling, Hopping, Sliding e Session.
+            </p>
+          </div>
+          <div class="card-footer-action">
+            <div class="card-meta-tags">
+              <span style="color: var(--brand-teal);">🎧 Áudio Neural</span>
+              <span style="color: var(--brand-orange);">⚡ Lab Streaming</span>
+            </div>
+            <a href="lessons/0010-streaming-eventstreams-spark-windows.html?v=totc8" class="btn-access-lesson">
+              Acessar Lição 0010 <span class="arrow">→</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Card Lição 0011 -->
+        <article class="course-item-card">
+          <div>
+            <div class="course-banner-thumb" style="background: linear-gradient(135deg, #00C9FF 0%, #92FE9D 100%);">
+              <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 600; opacity: 0.95;">
+                <span>⚙️ MÓDULO 2 • LIÇÃO 0011</span>
+                <span>⏱ 30 mins</span>
+              </div>
+              <div style="font-size: 1.2rem; font-weight: 700; line-height: 1.3;">
+                Domínio de KQL, Eventhouse & Update Policies
+              </div>
+            </div>
+            <p style="font-size: 0.92rem;">
+              Consultas em milissegundos com KQL no Eventhouse, transformação transacional na ingestão com Update Policies, agregações pré-computadas em Materialized Views e otimização de texto com has vs. contains.
+            </p>
+          </div>
+          <div class="card-footer-action">
+            <div class="card-meta-tags">
+              <span style="color: var(--brand-teal);">🎧 Áudio Neural</span>
+              <span style="color: var(--brand-purple);">⚡ Lab KQL & Policies</span>
+            </div>
+            <a href="lessons/0011-kql-eventhouse-update-policies-materialized-views.html?v=totc8" class="btn-access-lesson">
+              Acessar Lição 0011 <span class="arrow">→</span>
+            </a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- MÓDULO 3: MONITORAR E OTIMIZAR UMA SOLUÇÃO ANALÍTICA           -->
+    <!-- ============================================================== -->
+    <section id="modulo-3" class="module-section">
+      <div class="module-header">
+        <h2 style="font-size: 1.55rem; margin: 0;">
+          🚀 Módulo 3: Monitorar & Otimizar uma Solução Analítica
+        </h2>
+        <span class="module-badge badge-mod3">Domínio 3 • 20-25% do Exame DP-700</span>
+      </div>
+      <p class="module-desc">
+        Segurança granular corporativa (RLS, CLS e DDM), diagnóstico e blindagem do Direct Lake Fallback no Power BI, ALM e CI/CD com Git e Deployment Pipelines, Liquid Clustering (CLUSTER BY) e monitoramento avançado com Capacity Metrics App e DMVs.
+      </p>
+
+      <div class="course-catalog-grid">
+        <!-- Card Lição 0012 -->
+        <article class="course-item-card">
+          <div>
+            <div class="course-banner-thumb" style="background: linear-gradient(135deg, #FF416C 0%, #FF4B2B 100%);">
+              <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 600; opacity: 0.95;">
+                <span>🚀 MÓDULO 3 • LIÇÃO 0012</span>
+                <span>⏱ 30 mins</span>
+              </div>
+              <div style="font-size: 1.2rem; font-weight: 700; line-height: 1.3;">
+                Segurança Fim a Fim & Prevenção do Fallback
+              </div>
+            </div>
+            <p style="font-size: 0.92rem;">
+              Workspace Roles (Admin, Member, Contributor, Viewer), segurança granular RLS, CLS e Dynamic Data Masking (DDM), Purview e a arquitetura para evitar o Direct Lake Fallback no Power BI.
+            </p>
+          </div>
+          <div class="card-footer-action">
+            <div class="card-meta-tags">
+              <span style="color: var(--brand-coral);">🎧 Áudio Neural</span>
+              <span style="color: var(--brand-teal);">⚡ Lab Segurança & RLS</span>
+            </div>
+            <a href="lessons/0012-security-governance-rls-cls-direct-lake-fallback.html?v=totc8" class="btn-access-lesson">
+              Acessar Lição 0012 <span class="arrow">→</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Card Lição 0013 -->
+        <article class="course-item-card">
+          <div>
+            <div class="course-banner-thumb" style="background: linear-gradient(135deg, #4776E6 0%, #8E54E9 100%);">
+              <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 600; opacity: 0.95;">
+                <span>🚀 MÓDULO 3 • LIÇÃO 0013</span>
+                <span>⏱ 30 mins</span>
+              </div>
+              <div style="font-size: 1.2rem; font-weight: 700; line-height: 1.3;">
+                CI/CD, Git Integration & Deployment Pipelines
+              </div>
+            </div>
+            <p style="font-size: 0.92rem;">
+              Application Lifecycle Management (ALM) no Fabric: sincronização com Azure DevOps/GitHub, serialização de artefatos, branches, resolução de conflitos, Deployment Pipelines e Deployment Rules automáticas.
+            </p>
+          </div>
+          <div class="card-footer-action">
+            <div class="card-meta-tags">
+              <span style="color: var(--brand-teal);">🎧 Áudio Neural</span>
+              <span style="color: var(--brand-blue);">⚡ Lab CI/CD & Git</span>
+            </div>
+            <a href="lessons/0013-cicd-git-deployment-pipelines-sqlproj.html?v=totc8" class="btn-access-lesson">
+              Acessar Lição 0013 <span class="arrow">→</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Card Lição 0014 -->
+        <article class="course-item-card">
+          <div>
+            <div class="course-banner-thumb" style="background: linear-gradient(135deg, #00B4DB 0%, #0083B0 100%);">
+              <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 600; opacity: 0.95;">
+                <span>🚀 MÓDULO 3 • LIÇÃO 0014</span>
+                <span>⏱ 30 mins</span>
+              </div>
+              <div style="font-size: 1.2rem; font-weight: 700; line-height: 1.3;">
+                Otimização de Performance, V-Order & Liquid Clustering
+              </div>
+            </div>
+            <p style="font-size: 0.92rem;">
+              Algoritmo V-Order para Direct Lake de subsegundo, migração de Z-Order para Liquid Clustering (CLUSTER BY), manutenção segura com VACUUM e mitigação de Data Skew com AQE e Salting.
+            </p>
+          </div>
+          <div class="card-footer-action">
+            <div class="card-meta-tags">
+              <span style="color: var(--brand-teal);">🎧 Áudio Neural</span>
+              <span style="color: var(--brand-orange);">⚡ Lab Performance Tuning</span>
+            </div>
+            <a href="lessons/0014-performance-vorder-liquid-clustering-tuning.html?v=totc8" class="btn-access-lesson">
+              Acessar Lição 0014 <span class="arrow">→</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Card Lição 0015 -->
+        <article class="course-item-card">
+          <div>
+            <div class="course-banner-thumb" style="background: linear-gradient(135deg, #3A1C71 0%, #D76D77 50%, #FFAF7B 100%);">
+              <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 600; opacity: 0.95;">
+                <span>🚀 MÓDULO 3 • LIÇÃO 0015</span>
+                <span>⏱ 30 mins</span>
+              </div>
+              <div style="font-size: 1.2rem; font-weight: 700; line-height: 1.3;">
+                Monitoramento, Capacity Metrics App & DMVs
+              </div>
+            </div>
+            <p style="font-size: 0.92rem;">
+              Observabilidade ponta a ponta: Monitoring Hub, Spark History Server, Capacity Metrics App com janelas de 5 min (Interactive) e 24h (Background), estágios de Throttling e diagnósticos com o schema queryinsights.
+            </p>
+          </div>
+          <div class="card-footer-action">
+            <div class="card-meta-tags">
+              <span style="color: var(--brand-coral);">🎧 Áudio Neural</span>
+              <span style="color: var(--brand-teal);">⚡ Lab DMVs & Metrics</span>
+            </div>
+            <a href="lessons/0015-monitoring-hub-capacity-metrics-troubleshooting.html?v=totc8" class="btn-access-lesson">
+              Acessar Lição 0015 <span class="arrow">→</span>
+            </a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- CENTRO OFICIAL DE SIMULADOS DP-700 (PEARSON VUE)                -->
+    <!-- ============================================================== -->
+    <section id="simulados" class="module-section">
+      <div class="module-header">
+        <h2 style="font-size: 1.55rem; margin: 0;">
+          🎯 Centro Oficial de Simulados DP-700 (Pearson VUE)
+        </h2>
+        <span class="module-badge badge-sim">182 Questões • Modo Cronometrado 100 Min</span>
+      </div>
+      <p class="module-desc">
+        Ambiente de avaliação isomórfico à prova real da Pearson VUE: randomização de alternativas, marcação para revisão (Flag for Review), mapa de questões (Review Matrix), 8 estudos de caso em Split-Screen e placar oficial escalado (0 a 1000).
+      </p>
+
+      <div class="course-catalog-grid" style="grid-template-columns: 1fr;">
+        <!-- Card Destaque Simulado DP-700 -->
+        <article class="course-item-card" style="border: 2px solid var(--brand-orange); background: var(--bg-surface-alt);">
+          <div>
+            <div class="course-banner-thumb" style="background: linear-gradient(135deg, #F48C06 0%, #EE645B 100%); height: 160px;">
+              <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 700; opacity: 0.95;">
+                <span>🎯 EXAME REAL DP-700 ASSOCIATE</span>
+                <span>⏱ 100 Minutos • 182 Questões Comentadas</span>
+              </div>
+              <div>
+                <div style="font-size: 1.45rem; font-weight: 800; line-height: 1.3;">
+                  Simulador Oficial Pearson VUE: Microsoft Fabric Data Engineer
+                </div>
+                <div style="font-size: 0.92rem; opacity: 0.9; margin-top: 0.35rem;">
+                  Escolha Única (Single) • Múltipla Resposta (Multi-Select) • 8 Casos de Estudo Corporativos com 4 Abas
+                </div>
+              </div>
+            </div>
+            <p style="font-size: 0.96rem; line-height: 1.6;">
+              Treine sob as condições exatas da certificação oficial Microsoft DP-700: cronômetro de 100 minutos com aviso nos últimos 5 minutos, cálculo de nota ponderada com aprovação em 700 pontos, breakdown de desempenho visual pelos 3 domínios oficiais e modo revisão com explicação minuciosa de cada alternativa correta e análise dos distratores.
+            </p>
+          </div>
+          <div class="card-footer-action">
+            <div class="card-meta-tags">
+              <span style="color: var(--brand-orange); font-size: 0.9rem;">⭐ 182 Questões com 3 Seções Explicativas</span>
+              <span style="color: var(--brand-coral); font-size: 0.9rem;">🚩 Flag for Review + 📋 Matriz de Navegação</span>
+            </div>
+            <a href="simulados/index.html?v=totc8" class="btn-access-lesson btn-simulado" style="font-size: 1.05rem; padding: 0.95rem 1.5rem;">
+              Abrir Centro Oficial de Simulados DP-700 <span class="arrow">→</span>
+            </a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- FOLHAS DE REFERÊNCIA & CHEAT SHEETS                            -->
+    <!-- ============================================================== -->
+    <section id="referencias" class="module-section">
+      <div class="module-header">
+        <h2 style="font-size: 1.55rem; margin: 0;">
+          📑 Folhas de Referência & Cheat Sheets Oficiais
+        </h2>
+        <span class="module-badge badge-ref">6 Guias Visuais • Prontos p/ Impressão</span>
+      </div>
+      <p class="module-desc">
+        Tabelas comprimidas de consulta rápida, matrizes de decisão arquiteturais e comparativos de sintaxe lado a lado (T-SQL vs. PySpark vs. KQL) formatados no padrão Tufte CSS com botão de impressão de alta fidelidade.
+      </p>
+
+      <div class="course-catalog-grid">
+        <!-- Card Reference Sheet 01 -->
+        <article class="course-item-card">
+          <div>
+            <div class="course-banner-thumb" style="background: linear-gradient(135deg, #6A11CB 0%, #2575FC 100%);">
+              <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 600; opacity: 0.95;">
+                <span>📑 FOLHA DE REFERÊNCIA 01</span>
+                <span>🖨️ Pronta p/ Impressão</span>
+              </div>
+              <div style="font-size: 1.2rem; font-weight: 700; line-height: 1.3;">
+                Glossário Visual & Fundamentos do Microsoft Fabric
+              </div>
+            </div>
+            <p style="font-size: 0.92rem;">
+              Tabela comprimida de consulta rápida cobrindo conceitos de armazenamento, Capacity Units, Smoothing, Throttling, motores analíticos, Direct Lake, V-Order e Domains.
+            </p>
+          </div>
+          <div class="card-footer-action">
+            <div class="card-meta-tags">
+              <span style="color: var(--brand-teal);">📄 Cheat Sheet Oficial</span>
+              <span>🖨️ Formato A4</span>
+            </div>
+            <a href="reference/01-glossary-and-fundamentals-visual-guide.html?v=totc8" class="btn-access-lesson btn-reference">
+              Abrir Referência 01 <span class="arrow">→</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Card Reference Sheet 02 -->
+        <article class="course-item-card">
+          <div>
+            <div class="course-banner-thumb" style="background: linear-gradient(135deg, #11998E 0%, #38EF7D 100%);">
+              <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 600; opacity: 0.95;">
+                <span>📑 FOLHA DE REFERÊNCIA 02</span>
+                <span>🖨️ Pronta p/ Impressão</span>
+              </div>
+              <div style="font-size: 1.2rem; font-weight: 700; line-height: 1.3;">
+                Storage, Delta Lake, Medallion & Zero-Copy
+              </div>
+            </div>
+            <p style="font-size: 0.92rem;">
+              Parquet colunar, anatomia do _delta_log, Time Travel, VACUUM (7 dias de retenção), camadas Bronze/Silver/Gold, OneLake Shortcuts e Database Mirroring CDC.
+            </p>
+          </div>
+          <div class="card-footer-action">
+            <div class="card-meta-tags">
+              <span style="color: var(--brand-teal);">📄 Cheat Sheet Oficial</span>
+              <span>🖨️ Formato A4</span>
+            </div>
+            <a href="reference/02-storage-delta-medallion-shortcuts-guide.html?v=totc8" class="btn-access-lesson btn-reference">
+              Abrir Referência 02 <span class="arrow">→</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Card Reference Sheet 03 -->
+        <article class="course-item-card">
+          <div>
+            <div class="course-banner-thumb" style="background: linear-gradient(135deg, #FF8008 0%, #FFC837 100%);">
+              <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 600; opacity: 0.95;">
+                <span>📑 FOLHA DE REFERÊNCIA 03</span>
+                <span>🖨️ Pronta p/ Impressão</span>
+              </div>
+              <div style="font-size: 1.2rem; font-weight: 700; line-height: 1.3;">
+                Matriz Decisória de Motores Analíticos
+              </div>
+            </div>
+            <p style="font-size: 0.92rem;">
+              Comparativo direto: Lakehouse vs Data Warehouse vs Eventhouse vs Fabric SQL Database. DML/DDL T-SQL, transações ACID, streaming, RLS/CLS e regras da prova DP-700.
+            </p>
+          </div>
+          <div class="card-footer-action">
+            <div class="card-meta-tags">
+              <span style="color: var(--brand-teal);">📄 Cheat Sheet Oficial</span>
+              <span>🖨️ Formato A4</span>
+            </div>
+            <a href="reference/03-architectural-engines-decision-matrix.html?v=totc8" class="btn-access-lesson btn-reference">
+              Abrir Referência 03 <span class="arrow">→</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Card Reference Sheet 04 -->
+        <article class="course-item-card">
+          <div>
+            <div class="course-banner-thumb" style="background: linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%);">
+              <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 600; opacity: 0.95;">
+                <span>📑 FOLHA DE REFERÊNCIA 04</span>
+                <span>🖨️ Pronta p/ Impressão</span>
+              </div>
+              <div style="font-size: 1.2rem; font-weight: 700; line-height: 1.3;">
+                As Três Linguagens: T-SQL vs PySpark vs KQL
+              </div>
+            </div>
+            <p style="font-size: 0.92rem;">
+              Sintaxe lado a lado para filtros, agregações, funções de janela (ROW_NUMBER / arg_max), extração de JSON (parse_json / from_json) e operações de Upsert/MERGE.
+            </p>
+          </div>
+          <div class="card-footer-action">
+            <div class="card-meta-tags">
+              <span style="color: var(--brand-teal);">📄 Cheat Sheet Oficial</span>
+              <span>🖨️ Formato A4</span>
+            </div>
+            <a href="reference/04-three-languages-sql-pyspark-kql-cheatsheet.html?v=totc8" class="btn-access-lesson btn-reference">
+              Abrir Referência 04 <span class="arrow">→</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Card Reference Sheet 05 -->
+        <article class="course-item-card">
+          <div>
+            <div class="course-banner-thumb" style="background: linear-gradient(135deg, #FF416C 0%, #FF4B2B 100%);">
+              <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 600; opacity: 0.95;">
+                <span>📑 FOLHA DE REFERÊNCIA 05</span>
+                <span>🖨️ Pronta p/ Impressão</span>
+              </div>
+              <div style="font-size: 1.2rem; font-weight: 700; line-height: 1.3;">
+                Segurança, Governança & Direct Lake Fallback
+              </div>
+            </div>
+            <p style="font-size: 0.92rem;">
+              Matriz de Workspace Roles (Admin, Member, Contributor, Viewer), segurança granular RLS/CLS/DDM, Purview Sensitivity Labels e como evitar o Fallback do Direct Lake.
+            </p>
+          </div>
+          <div class="card-footer-action">
+            <div class="card-meta-tags">
+              <span style="color: var(--brand-teal);">📄 Cheat Sheet Oficial</span>
+              <span>🖨️ Formato A4</span>
+            </div>
+            <a href="reference/05-security-governance-purview-fallback-guide.html?v=totc8" class="btn-access-lesson btn-reference">
+              Abrir Referência 05 <span class="arrow">→</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Card Reference Sheet 06 -->
+        <article class="course-item-card">
+          <div>
+            <div class="course-banner-thumb" style="background: linear-gradient(135deg, #00B4DB 0%, #0083B0 100%);">
+              <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 600; opacity: 0.95;">
+                <span>📑 FOLHA DE REFERÊNCIA 06</span>
+                <span>🖨️ Pronta p/ Impressão</span>
+              </div>
+              <div style="font-size: 1.2rem; font-weight: 700; line-height: 1.3;">
+                Otimização, V-Order & Troubleshooting
+              </div>
+            </div>
+            <p style="font-size: 0.92rem;">
+              Algoritmo V-Order para Direct Lake de subsegundo, Liquid Clustering (CLUSTER BY), mitigação de Data Skew (AQE), janelas de Smoothing e DMVs do schema queryinsights.
+            </p>
+          </div>
+          <div class="card-footer-action">
+            <div class="card-meta-tags">
+              <span style="color: var(--brand-teal);">📄 Cheat Sheet Oficial</span>
+              <span>🖨️ Formato A4</span>
+            </div>
+            <a href="reference/06-performance-vorder-clustering-monitoring-cheatsheet.html?v=totc8" class="btn-access-lesson btn-reference">
+              Abrir Referência 06 <span class="arrow">→</span>
+            </a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>

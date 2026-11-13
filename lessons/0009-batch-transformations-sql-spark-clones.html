@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lição 0009: Transformações Batch em PySpark & T-SQL: MERGE, COPY, Schema Evolution & Clones</title>
+  <link rel="stylesheet" href="../assets/tufte.css?v=totc6">
+  <link rel="stylesheet" href="../assets/vark.css?v=totc6">
+  <script src="../assets/lens.js?v=totc6"></script>
+  <script src="../assets/quiz.js?v=totc6" defer></script>
+  <script src="../assets/vark.js?v=totc6" defer></script>
+</head>
+<body>
+
+  <div class="course-app-shell">
+
+    <!-- SIDEBAR DE CURRÍCULO E NAVEGAÇÃO -->
+    <aside class="course-sidebar">
+      <div class="sidebar-top-nav">
+        <a href="../index.html?v=totc6" class="back-square-btn" title="Voltar ao Portal do Curso">←</a>
+        <div style="font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--text-primary);">
+          FABRIC <span style="color: var(--brand-teal);">DP-700</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="sidebar-section-title">Módulo 2: Ingestão & Transformação</div>
+        <div class="sidebar-pill-list">
+          <a href="../lessons/0008-incremental-loading-watermark-scd.html?v=totc6" class="curriculum-pill">
+            <span class="pill-left">📖 Lição 08: Carga Incremental & SCD</span>
+            <span class="pill-duration">25 mins</span>
+          </a>
+          <a href="#bloco-contexto" class="curriculum-pill active">
+            <span class="pill-left">📖 Lição 09: Batch, Clones & MERGE</span>
+            <span class="pill-duration">30 mins</span>
+          </a>
+          <a href="#bloco-audio" class="curriculum-pill pill-orange">
+            <span class="pill-left">🎧 Narração Neural da Aula</span>
+            <span class="pill-duration">02:30</span>
+          </a>
+          <a href="#bloco-teoria" class="curriculum-pill pill-blue">
+            <span class="pill-left">👁️ Matriz de Comandos Batch</span>
+            <span class="pill-duration">Visual</span>
+          </a>
+          <a href="../simulados/index.html?v=totc6" class="curriculum-pill pill-coral">
+            <span class="pill-left">🎯 Centro de Simulados</span>
+            <span class="pill-duration">Exam</span>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <div class="sidebar-section-title">PRACTICE QUIZ & LABS</div>
+        <div class="sidebar-pill-list">
+          <a href="#bloco-pratica" class="curriculum-pill pill-teal">
+            <span class="pill-left">⚡ Lab: MERGE & Clones</span>
+            <span class="pill-duration">Python</span>
+          </a>
+          <a href="#bloco-quiz" class="curriculum-pill pill-orange">
+            <span class="pill-left">🎯 Desafio Exame DP-700</span>
+            <span class="pill-duration">Quiz</span>
+          </a>
+        </div>
+      </div>
+
+      <div style="margin-top: auto; padding: 1rem; background: var(--bg-surface-alt); border: 1px solid var(--border-color); border-radius: 14px; font-size: 0.82rem; color: var(--text-secondary);">
+        <strong style="color: var(--text-primary); display: block; margin-bottom: 0.25rem;">💡 Dica de Estudo VARK</strong>
+        A clonagem zero-copy (AS CLONE OF) no Warehouse e a evolução de esquema no Spark são exigidos com frequência no exame.
+      </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="course-main-content">
+
+      <header class="course-header-banner">
+        <div>
+          <div class="course-badge">Módulo 2 • Domínio 2 do Exame DP-700</div>
+          <h1 class="course-title">Lição 0009: Transformações Batch em PySpark & T-SQL: MERGE, COPY, Schema Evolution & Clones</h1>
+          <p class="course-meta">
+            Duração estimada: 30 minutos • Domínio 2 (Transformação Batch) • Áudio Neural & Lab de Clones
+          </p>
+        </div>
+        <div class="theme-toggle-container">
+          <button class="theme-toggle-btn" onclick="window.toggleAppTheme()" title="Alternar entre Modo Claro e Escuro">
+            <span class="theme-toggle-icon">🌙</span> Alternar Tema
+          </button>
+        </div>
+      </header>
+
+      <nav class="lens-selector-bar" aria-label="Seletor de Nível Pedagógico">
+        <div class="lens-tab-group">
+          <button class="lens-tab" data-lens="unificado">📚 Unificado (Geral)</button>
+          <button class="lens-tab" data-lens="junior">🌱 Júnior / Fundamentos</button>
+          <button class="lens-tab" data-lens="pleno">🌿 Pleno / Implementador</button>
+          <button class="lens-tab" data-lens="senior">🛠️ Sênior / DP-700</button>
+          <button class="lens-tab" data-lens="staff">⚙️ Staff / Under the Hood</button>
+          <button class="lens-tab" data-lens="clevel">🏛️ C-Level / FinOps & TCO</button>
+        </div>
+        <div style="margin-left: auto;">
+          <button class="theme-toggle-btn" onclick="window.toggleAppTheme()" title="Alternar Modo Dark / Light">
+            <span class="theme-toggle-icon">🌙</span> Modo Dark
+          </button>
+        </div>
+      </nav>
+
+      <nav class="vark-nav-bar" aria-label="Atalhos das Modalidades VARK">
+        <a href="#bloco-audio" class="vark-btn"><span class="vark-badge badge-a">A</span> 🎧 Áudio Neural (Auditivo)</a>
+        <a href="#bloco-teoria" class="vark-btn"><span class="vark-badge badge-v">V</span> 👁️ Sintaxe T-SQL vs. PySpark (Visual)</a>
+        <a href="#bloco-contexto" class="vark-btn"><span class="vark-badge badge-r">R</span> 📖 Texto Técnico (Leitura)</a>
+        <a href="#bloco-pratica" class="vark-btn"><span class="vark-badge badge-k">K</span> ⚡ Lab MERGE & Clones (Cinestésico)</a>
+      </nav>
+
+      <!-- REPRODUTOR DE ÁUDIO NEURAL -->
+      <div id="bloco-audio" class="audio-player-card">
+        <div class="audio-card-header">
+          <div class="audio-avatar">🎙️</div>
+          <div>
+            <div class="audio-title">Narração Técnica Neural da Lição 0009</div>
+            <div class="audio-subtitle">Voz: Microsoft pt-BR-AntonioNeural • MERGE INTO, COPY INTO, mergeSchema e Clones</div>
+          </div>
+        </div>
+        <div class="audio-controls-row">
+          <button id="audio-play-btn" class="audio-play-button" aria-label="Reproduzir áudio da lição">▶ Reproduzir Aula</button>
+          <div class="audio-scrubber-track">
+            <div id="audio-progress-bar" class="audio-scrubber-fill" style="width: 0%;"></div>
+          </div>
+          <div id="audio-time-label" class="audio-time-display">00:00 / 02:30</div>
+          <audio id="vark-audio-element" preload="metadata">
+            <source src="../assets/audio/lesson-0009-pt.mp3?v=totc6" type="audio/mpeg">
+            Seu navegador não suporta o elemento de áudio HTML5.
+          </audio>
+        </div>
+      </div>
+
+      <!-- CONTEÚDO MULTI-LENS -->
+      <article id="bloco-contexto" class="lens-panel" data-lens-content="unificado">
+        <h2>Aceleração de Transformações em Lote: Motores Polaris e Spark</h2>
+        <p>
+          A transformação de dados em lote no Fabric combina comandos relacionais de alta velocidade no <strong>Data Warehouse</strong> com a flexibilidade distribuída do <strong>Apache Spark no Lakehouse</strong>.
+        </p>
+
+        <div class="diagram-container" id="bloco-teoria">
+          <h3>Comandos Canônicos de Transformação Batch no Microsoft Fabric</h3>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.92rem;">
+            <thead>
+              <tr style="background: var(--bg-surface-alt); border-bottom: 2px solid var(--border-color); text-align: left;">
+                <th style="padding: 10px;">Comando / Recurso</th>
+                <th style="padding: 10px;">Ambiente</th>
+                <th style="padding: 10px;">Finalidade Técnica</th>
+                <th style="padding: 10px;">Diferencial no OneLake</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--border-color);">
+                <td style="padding: 10px; font-weight: bold; color: var(--brand-teal);">COPY INTO</td>
+                <td style="padding: 10px;">Data Warehouse</td>
+                <td style="padding: 10px;">Ingestão ultraveloz de arquivos externos (Parquet, CSV) via T-SQL.</td>
+                <td style="padding: 10px;">Paralelismo de nós distribuídos sem necessidade de cluster Spark ativo.</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border-color);">
+                <td style="padding: 10px; font-weight: bold; color: var(--brand-blue);">MERGE INTO</td>
+                <td style="padding: 10px;">Warehouse / Lakehouse</td>
+                <td style="padding: 10px;">Upsert atômico (insere novos e atualiza modificados em 1 instrução).</td>
+                <td style="padding: 10px;">Commit ACID único no <code>_delta_log</code>, eliminando estados inconsistentes.</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border-color);">
+                <td style="padding: 10px; font-weight: bold; color: var(--brand-purple);">mergeSchema=true</td>
+                <td style="padding: 10px;">Lakehouse (Spark)</td>
+                <td style="padding: 10px;">Schema Evolution automático para absorver novas colunas de entrada.</td>
+                <td style="padding: 10px;">Adiciona metadados de colunas no Delta sem quebrar tabelas existentes.</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; font-weight: bold; color: var(--brand-coral);">CREATE TABLE AS CLONE OF</td>
+                <td style="padding: 10px;">Data Warehouse</td>
+                <td style="padding: 10px;">Criação instantânea de cópias de tabelas para homologação e testes.</td>
+                <td style="padding: 10px;">Zero-Copy: compartilha os mesmos arquivos Parquet físicos no OneLake!</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>A Revolução do Zero-Copy Table Clone no Warehouse</h3>
+        <p>
+          Em bancos de dados relacionais tradicionais, criar um ambiente de testes para homologar um relatório exigia duplicar 10 terabytes de dados, aguardar horas de cópia e pagar duas vezes pelo armazenamento.
+        </p>
+        <p>
+          No Fabric Data Warehouse, o comando <code>CREATE TABLE Tabela_Homolog AS CLONE OF Tabela_Prod;</code> é executado em menos de 2 segundos. O motor Polaris apenas duplica os ponteiros de metadados no catálogo. Nenhuma linha física de dados é copiada no OneLake até que uma instrução DML altere especificamente um arquivo no clone.
+        </p>
+      </article>
+
+      <!-- 2. LENTE JÚNIOR -->
+      <article class="lens-panel" data-lens-content="junior">
+        <h2>🌱 O que Significa Clonar Sem Cópia (Zero-Copy Clone)?</h2>
+        <p>
+          Imagine que você tem uma biblioteca com 10.000 livros raros. Se você quiser que um colega estude sem riscar os seus livros, você não precisa comprar outra biblioteca inteira!
+        </p>
+        <p>
+          Você apenas cria uma ficha dizendo: "O colega está autorizado a ler os mesmos livros na mesma estante". Se o colega quiser escrever uma anotação em uma folha, apenas essa folha nova é guardada para ele. Isso é o <strong>Zero-Copy Clone</strong>: rapidez instantânea e custo zero de espaço extra!
+        </p>
+      </article>
+
+      <!-- 3. LENTE PLENO -->
+      <article class="lens-panel" data-lens-content="pleno">
+        <h2>🌿 Como Usar COPY INTO com Armazenamento Externo no Warehouse</h2>
+        <p>
+          Para carregar um lote de arquivos Parquet de uma conta ADLS Gen2 diretamente no Fabric Warehouse:
+        </p>
+        <pre><code style="font-family: var(--font-mono); font-size: 0.85rem; display: block; background: var(--bg-surface-alt); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color); overflow-x: auto;">COPY INTO dbo.FactSales
+FROM 'https://meuaccount.dfs.core.windows.net/raw/vendas/*.parquet'
+WITH (
+    FILE_TYPE = 'PARQUET',
+    CREDENTIAL = (IDENTITY = 'Workspace Identity')
+);</code></pre>
+      </article>
+
+      <!-- 4. LENTE SÊNIOR / DP-700 -->
+      <article class="lens-panel" data-lens-content="senior">
+        <h2>🛠️ Armadilhas do DP-700: Schema Mismatch e Clonagem em Testes</h2>
+        <div style="border-left: 4px solid var(--brand-orange); background: var(--bg-surface-alt); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+          <strong style="color: var(--brand-orange); display: block; margin-bottom: 0.25rem;">⚠️ Cenário Recorrente no Exame:</strong>
+          <em>"Um job em PySpark grava dados de telemetria em uma tabela Delta na camada Silver. Uma atualização no firmware dos sensores adicionou duas novas colunas ('battery_health' e 'signal_quality'). As próximas execuções do notebook começam a falhar com erro de esquema incompatível (AnalysisException: schema mismatch). Qual opção do Spark deve ser configurada para permitir a ingestão contínua?"</em>
+        </div>
+        <p>
+          <strong>Resposta Oficial:</strong> Adicionar a opção <code>.option("mergeSchema", "true")</code> na operação <code>df.write.format("delta").mode("append").saveAsTable(...)</code>. O Delta Lake aplicará o <strong>Schema Evolution</strong> de forma segura sem corromper as partições antigas.
+        </p>
+        <h3>Regra para Ambientes de Testes:</h3>
+        <p>
+          Se a questão pedir para <em>"Criar um ambiente isolado para o time de qualidade testar queries destrutivas sem duplicar os custos de armazenamento e sem impactar os relatórios em produção"</em>, a resposta correta no Warehouse é <strong>CREATE TABLE ... AS CLONE OF</strong>.
+        </p>
+      </article>
+
+      <!-- 5. LENTE STAFF -->
+      <article class="lens-panel" data-lens-content="staff">
+        <h2>⚙️ Arquitetura Interna: Copy-on-Write vs. Merge-on-Read no Delta</h2>
+        <p>
+          O motor relacional Polaris do Fabric Warehouse e o Spark implementam o padrão <strong>Copy-on-Write (CoW)</strong> para transações <code>MERGE INTO</code>.
+        </p>
+        <p>
+          Durante o plano de execução:
+        </p>
+        <ol>
+          <li>O motor realiza um <em>Inner Join</em> entre a tabela alvo e a tabela fonte para identificar quais arquivos Parquet contêm linhas que sofreram modificação.</li>
+          <li>Apenas os arquivos Parquet que possuem tuplas correspondentes são reescritos em novos arquivos (com os novos valores atualizados e novas linhas anexadas).</li>
+          <li>Os arquivos antigos são marcados como <em>tombstoned</em> no <code>_delta_log</code> e permanecem disponíveis para Time Travel até que o comando <code>VACUUM</code> seja executado.</li>
+        </ol>
+      </article>
+
+      <!-- 6. LENTE C-LEVEL -->
+      <article class="lens-panel" data-lens-content="clevel">
+        <h2>🏛️ Visão Estratégica & FinOps: Governança Ágil com Clones</h2>
+        <p>
+          Em grandes empresas, provisionar réplicas de bancos de dados analíticos para auditoria ou desenvolvimento consumia semanas de planejamento de infraestrutura e aumentava os custos de armazenamento em nuvem.
+        </p>
+        <p>
+          Com <strong>Zero-Copy Table Clones</strong> no OneLake:
+        </p>
+        <ul>
+          <li>O tempo de provisionamento de ambientes de homologação cai de <strong>6 horas para 3 segundos</strong>.</li>
+          <li>O custo de armazenamento é zero até que alterações pontuais ocorram, acelerando o ciclo de lançamento de novos relatórios analíticos (Time-to-Market).</li>
+        </ul>
+      </article>
+
+      <!-- SEÇÃO KINESTHETIC: LAB PRÁTICO -->
+            <!-- SEÇÃO KINESTHETIC: LAB PRÁTICO ESTILO MICROSOFT LEARN -->
+      <section id="bloco-pratica" style="margin-top: 3.5rem;">
+        <div class="mslearn-lab-box">
+          
+          <!-- Cabeçalho do Exercício -->
+          <div class="mslearn-header">
+            <div class="mslearn-badge-row">
+              <span class="mslearn-badge mslearn-badge-portal">🛠️ Microsoft Fabric Hands-on Lab</span>
+              <span class="mslearn-badge mslearn-badge-duration">⏱️ ~25 minutos</span>
+              <span class="mslearn-badge mslearn-badge-role">👤 Engenheiro de Dados • Domínio 2</span>
+              <span class="vark-badge badge-k" style="margin-left: auto;">K - Prática Guiada</span>
+            </div>
+            <h2 style="margin: 0.25rem 0 0.5rem 0; font-family: var(--font-display); color: var(--text-primary); font-size: 1.6rem;">
+              Exercício Prático: Transformações em Lote com PySpark, Views T-SQL e Table Clones
+            </h2>
+            <p style="margin: 0; color: var(--text-secondary); font-size: 0.95rem;">
+              Guia passo a passo para executar diretamente na plataforma em nuvem do <strong>Microsoft Fabric</strong> (ou em simulação local).
+            </p>
+          </div>
+
+          <!-- Cenário de Negócio Oficial -->
+          <div class="mslearn-scenario-card">
+            <h4 style="margin: 0 0 0.5rem 0; color: var(--brand-blue); font-family: var(--font-display);">
+              📋 Cenário do Laboratório
+            </h4>
+            <p style="margin: 0; font-size: 0.92rem; color: var(--text-primary); line-height: 1.55;">
+              Executar rotinas analíticas em lote no Fabric e aplicar cópias de zero-custo via comandos CLONE TABLE no Warehouse para testar atualizações destrutivas em ambiente isolado sem duplicar dados.
+            </p>
+          </div>
+
+          <!-- Pré-requisitos -->
+          <div class="mslearn-prereqs-card">
+            <h4 style="margin: 0 0 0.4rem 0; color: #0078d4; font-family: var(--font-display);">
+              🔑 Pré-requisitos para Execução no Portal
+            </h4>
+            <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; color: var(--text-primary); line-height: 1.5;">
+              <li>Navegador web moderno (Edge, Chrome ou Firefox).</li>
+              <li>Acesso ao portal <a href="https://app.fabric.microsoft.com/" target="_blank" rel="noopener noreferrer" style="color: #0078d4; font-weight: 600; text-decoration: underline;">Microsoft Fabric (app.fabric.microsoft.com)</a>.</li>
+              <li>Capacidade ativa do Fabric (licença <strong>Fabric Trial</strong> gratuita ou capacidade corporativa).</li>
+              <li>Um Workspace configurado no modo de capacidade Fabric.</li>
+            </ul>
+          </div>
+
+          <!-- Tarefa 1 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">1</div>
+              <h3 class="mslearn-task-title">Criar um Clone de Tabela (Zero-Copy Clone)</h3>
+            </div>
+            <ol class="mslearn-step-list">
+              <li>No Fabric Warehouse, abra uma nova consulta SQL.</li>
+              <li>Execute o comando: <code>CREATE TABLE dbo.FactVendas_Homolog AS CLONE dbo.FactVendas;</code></li>
+              <li>Observe que o clone é criado em subsegundo, apontando para os mesmos arquivos físicos Delta Parquet no OneLake.</li>
+            </ol>
+
+            <!-- Captura de Tela da Tarefa 1 -->
+            <div class="portal-screenshot-frame">
+              <div class="portal-window-bar">
+                <div class="portal-window-dots">
+                  <span class="portal-window-dot dot-red"></span>
+                  <span class="portal-window-dot dot-yellow"></span>
+                  <span class="portal-window-dot dot-green"></span>
+                </div>
+                <div class="portal-address-bar">
+                  🔒 https://app.fabric.microsoft.com/groups/dw/clone-table
+                </div>
+              </div>
+              <img src="../assets/images/fabric-ui-04-data-warehouse-editor.svg" alt="Criar um Clone de Tabela (Zero-Copy Clone)" loading="lazy" />
+              <div class="portal-screenshot-caption">
+                📸 <strong>Captura do Portal:</strong> Criação de Clone de Tabela (Zero-Copy) para homologação rápida de código analítico.
+              </div>
+            </div>
+          </div>
+
+          <!-- Tarefa 2 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">2</div>
+              <h3 class="mslearn-task-title">Testar Alterações Isoladas no Clone</h3>
+            </div>
+            <ol class="mslearn-step-list">
+              <li>Execute alterações pontuais ou deletes de teste na tabela clonada: <code>DELETE FROM dbo.FactVendas_Homolog WHERE Ano = 2024;</code></li>
+              <li>Consulte a tabela original <code>dbo.FactVendas</code> e confirme que ela continua íntegra e sem modificações.</li>
+            </ol>
+          </div>
+
+          <!-- Alerta de Exame DP-700 -->
+          <div class="mslearn-exam-note" style="margin-top: 1.5rem;">
+            <strong>⚠️ Atenção para o Exame DP-700:</strong><br>
+            Conceito de Prova: No Microsoft Fabric, o comando CLONE TABLE opera como Shallow Clone (cópia lógica instantânea de metadados). Apenas quando o clone sofre escrita é que novos arquivos de dados são gerados isoladamente.
+          </div>
+
+          <!-- Fallback: Simulação Local Offline -->
+          <div class="mslearn-local-box">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem;">
+              <h4 style="margin: 0; color: var(--brand-teal); font-family: var(--font-display);">
+                💻 Opção Alternativa: Executar Simulação Local Offline no seu Terminal
+              </h4>
+              <span style="font-size: 0.8rem; background: var(--bg-surface-alt); padding: 3px 8px; border-radius: 6px; color: var(--text-secondary);">Sem necessidade de conta Fabric</span>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+              Se você não possui uma assinatura ativa do Fabric no momento, criamos um simulador completo em Python no seu repositório local que reproduz a execução deste laboratório:
+            </p>
+            <pre><code style="font-family: var(--font-mono); font-size: 0.88rem; display: block; background: var(--bg-surface-alt); padding: 0.85rem 1rem; border-radius: 8px; border: 1px solid var(--border-color); overflow-x: auto;"># Execute este comando no terminal para reproduzir o lab:
+./.venv/bin/python labs/0009-batch-transformations-sql-spark-clones/lab_simulation.py</code></pre>
+            <div style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-secondary);">
+              📁 Diretório do laboratório prático local: <code>labs/0009-batch-transformations-sql-spark-clones/</code>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SEÇÃO DE QUIZ DP-700 -->
+              <section id="bloco-quiz" class="totc-card">
+          <h2 style="margin-top: 0;">Pontos Críticos para a Prática e para o Exame DP-700</h2>
+
+          <div class="summary-card">
+            <h3 style="margin-top: 0; color: var(--brand-teal);">📝 Síntese dos Pontos Críticos Aprendidos:</h3>
+            <ol style="margin-bottom: 0;">
+              <li><strong>Transformações Vetorizadas no Spark:</strong> O Native Execution Engine vetorizado em C++ executa operações relacionais em memória sem a sobrecarga do compilador JVM.</li>
+              <li><strong>Views Relacionais no Warehouse:</strong> Permitem abstrair transformações complexas de negócios sem custos de armazenamento adicional ou duplicação de dados.</li>
+              <li><strong>Table Clones (CLONE TABLE):</strong> O comando <code>AS CLONE</code> cria uma cópia quase instantânea de zero-custo (Shallow Clone) apontando para os mesmos arquivos físicos.</li>
+              <li><strong>Isolamento para Homologação:</strong> Permite que times de QA executem testes destrutivos em tabelas clonadas de terabytes sem afetar a produção.</li>
+            </ol>
+          </div>
+
+          <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+            <h3>🎯 Desafio de Exame DP-700</h3>
+            <p>Questão elaborada no padrão da Microsoft com alternativas isomórficas:</p>
+
+            <div class="quiz-card" data-explanation="O comando <code>CREATE TABLE ... AS CLONE OF</code> no Fabric Data Warehouse cria um <strong>Zero-Copy Clone</strong> que replica apenas os metadados no catálogo, apontando para os mesmos arquivos Parquet no OneLake sem incorrer em custos adicionais de armazenamento.">
+              <p><strong style="color: var(--text-primary);">Cenário de Exame DP-700:</strong> Você gerencia uma tabela de 15 TB denominada <code>FactSales</code> no Fabric Data Warehouse. A equipe de homologação precisa de uma cópia exata dessa tabela para validar consultas de relatórios sem impactar a produção e sem gerar cobranças adicionais de armazenamento no OneLake. Qual comando T-SQL você deve executar?</p>
+              
+              <ul class="quiz-options">
+                <li>
+                  <button class="quiz-option-btn" data-correct="true">
+                    A) Executar CREATE TABLE FactSales_QA AS CLONE OF FactSales.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    B) Executar SELECT INTO FactSales_QA FROM FactSales direta.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    C) Executar BCP exportando arquivos CSV para o diretório local.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    D) Executar o comando VACUUM com tempo de retenção fixo em zero.
+                  </button>
+                </li>
+              </ul>
+              <div class="quiz-feedback"></div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--border-color); flex-wrap: wrap; gap: 1rem;">
+            <a href="../reference/04-three-languages-sql-pyspark-kql-cheatsheet.html" style="font-weight: 600;">
+              📑 Abrir Folha de Referência 04 (Transformações em Lote)
+            </a>
+            <a href="0010-streaming-eventstreams-spark-windows.html" class="audio-btn" style="color: #fff !important;">
+              Próxima Lição: 0010 (Streaming em Tempo Real com Eventstreams) →
+            </a>
+          </div>
+        </section>
+
+      <footer style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+        <a href="../lessons/0008-incremental-loading-watermark-scd.html?v=totc6" class="btn-secondary">
+          ← Lição Anterior: 0008
+        </a>
+        <a href="../simulados/index.html?v=totc6" class="btn-primary">
+          Ir para o Centro de Simulados DP-700 →
+        </a>
+      </footer>
+
+    </main>
+  </div>
+
+  
+</body>
+</html>
+

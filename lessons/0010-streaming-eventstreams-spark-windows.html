@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lição 0010: Streaming: Eventstreams & Spark Structured Streaming (Janelas & Watermark)</title>
+  <link rel="stylesheet" href="../assets/tufte.css?v=totc6">
+  <link rel="stylesheet" href="../assets/vark.css?v=totc6">
+  <script src="../assets/lens.js?v=totc6"></script>
+  <script src="../assets/quiz.js?v=totc6" defer></script>
+  <script src="../assets/vark.js?v=totc6" defer></script>
+</head>
+<body>
+
+  <div class="course-app-shell">
+
+    <!-- SIDEBAR DE CURRÍCULO E NAVEGAÇÃO -->
+    <aside class="course-sidebar">
+      <div class="sidebar-top-nav">
+        <a href="../index.html?v=totc6" class="back-square-btn" title="Voltar ao Portal do Curso">←</a>
+        <div style="font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--text-primary);">
+          FABRIC <span style="color: var(--brand-teal);">DP-700</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="sidebar-section-title">Módulo 2: Ingestão & Transformação</div>
+        <div class="sidebar-pill-list">
+          <a href="../lessons/0009-batch-transformations-sql-spark-clones.html?v=totc6" class="curriculum-pill">
+            <span class="pill-left">📖 Lição 09: Batch, Clones & MERGE</span>
+            <span class="pill-duration">30 mins</span>
+          </a>
+          <a href="#bloco-contexto" class="curriculum-pill active">
+            <span class="pill-left">📖 Lição 10: Streaming & Janelas</span>
+            <span class="pill-duration">30 mins</span>
+          </a>
+          <a href="#bloco-audio" class="curriculum-pill pill-orange">
+            <span class="pill-left">🎧 Narração Neural da Aula</span>
+            <span class="pill-duration">02:30</span>
+          </a>
+          <a href="#bloco-teoria" class="curriculum-pill pill-blue">
+            <span class="pill-left">👁️ Tipos de Janelas & Watermark</span>
+            <span class="pill-duration">Visual</span>
+          </a>
+          <a href="../simulados/index.html?v=totc6" class="curriculum-pill pill-coral">
+            <span class="pill-left">🎯 Centro de Simulados</span>
+            <span class="pill-duration">Exam</span>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <div class="sidebar-section-title">PRACTICE QUIZ & LABS</div>
+        <div class="sidebar-pill-list">
+          <a href="#bloco-pratica" class="curriculum-pill pill-teal">
+            <span class="pill-left">⚡ Lab: Streaming & Janelas</span>
+            <span class="pill-duration">Python</span>
+          </a>
+          <a href="#bloco-quiz" class="curriculum-pill pill-orange">
+            <span class="pill-left">🎯 Desafio Exame DP-700</span>
+            <span class="pill-duration">Quiz</span>
+          </a>
+        </div>
+      </div>
+
+      <div style="margin-top: auto; padding: 1rem; background: var(--bg-surface-alt); border: 1px solid var(--border-color); border-radius: 14px; font-size: 0.82rem; color: var(--text-secondary);">
+        <strong style="color: var(--text-primary); display: block; margin-bottom: 0.25rem;">💡 Dica de Estudo VARK</strong>
+        A distinção entre Tumbling Window (sem sobreposição) e Hopping Window (com sobreposição) é uma das questões mais clássicas do exame DP-700.
+      </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="course-main-content">
+
+      <header class="course-header-banner">
+        <div>
+          <div class="course-badge">Módulo 2 • Domínio 2 do Exame DP-700</div>
+          <h1 class="course-title">Lição 0010: Engenharia de Streaming: Eventstreams & Spark Structured Streaming</h1>
+          <p class="course-meta">
+            Duração estimada: 30 minutos • Domínio 2 (Streaming & Real-Time) • Áudio Neural & Lab de Janelas
+          </p>
+        </div>
+        <div class="theme-toggle-container">
+          <button class="theme-toggle-btn" onclick="window.toggleAppTheme()" title="Alternar entre Modo Claro e Escuro">
+            <span class="theme-toggle-icon">🌙</span> Alternar Tema
+          </button>
+        </div>
+      </header>
+
+      <nav class="lens-selector-bar" aria-label="Seletor de Nível Pedagógico">
+        <div class="lens-tab-group">
+          <button class="lens-tab" data-lens="unificado">📚 Unificado (Geral)</button>
+          <button class="lens-tab" data-lens="junior">🌱 Júnior / Fundamentos</button>
+          <button class="lens-tab" data-lens="pleno">🌿 Pleno / Implementador</button>
+          <button class="lens-tab" data-lens="senior">🛠️ Sênior / DP-700</button>
+          <button class="lens-tab" data-lens="staff">⚙️ Staff / Under the Hood</button>
+          <button class="lens-tab" data-lens="clevel">🏛️ C-Level / FinOps & TCO</button>
+        </div>
+        <div style="margin-left: auto;">
+          <button class="theme-toggle-btn" onclick="window.toggleAppTheme()" title="Alternar Modo Dark / Light">
+            <span class="theme-toggle-icon">🌙</span> Modo Dark
+          </button>
+        </div>
+      </nav>
+
+      <nav class="vark-nav-bar" aria-label="Atalhos das Modalidades VARK">
+        <a href="#bloco-audio" class="vark-btn"><span class="vark-badge badge-a">A</span> 🎧 Áudio Neural (Auditivo)</a>
+        <a href="#bloco-teoria" class="vark-btn"><span class="vark-badge badge-v">V</span> 👁️ Anatomia das 4 Janelas (Visual)</a>
+        <a href="#bloco-contexto" class="vark-btn"><span class="vark-badge badge-r">R</span> 📖 Texto Técnico (Leitura)</a>
+        <a href="#bloco-pratica" class="vark-btn"><span class="vark-badge badge-k">K</span> ⚡ Lab Python Streaming (Cinestésico)</a>
+      </nav>
+
+      <!-- REPRODUTOR DE ÁUDIO NEURAL -->
+      <div id="bloco-audio" class="audio-player-card">
+        <div class="audio-card-header">
+          <div class="audio-avatar">🎙️</div>
+          <div>
+            <div class="audio-title">Narração Técnica Neural da Lição 0010</div>
+            <div class="audio-subtitle">Voz: Microsoft pt-BR-AntonioNeural • Eventstreams, Structured Streaming e Janelas</div>
+          </div>
+        </div>
+        <div class="audio-controls-row">
+          <button id="audio-play-btn" class="audio-play-button" aria-label="Reproduzir áudio da lição">▶ Reproduzir Aula</button>
+          <div class="audio-scrubber-track">
+            <div id="audio-progress-bar" class="audio-scrubber-fill" style="width: 0%;"></div>
+          </div>
+          <div id="audio-time-label" class="audio-time-display">00:00 / 02:30</div>
+          <audio id="vark-audio-element" preload="metadata">
+            <source src="../assets/audio/lesson-0010-pt.mp3?v=totc6" type="audio/mpeg">
+            Seu navegador não suporta o elemento de áudio HTML5.
+          </audio>
+        </div>
+      </div>
+
+      <!-- CONTEÚDO MULTI-LENS -->
+      <article id="bloco-contexto" class="lens-panel" data-lens-content="unificado">
+        <h2>Engenharia de Streaming no Fabric: De Eventstreams sem Código a Spark Distribuído</h2>
+        <p>
+          O processamento contínuo de dados é indispensável em ecossistemas de dados modernos para telemetria IoT, detecção de fraudes financeiras e monitoramento de servidores.
+        </p>
+        <p>
+          No Microsoft Fabric, a ingestão e agregação em tempo real é dividida entre duas soluções:
+        </p>
+        <ul>
+          <li><strong>Fabric Eventstreams:</strong> O roteador central de eventos gerenciado, com conectores integrados para Azure Event Hubs, IoT Hub, Apache Kafka e aplicativos REST customizados. Permite criar transformações visuais (filtros, projeções e janelas) roteando saídas simultâneas para o Eventhouse (KQL) e o Lakehouse (Delta Parquet).</li>
+          <li><strong>Spark Structured Streaming:</strong> Motor distribuído em código PySpark no Lakehouse para transformações avançadas com controle refinado de estado e políticas de descarte via <code>withWatermark</code>.</li>
+        </ul>
+
+        <div class="diagram-container" id="bloco-teoria">
+          <h3>As 4 Janelas Temporais de Streaming Obrigatórias no Exame DP-700</h3>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.92rem;">
+            <thead>
+              <tr style="background: var(--bg-surface-alt); border-bottom: 2px solid var(--border-color); text-align: left;">
+                <th style="padding: 10px;">Tipo de Janela</th>
+                <th style="padding: 10px;">Comportamento Temporal</th>
+                <th style="padding: 10px;">Sintaxe PySpark</th>
+                <th style="padding: 10px;">Cenário Canônico de Prova</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--border-color);">
+                <td style="padding: 10px; font-weight: bold; color: var(--brand-teal);">Tumbling Window</td>
+                <td style="padding: 10px;">Blocos de tamanho fixo <strong>sem sobreposição</strong> e contíguos.</td>
+                <td style="padding: 10px;"><code>window(ts, '5 minutes')</code></td>
+                <td style="padding: 10px;">Totalizar transações financeiras a cada 5 minutos exatos (00:00-00:05, 00:05-00:10).</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border-color);">
+                <td style="padding: 10px; font-weight: bold; color: var(--brand-blue);">Hopping Window</td>
+                <td style="padding: 10px;">Janelas fixas que <strong>se sobrepõem</strong> com avanço periódico.</td>
+                <td style="padding: 10px;"><code>window(ts, '10 min', '5 min')</code></td>
+                <td style="padding: 10px;">Calcular a média móvel de temperatura dos últimos 10 minutos, recalculada a cada 5 minutos.</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border-color);">
+                <td style="padding: 10px; font-weight: bold; color: var(--brand-orange);">Sliding Window</td>
+                <td style="padding: 10px;">Avaliação contínua disparada a cada novo evento que entra.</td>
+                <td style="padding: 10px;">Limiar de tempo móvel</td>
+                <td style="padding: 10px;">Alerta de segurança: disparar alarme se houver 3 tentativas de login falhas nos últimos 2 minutos.</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; font-weight: bold; color: var(--brand-purple);">Session Window</td>
+                <td style="padding: 10px;">Agrupamento dinâmico baseado em <strong>período de inatividade</strong>.</td>
+                <td style="padding: 10px;"><code>session_window(ts, '15 min')</code></td>
+                <td style="padding: 10px;">Agrupar cliques de navegação de um usuário na loja virtual, fechando a sessão após 15 min inativo.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Tratamento de Dados Atrasados: O Papel do withWatermark</h3>
+        <p>
+          Em redes sem fio e ambientes IoT, sensores frequentemente perdem conectividade e transmitem lotes de dados com minutos ou horas de atraso.
+        </p>
+        <p>
+          Se o motor Spark mantivesse todas as janelas passadas abertas indefinidamente na memória aguardando eventos atrasados, o cluster sofreria erro de estouro de memória (<code>OutOfMemoryError</code>). A cláusula <code>withWatermark("event_time", "15 minutes")</code> informa ao Spark: <em>"Aguarde eventos atrasados até 15 minutos em relação ao maior carimbo de tempo visto. Qualquer evento que chegar com atraso superior a 15 minutos deve ser descartado."</em>
+        </p>
+      </article>
+
+      <!-- 2. LENTE JÚNIOR -->
+      <article class="lens-panel" data-lens-content="junior">
+        <h2>🌱 O que são Janelas de Tempo em Streaming?</h2>
+        <p>
+          Imagine que você está na beira de uma avenida contando quantos carros passam:
+        </p>
+        <ul>
+          <li><strong>Tumbling:</strong> Você zera o seu cronômetro a cada 5 minutos exatos e anota o total em um caderno. Cada bloco de 5 minutos é isolado.</li>
+          <li><strong>Hopping:</strong> Você anota quantos carros passaram nos últimos 10 minutos, mas faz essa anotação a cada 5 minutos (uma anotação se sobrepõe à anterior).</li>
+          <li><strong>Watermark:</strong> É a tolerância que você dá para aquele carro que ficou preso no semáforo e demorou para passar pelo seu ponto de contagem!</li>
+        </ul>
+      </article>
+
+      <!-- 3. LENTE PLENO -->
+      <article class="lens-panel" data-lens-content="pleno">
+        <h2>🌿 Implementação em PySpark Structured Streaming</h2>
+        <pre><code style="font-family: var(--font-mono); font-size: 0.85rem; display: block; background: var(--bg-surface-alt); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color); overflow-x: auto;"># Leitura em streaming a partir da tabela Delta Bronze
+df_stream = spark.readStream.table("bronze_telemetria")
+
+# Agregação com tolerância a dados atrasados (Watermark de 10 min) e janela Tumbling de 5 min
+df_aggregated = df_stream \
+    .withWatermark("timestamp", "10 minutes") \
+    .groupBy(
+        window("timestamp", "5 minutes"),
+        "sensor_id"
+    ) \
+    .agg(avg("temperatura").alias("media_temp"))
+
+# Escrita contínua na tabela Silver com checkpointing gerenciado
+query = df_aggregated.writeStream \
+    .format("delta") \
+    .outputMode("append") \
+    .option("checkpointLocation", "/Files/checkpoints/silver_stream") \
+    .toTable("silver_telemetria_5min")</code></pre>
+      </article>
+
+      <!-- 4. LENTE SÊNIOR / DP-700 -->
+      <article class="lens-panel" data-lens-content="senior">
+        <h2>🛠️ Armadilhas do Exame DP-700: Tumbling vs. Hopping & Eventstreams Routing</h2>
+        <div style="border-left: 4px solid var(--brand-orange); background: var(--bg-surface-alt); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+          <strong style="color: var(--brand-orange); display: block; margin-bottom: 0.25rem;">⚠️ Questão Clássica de Prova:</strong>
+          <em>"Uma empresa de logística precisa gerar relatórios de média móvel de velocidade de frotas considerando os últimos 15 minutos de dados, emitindo uma nova média calculada a cada 5 minutos. Qual tipo de janela temporal deve ser configurado no fluxo de streaming?"</em>
+        </div>
+        <p>
+          <strong>Resposta Invariável:</strong> <strong>Hopping Window</strong> (duração de 15 minutos com salto/hop de 5 minutos). Se o enunciado afirmasse que os períodos <em>"não possuem sobreposição entre si"</em>, a resposta seria <strong>Tumbling Window</strong>.
+        </p>
+        <h3>Recurso Derived Streams no Eventstreams:</h3>
+        <p>
+          No Fabric Eventstreams, você pode criar múltiplos <strong>Derived Streams</strong> (fluxos derivados) a partir da mesma fonte bruta. Isso permite rotear, por exemplo, eventos com código de erro crítico para o Eventhouse para alertas imediatos em KQL, e simultaneamente gravar todos os eventos brutos no Lakehouse para auditoria em batch.
+        </p>
+      </article>
+
+      <!-- 5. LENTE STAFF -->
+      <article class="lens-panel" data-lens-content="staff">
+        <h2>⚙️ Arquitetura Interna: Gerenciamento de Estado do Spark (State Store)</h2>
+        <p>
+          Em agregações com janelas temporais, o Spark Structured Streaming mantém tabelas de estado em memória (<em>RocksDB State Store Provider</em> ou <em>HDFS State Store</em>).
+        </p>
+        <p>
+          O <code>withWatermark</code> é o gatilho que executa o <em>State Cleanup</em>: ele calcula a marca d'água atual como <code>max(event_time) - delay_threshold</code>. Quando uma janela termina antes da marca d'água atual, o motor comita a janela, grava o resultado no sink Delta e expurga os registros do State Store, mantendo a pegada de memória do executor constante e previsível ao longo de meses de execução contínua.
+        </p>
+      </article>
+
+      <!-- 6. LENTE C-LEVEL -->
+      <article class="lens-panel" data-lens-content="clevel">
+        <h2>🏛️ Visão Estratégica & FinOps: Eventstreams vs. Clusters Spark Contínuos</h2>
+        <p>
+          Manter um cluster Spark 24/7 rodando Structured Streaming consome nós dedicados e gera uma despesa contínua de Capacity Units (CUs).
+        </p>
+        <p>
+          Para fluxos de ingestão padrão:
+        </p>
+        <ul>
+          <li><strong>Fabric Eventstreams:</strong> Opera em arquitetura 100% serverless nativa. Você paga apenas pelas mensagens trafegadas, reduzindo o custo de infraestrutura contínua em até <strong>70%</strong> quando comparado a manter notebooks Spark permanentemente ligados.</li>
+        </ul>
+      </article>
+
+      <!-- SEÇÃO KINESTHETIC: LAB PRÁTICO -->
+            <!-- SEÇÃO KINESTHETIC: LAB PRÁTICO ESTILO MICROSOFT LEARN -->
+      <section id="bloco-pratica" style="margin-top: 3.5rem;">
+        <div class="mslearn-lab-box">
+          
+          <!-- Cabeçalho do Exercício -->
+          <div class="mslearn-header">
+            <div class="mslearn-badge-row">
+              <span class="mslearn-badge mslearn-badge-portal">🛠️ Microsoft Fabric Hands-on Lab</span>
+              <span class="mslearn-badge mslearn-badge-duration">⏱️ ~30 minutos</span>
+              <span class="mslearn-badge mslearn-badge-role">👤 Engenheiro de Dados • Domínio 2</span>
+              <span class="vark-badge badge-k" style="margin-left: auto;">K - Prática Guiada</span>
+            </div>
+            <h2 style="margin: 0.25rem 0 0.5rem 0; font-family: var(--font-display); color: var(--text-primary); font-size: 1.6rem;">
+              Exercício Prático: Ingestão de Streaming em Tempo Real com Eventstreams e Janelas Spark
+            </h2>
+            <p style="margin: 0; color: var(--text-secondary); font-size: 0.95rem;">
+              Guia passo a passo para executar diretamente na plataforma em nuvem do <strong>Microsoft Fabric</strong> (ou em simulação local).
+            </p>
+          </div>
+
+          <!-- Cenário de Negócio Oficial -->
+          <div class="mslearn-scenario-card">
+            <h4 style="margin: 0 0 0.5rem 0; color: var(--brand-blue); font-family: var(--font-display);">
+              📋 Cenário do Laboratório
+            </h4>
+            <p style="margin: 0; font-size: 0.92rem; color: var(--text-primary); line-height: 1.55;">
+              Capturar fluxos de telemetria IoT de turbinas em tempo real, aplicar filtros de anomalia térmica e agregação temporal usando janelas de streaming antes de persistir no OneLake.
+            </p>
+          </div>
+
+          <!-- Pré-requisitos -->
+          <div class="mslearn-prereqs-card">
+            <h4 style="margin: 0 0 0.4rem 0; color: #0078d4; font-family: var(--font-display);">
+              🔑 Pré-requisitos para Execução no Portal
+            </h4>
+            <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; color: var(--text-primary); line-height: 1.5;">
+              <li>Navegador web moderno (Edge, Chrome ou Firefox).</li>
+              <li>Acesso ao portal <a href="https://app.fabric.microsoft.com/" target="_blank" rel="noopener noreferrer" style="color: #0078d4; font-weight: 600; text-decoration: underline;">Microsoft Fabric (app.fabric.microsoft.com)</a>.</li>
+              <li>Capacidade ativa do Fabric (licença <strong>Fabric Trial</strong> gratuita ou capacidade corporativa).</li>
+              <li>Um Workspace configurado no modo de capacidade Fabric.</li>
+            </ul>
+          </div>
+
+          <!-- Tarefa 1 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">1</div>
+              <h3 class="mslearn-task-title">Criar o Eventstream no Microsoft Fabric</h3>
+            </div>
+            <ol class="mslearn-step-list">
+              <li>No workspace, selecione <strong>+ Novo item</strong> &gt; <strong>Eventstream</strong>.</li>
+              <li>Nomeie como <code>es_iot_telemetry_stream</code> e abra o designer visual.</li>
+              <li>Adicione uma <strong>Nova fonte (New source)</strong> selecionando <em>Azure Event Hub</em> ou <em>Custom endpoint</em>.</li>
+              <li>Adicione um operador de transformação para filtrar <code>Temperature &gt; 80</code> e agregar por janela Tumbling de 1 minuto.</li>
+            </ol>
+
+            <!-- Captura de Tela da Tarefa 1 -->
+            <div class="portal-screenshot-frame">
+              <div class="portal-window-bar">
+                <div class="portal-window-dots">
+                  <span class="portal-window-dot dot-red"></span>
+                  <span class="portal-window-dot dot-yellow"></span>
+                  <span class="portal-window-dot dot-green"></span>
+                </div>
+                <div class="portal-address-bar">
+                  🔒 https://app.fabric.microsoft.com/groups/eventstreams/es_iot_telemetry_stream
+                </div>
+              </div>
+              <img src="../assets/images/fabric-ui-07-realtime-eventstream.svg" alt="Criar o Eventstream no Microsoft Fabric" loading="lazy" />
+              <div class="portal-screenshot-caption">
+                📸 <strong>Captura do Portal:</strong> Designer visual do Eventstream conectando fontes de streaming, filtros de anomalia e múltiplos destinos.
+              </div>
+            </div>
+          </div>
+
+          <!-- Tarefa 2 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">2</div>
+              <h3 class="mslearn-task-title">Roteamento Duplo: Eventhouse e Lakehouse Bronze</h3>
+            </div>
+            <ol class="mslearn-step-list">
+              <li>Conecte uma saída para o <strong>Eventhouse</strong> para permitir alertas imediatos no dashboard.</li>
+              <li>Conecte outra saída para a tabela Delta do <strong>Lakehouse</strong> para persistência de longo prazo.</li>
+              <li>Abra a aba de Pré-visualização de Dados e veja os eventos chegando em tempo real.</li>
+            </ol>
+          </div>
+
+          <!-- Alerta de Exame DP-700 -->
+          <div class="mslearn-exam-note" style="margin-top: 1.5rem;">
+            <strong>⚠️ Atenção para o Exame DP-700:</strong><br>
+            Tipos de Janelas de Streaming no DP-700: Tumbling (janelas contíguas sem sobreposição), Sliding (janelas com sobreposição contínua) e Session (janelas abertas por atividade e fechadas por período de inatividade/timeout).
+          </div>
+
+          <!-- Fallback: Simulação Local Offline -->
+          <div class="mslearn-local-box">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem;">
+              <h4 style="margin: 0; color: var(--brand-teal); font-family: var(--font-display);">
+                💻 Opção Alternativa: Executar Simulação Local Offline no seu Terminal
+              </h4>
+              <span style="font-size: 0.8rem; background: var(--bg-surface-alt); padding: 3px 8px; border-radius: 6px; color: var(--text-secondary);">Sem necessidade de conta Fabric</span>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+              Se você não possui uma assinatura ativa do Fabric no momento, criamos um simulador completo em Python no seu repositório local que reproduz a execução deste laboratório:
+            </p>
+            <pre><code style="font-family: var(--font-mono); font-size: 0.88rem; display: block; background: var(--bg-surface-alt); padding: 0.85rem 1rem; border-radius: 8px; border: 1px solid var(--border-color); overflow-x: auto;"># Execute este comando no terminal para reproduzir o lab:
+./.venv/bin/python labs/0010-streaming-eventstreams-spark-windows/lab_simulation.py</code></pre>
+            <div style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-secondary);">
+              📁 Diretório do laboratório prático local: <code>labs/0010-streaming-eventstreams-spark-windows/</code>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SEÇÃO DE QUIZ DP-700 -->
+              <section id="bloco-quiz" class="totc-card">
+          <h2 style="margin-top: 0;">Pontos Críticos para a Prática e para o Exame DP-700</h2>
+
+          <div class="summary-card">
+            <h3 style="margin-top: 0; color: var(--brand-teal);">📝 Síntese dos Pontos Críticos Aprendidos:</h3>
+            <ol style="margin-bottom: 0;">
+              <li><strong>Microsoft Fabric Eventstreams:</strong> Hub centralizado sem código para captura, roteamento e transformação em tempo real de fluxos contínuos de eventos.</li>
+              <li><strong>Janelas Tumbling:</strong> Janelas temporais de tamanho fixo e contíguas que nunca se sobrepõem (ex: agregando a cada bloco de 5 minutos).</li>
+              <li><strong>Janelas Sliding:</strong> Janelas temporais deslizantes que avançam continuamente com sobreposição (ex: janela de 5 minutos calculada a cada 1 minuto).</li>
+              <li><strong>Roteamento Multidestino:</strong> Um único Eventstream alimenta simultaneamente o Eventhouse (para alertas instantâneos) e o Lakehouse (para histórico analítico).</li>
+            </ol>
+          </div>
+
+          <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+            <h3>🎯 Desafio de Exame DP-700</h3>
+            <p>Questão elaborada no padrão da Microsoft com alternativas isomórficas:</p>
+
+            <div class="quiz-card" data-explanation="Uma <strong>Hopping Window</strong> (janela com salto) é caracterizada por janelas que se sobrepõem. No cenário proposto, a janela possui duração de 10 minutos e avança a cada 2 minutos (hop), gerando a média móvel contínua requerida.">
+              <p><strong style="color: var(--text-primary);">Cenário de Exame DP-700:</strong> Você está projetando uma consulta analítica de streaming no Microsoft Fabric para calcular a temperatura média de turbinas de uma usina hidrelétrica. O requisito estipula que a média deve considerar os últimos 10 minutos de dados, mas o resultado deve ser emitido atualizado a cada 2 minutos. Qual tipo de janela temporal deve ser configurado?</p>
+              
+              <ul class="quiz-options">
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    A) Configurar uma Tumbling Window de 10 minutos sem sobreposição.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    B) Configurar uma Session Window fixada em 10 minutos de inatividade.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="true">
+                    C) Configurar uma Hopping Window de 10 minutos com salto de 2 minutos.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    D) Configurar uma atividade Copy Data executada a cada 2 minutos.
+                  </button>
+                </li>
+              </ul>
+              <div class="quiz-feedback"></div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--border-color); flex-wrap: wrap; gap: 1rem;">
+            <a href="../reference/04-three-languages-sql-pyspark-kql-cheatsheet.html" style="font-weight: 600;">
+              📑 Abrir Folha de Referência 04 (Streaming e Janelas Temporais)
+            </a>
+            <a href="0011-kql-eventhouse-update-policies-materialized-views.html" class="audio-btn" style="color: #fff !important;">
+              Próxima Lição: 0011 (Eventhouse KQL e Update Policies) →
+            </a>
+          </div>
+        </section>
+
+      <footer style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+        <a href="../lessons/0009-batch-transformations-sql-spark-clones.html?v=totc6" class="btn-secondary">
+          ← Lição Anterior: 0009
+        </a>
+        <a href="../simulados/index.html?v=totc6" class="btn-primary">
+          Ir para o Centro de Simulados DP-700 →
+        </a>
+      </footer>
+
+    </main>
+  </div>
+
+  
+</body>
+</html>
+

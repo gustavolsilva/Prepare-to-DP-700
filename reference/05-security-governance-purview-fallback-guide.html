@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ref 05: Segurança, Governança & Prevenção do Direct Lake Fallback</title>
+  <link rel="stylesheet" href="../assets/tufte.css?v=totc6">
+  <link rel="stylesheet" href="../assets/vark.css?v=totc6">
+  <script src="../assets/lens.js?v=totc6"></script>
+  <style>
+    .ref-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.25rem 0;
+      font-size: 0.9rem;
+    }
+    .ref-table th, .ref-table td {
+      border: 1px solid var(--border-color);
+      padding: 0.75rem 1rem;
+      text-align: left;
+      vertical-align: top;
+      color: var(--text-primary);
+    }
+    .ref-table th {
+      background-color: var(--bg-surface-alt);
+      font-family: var(--font-display);
+      font-weight: 600;
+      color: var(--text-heading);
+    }
+    .ref-table tr:nth-child(even) { background-color: var(--bg-surface-alt); }
+    .tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      border-radius: 50px;
+      font-family: var(--font-display);
+    }
+    .tag-sec { background: var(--pill-coral-bg); color: var(--text-primary); }
+    .tag-gov { background: var(--pill-teal-bg); color: var(--brand-teal); }
+  </style>
+</head>
+<body>
+
+  <header class="course-header-banner">
+    <div class="landing-container">
+      <div class="banner-top-row">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <a href="../index.html?v=totc6" class="back-square-btn" style="background: rgba(255,255,255,0.2); box-shadow: none;" title="Voltar ao Portal">←</a>
+          <div>
+            <h1 class="banner-title">Folha de Referência 05: Segurança, Governança & Fallback</h1>
+            <p class="banner-subtitle">Matriz de Papéis, RLS/CLS/DDM e a Regra Crítica do Direct Lake (Domínio 1)</p>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <button onclick="window.print()" class="banner-time-badge" style="border: none; cursor: pointer;">🖨️ Imprimir / PDF</button>
+          <button type="button" class="theme-toggle-btn" onclick="window.toggleAppTheme()">🌙 Modo Dark</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="landing-container" style="padding-top: 2rem; padding-bottom: 4rem;">
+
+    <section class="totc-card">
+      <h2 style="margin-top: 0;">1. Matriz de Workspace Roles no Microsoft Fabric</h2>
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th style="width: 18%;">Papel</th>
+            <th style="width: 25%;">Permissões no Workspace</th>
+            <th style="width: 32%;">Permissões nos Itens (Lakehouse/Warehouse)</th>
+            <th style="width: 25%;">Pode Deletar Workspace?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Admin</strong></td>
+            <td>Controle total, adiciona usuários, gerencia capacidade.</td>
+            <td>Ler, criar, editar e excluir qualquer item.</td>
+            <td>✅ Sim</td>
+          </tr>
+          <tr>
+            <td><strong>Member</strong></td>
+            <td>Adiciona membros e colaboradores com papéis inferiores.</td>
+            <td>Ler, criar, editar e publicar aplicativos.</td>
+            <td>❌ Não</td>
+          </tr>
+          <tr>
+            <td><strong>Contributor</strong></td>
+            <td>Desenvolvimento diário de engenharia de dados.</td>
+            <td>Criar, editar e executar notebooks e pipelines (sem gerenciar usuários).</td>
+            <td>❌ Não</td>
+          </tr>
+          <tr>
+            <td><strong>Viewer</strong></td>
+            <td>Acesso somente leitura.</td>
+            <td>Visualiza itens e executa relatórios (sem ver código-fonte de notebooks).</td>
+            <td>❌ Não</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="totc-card" style="margin-top: 2rem; border: 2px solid var(--brand-coral);">
+      <h2 style="margin-top: 0; color: var(--brand-coral);">2. Regra de Ouro: Direct Lake Fallback no Power BI</h2>
+      <p style="font-size: 0.95rem; margin-bottom: 1rem;">
+        Esta é a regra mais testada do exame DP-700. O modo <strong>Direct Lake</strong> lê os arquivos Delta Parquet diretamente na memória VertiPaq do Power BI em velocidade de subsegundo.
+      </p>
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th style="width: 25%;">Onde o RLS foi Aplicado?</th>
+            <th style="width: 25%;">Modo Resultante no Power BI</th>
+            <th>Comportamento & Consequência</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>No SQL Analytics Endpoint</strong><br>(via script T-SQL na tabela Delta)</td>
+            <td><strong style="color: var(--brand-coral);">DirectQuery Fallback (Lento)</strong></td>
+            <td>O VertiPaq não pode violar a regra dinâmica do SQL e é forçado a fazer Fallback para DirectQuery, convertendo cada interação em queries SQL lentas.</td>
+          </tr>
+          <tr>
+            <td><strong>No Modelo Semântico do Power BI</strong><br>(via DAX com Identidade Fixa)</td>
+            <td><strong style="color: var(--brand-teal);">Direct Lake em Memória (Rápido)</strong></td>
+            <td>O VertiPaq aplica a segurança em memória preservando a leitura direta dos arquivos Parquet com velocidade de subsegundo.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="totc-card" style="margin-top: 2rem;">
+      <h2>3. Governança Corporativa com Microsoft Purview</h2>
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th style="width: 22%;">Recurso</th>
+            <th style="width: 20%;">Escopo</th>
+            <th>Funcionalidade no Fabric</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Sensitivity Labels</strong></td>
+            <td>Tenant / Workspaces / Itens</td>
+            <td>Rótulos de sensibilidade (ex: Altamente Confidencial) aplicados a Lakehouses e herdados automaticamente por relatórios e arquivos exportados.</td>
+          </tr>
+          <tr>
+            <td><strong>Endorsement</strong></td>
+            <td>Itens Compartilhados</td>
+            <td>Classificação de confiabilidade: <strong>Promoted</strong> (qualquer membro da equipe pode promover) vs. <strong>Certified</strong> (apenas revisores autorizados podem certificar).</td>
+          </tr>
+          <tr>
+            <td><strong>Dynamic Data Masking (DDM)</strong></td>
+            <td>Colunas T-SQL no Warehouse</td>
+            <td>Ofusca dados em tempo de consulta usando funções <code>default()</code>, <code>email()</code> ou <code>partial(prefix, padding, suffix)</code> sem alterar o disco físico.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+</body>
+</html>
+

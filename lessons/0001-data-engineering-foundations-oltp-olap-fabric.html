@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lição 0001: Fundamentos de Engenharia de Dados & O Ecossistema Microsoft Fabric</title>
+  <link rel="stylesheet" href="../assets/tufte.css?v=totc4">
+  <link rel="stylesheet" href="../assets/vark.css?v=totc4">
+  <script src="../assets/lens.js?v=totc4"></script>
+  <script src="../assets/quiz.js?v=totc4" defer></script>
+  <script src="../assets/vark.js?v=totc4" defer></script>
+</head>
+<body>
+
+  <!-- LAYOUT 2 COLUNAS INSPIRADO NO "COURSE FULL VIEW" DO FIGMA (NODE 77:247) -->
+  <div class="course-app-shell">
+
+    <!-- ==================================================================== -->
+    <!-- COLUNA ESQUERDA: SIDEBAR DE CURRÍCULO E NAVEGAÇÃO (NODE 77:248)      -->
+    <!-- ==================================================================== -->
+    <aside class="course-sidebar">
+      <div class="sidebar-top-nav">
+        <a href="../index.html" class="back-square-btn" title="Voltar ao Portal do Curso">←</a>
+        <div style="font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--text-primary);">
+          FABRIC <span style="color: var(--brand-teal);">DP-700</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="sidebar-section-title">Módulo 0: Fundação</div>
+        <div class="sidebar-pill-list">
+          <a href="#bloco-contexto" class="curriculum-pill active">
+            <span class="pill-left">📖 Lição 01: Ecossistema Fabric</span>
+            <span class="pill-duration">20 mins</span>
+          </a>
+          <a href="#bloco-audio" class="curriculum-pill pill-orange">
+            <span class="pill-left">🎧 Narração Neural da Aula</span>
+            <span class="pill-duration">01:30</span>
+          </a>
+          <a href="#bloco-teoria" class="curriculum-pill pill-blue">
+            <span class="pill-left">👁️ Arquitetura & OneLake</span>
+            <span class="pill-duration">Visual</span>
+          </a>
+          <a href="../reference/01-glossary-and-fundamentals-visual-guide.html" class="curriculum-pill pill-coral">
+            <span class="pill-left">📑 Ref 01: Glossário Visual</span>
+            <span class="pill-duration">PDF</span>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <div class="sidebar-section-title">PRACTICE QUIZ & LABS</div>
+        <div class="sidebar-pill-list">
+          <a href="#bloco-pratica" class="curriculum-pill pill-teal">
+            <span class="pill-left">⚡ Simulador CUs & Smoothing</span>
+            <span class="pill-duration">Lab</span>
+          </a>
+          <a href="#bloco-quiz" class="curriculum-pill pill-orange">
+            <span class="pill-left">🎯 Desafio Exame DP-700</span>
+            <span class="pill-duration">Quiz</span>
+          </a>
+        </div>
+      </div>
+
+      <div style="margin-top: auto; padding: 1rem; background: var(--bg-surface-alt); border: 1px solid var(--border-color); border-radius: 14px; font-size: 0.82rem; color: var(--text-secondary);">
+        <strong style="color: var(--text-primary); display: block; margin-bottom: 0.25rem;">💡 Dica de Estudo VARK</strong>
+        Alterne entre o seu nível de senioridade na barra superior e experimente o simulador prático antes de responder ao quiz.
+      </div>
+    </aside>
+
+    <!-- ==================================================================== -->
+    <!-- COLUNA DIREITA: CONTEÚDO PRINCIPAL & BANNER TEAL (NODE 77:249)       -->
+    <!-- ==================================================================== -->
+    <div class="course-main">
+
+      <!-- Banner Superior Teal do Figma -->
+      <header class="course-header-banner">
+        <div class="banner-top-row">
+          <div>
+            <h1 class="banner-title">Fundamentos de Engenharia de Dados & O Ecossistema Microsoft Fabric</h1>
+            <p class="banner-subtitle">
+              <span>Módulo 0 • Lição 0001 — Alinhado aos Domínios 1 e 2 do Guia Oficial DP-700</span>
+            </p>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+            <span class="banner-time-badge">⏱ 20 mins</span>
+            <button type="button" class="theme-toggle-btn" onclick="window.toggleAppTheme()">🌙 Modo Dark</button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Barra de Nível / Lente (Persistência Global) + Seletor Light/Dark -->
+      <nav class="lens-selector-bar">
+        <span>Nível Ativo:</span>
+        <button class="lens-btn active" data-lens="unificado">🌐 Visão Unificada</button>
+        <button class="lens-btn" data-lens="junior">🌱 Júnior</button>
+        <button class="lens-btn" data-lens="pleno">🛠️ Pleno</button>
+        <button class="lens-btn" data-lens="senior">🎯 Sênior & DP-700</button>
+        <button class="lens-btn" data-lens="staff">⚙️ Staff</button>
+        <button class="lens-btn" data-lens="clevel">🏛️ C-Level</button>
+        <button type="button" class="theme-toggle-btn" onclick="window.toggleAppTheme()" style="margin-left: auto;">🌙 Modo Dark</button>
+      </nav>
+
+      <!-- Barra de Navegação VARK -->
+      <div class="vark-nav-bar">
+        <span>🎯 Modo VARK:</span>
+        <a href="#bloco-audio" class="vark-pill">🎧 <strong>Auditivo:</strong> Narração Neural</a>
+        <a href="#bloco-teoria" class="vark-pill">👁️ <strong>Visual:</strong> Diagrama Clicável</a>
+        <a href="#bloco-teoria" class="vark-pill">📖 <strong>Leitura:</strong> Texto por Nível</a>
+        <a href="#bloco-pratica" class="vark-pill">🖐️ <strong>Cinestésico:</strong> Simulador de Capacidade</a>
+      </div>
+
+      <!-- Conteúdo Principal em Cards Estilo Figma -->
+      <main class="course-content-container">
+
+        <!-- BLOCO 1: CONTEXTO & ÁUDIO -->
+        <section id="bloco-contexto" class="totc-card">
+          <h2 style="margin-top: 0;">A Crise dos Silos de Dados e o Pesadelo da Replicação</h2>
+
+          <div class="callout-hook">
+            <p style="margin-top: 0;"><strong>Imagine o seguinte cenário em uma grande corporação:</strong></p>
+            <p>
+              O time de ingestão usa Azure Data Factory para carregar dados brutos em um Data Lake. O time de engenharia usa Databricks para limpar esses dados e gerar tabelas Delta. Depois, outro time roda scripts para carregar essas tabelas dentro de um Data Warehouse dedicado (Synapse ou Snowflake) para que os analistas de negócios consigam rodar consultas T-SQL. Por fim, o time de BI cria relatórios no Power BI que precisam importar tudo de novo para a memória do Analysis Services às 6h da manhã.
+            </p>
+            <p style="margin-bottom: 0;">
+              <strong>O resultado?</strong> Os mesmos dados são copiados e pagos quatro vezes em contas de armazenamento diferentes. Quando um dado sensível precisa ser deletado por exigência da LGPD/GDPR, o time gasta semanas caçando réplicas. Se um pipeline quebra às 03:00, os diretores abrem o dashboard de manhã e encontram dados desatualizados. <em>O Microsoft Fabric foi criado pela Microsoft exatamente para acabar com essa fragmentação.</em>
+            </p>
+          </div>
+
+          <!-- Player de Áudio Nativo HTML5 (MP3 Neural) -->
+          <div id="bloco-audio" class="aural-player-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+              <h3 style="margin: 0; color: var(--brand-teal);">🎧 Narração em Áudio da Lição (Voz Neural)</h3>
+              <span style="font-size: 0.78rem; font-family: var(--font-display); background: var(--pill-orange-bg); color: var(--text-primary); padding: 0.25rem 0.65rem; border-radius: 50px; font-weight: 600;">VARK: Aural</span>
+            </div>
+            <p style="margin: 0.5rem 0 0.8rem 0; font-size: 0.92rem;">
+              Ouça a narração completa da lição com pronúncia técnica revisada para a certificação DP-700:
+            </p>
+
+            <audio id="lesson-audio-player" controls preload="metadata" style="width: 100%; margin: 0.5rem 0; border-radius: 50px;">
+              <source src="../assets/audio/lesson-0001-pt.mp3?v=phonetic2" type="audio/mp3">
+              Seu navegador não suporta a tag de áudio HTML5.
+            </audio>
+
+            <div style="display: flex; align-items: center; gap: 1rem; margin-top: 0.5rem; flex-wrap: wrap;">
+              <button id="btn-custom-play" class="audio-btn">▶️ Reproduzir Áudio</button>
+              <span id="audio-playback-status" style="font-size: 0.85rem; font-style: italic; color: var(--text-secondary);">Arquivo de áudio carregado. Pronto para ouvir.</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- BLOCO 2: ARQUITETURA VISUAL & TEORIA POR NÍVEL -->
+        <section id="bloco-teoria" class="totc-card">
+          <h2 style="margin-top: 0;">A Arquitetura do Microsoft Fabric e Seus Motores Analíticos</h2>
+          <p>
+            Clique em qualquer um dos motores no diagrama interativo abaixo para inspecionar sua responsabilidade técnica e formato de armazenamento no OneLake:
+          </p>
+
+          <!-- Diagrama SVG Visual Interativo (VARK - V) -->
+          <div class="diagram-container">
+            <svg viewBox="0 0 850 270" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto; font-family: 'Poppins', system-ui, sans-serif;">
+              <rect class="svg-canvas-bg" x="10" y="10" width="830" height="250" rx="16" fill="#f8fafc" stroke="#49BBBD" stroke-width="2"/>
+              <text class="svg-heading-text" x="30" y="38" font-size="14" font-weight="700" fill="#2F327D">MICROSOFT FABRIC (SAAS UNIFICADO) — CLIQUE NOS ELEMENTOS</text>
+              
+              <g class="interactive-hotspot" data-title="Spark Notebooks" data-desc="Motor de big data com suporte a PySpark, Scala e SQL. Utiliza Starter Pools de inicialização quase instantânea e Native Execution Engine vetorizado em C++." style="cursor: pointer;">
+                <rect class="svg-node-box" x="35" y="60" width="145" height="70" rx="12" fill="#e0f2fe" stroke="#49BBBD" stroke-width="2"/>
+                <text class="svg-node-title" x="47" y="88" font-size="13" font-weight="700" fill="#252641">Spark Notebooks</text>
+                <text class="svg-node-sub" x="47" y="108" font-size="11" fill="#475569">PySpark / Native Engine</text>
+              </g>
+
+              <g class="interactive-hotspot" data-title="Data Warehouse" data-desc="Data Warehouse relacional completo baseado em T-SQL com suporte a transações ACID multi-tabela. Grava nativamente em Delta Parquet com V-Order." style="cursor: pointer;">
+                <rect class="svg-node-box" x="195" y="60" width="145" height="70" rx="12" fill="#e0f2fe" stroke="#49BBBD" stroke-width="2"/>
+                <text class="svg-node-title" x="207" y="88" font-size="13" font-weight="700" fill="#252641">Data Warehouse</text>
+                <text class="svg-node-sub" x="207" y="108" font-size="11" fill="#475569">T-SQL Transacional DDL/DML</text>
+              </g>
+
+              <g class="interactive-hotspot" data-title="Eventhouse (KQL)" data-desc="Motor colunar otimizado para séries temporais, logs e eventos de streaming com baixa latência usando a sintaxe KQL (Kusto Query Language)." style="cursor: pointer;">
+                <rect class="svg-node-box" x="355" y="60" width="145" height="70" rx="12" fill="#e0f2fe" stroke="#49BBBD" stroke-width="2"/>
+                <text class="svg-node-title" x="367" y="88" font-size="13" font-weight="700" fill="#252641">Eventhouse</text>
+                <text class="svg-node-sub" x="367" y="108" font-size="11" fill="#475569">KQL / Time-Series Engine</text>
+              </g>
+
+              <g class="interactive-hotspot" data-title="Data Factory" data-desc="Orquestrador enterprise de ingestão e fluxo de dados. Suporta expressões dinâmicas, agendamentos, chamadas REST e Dataflows Gen2 com Fast Copy." style="cursor: pointer;">
+                <rect class="svg-node-box" x="515" y="60" width="145" height="70" rx="12" fill="#e0f2fe" stroke="#49BBBD" stroke-width="2"/>
+                <text class="svg-node-title" x="527" y="88" font-size="13" font-weight="700" fill="#252641">Data Factory</text>
+                <text class="svg-node-sub" x="527" y="108" font-size="11" fill="#475569">Pipelines &amp; Dataflows Gen2</text>
+              </g>
+
+              <g class="interactive-hotspot" data-title="Power BI (Direct Lake)" data-desc="Visualização que lê Delta Parquet diretamente do OneLake para a memória do Analysis Services, sem importação de dados e sem fallback para SQL." style="cursor: pointer;">
+                <rect class="svg-pbi-box" x="675" y="60" width="150" height="70" rx="12" fill="#fef3c7" stroke="#F48C06" stroke-width="2"/>
+                <text class="svg-pbi-title" x="687" y="88" font-size="13" font-weight="700" fill="#b45309">Power BI</text>
+                <text class="svg-pbi-sub" x="687" y="108" font-size="11" fill="#78350f">Direct Lake Mode</text>
+              </g>
+
+              <line x1="107" y1="130" x2="107" y2="160" stroke="#64748b" stroke-width="2" stroke-dasharray="4"/>
+              <line x1="267" y1="130" x2="267" y2="160" stroke="#64748b" stroke-width="2" stroke-dasharray="4"/>
+              <line x1="427" y1="130" x2="427" y2="160" stroke="#64748b" stroke-width="2" stroke-dasharray="4"/>
+              <line x1="587" y1="130" x2="587" y2="160" stroke="#64748b" stroke-width="2" stroke-dasharray="4"/>
+              <line x1="750" y1="130" x2="750" y2="160" stroke="#64748b" stroke-width="2" stroke-dasharray="4"/>
+
+              <g class="interactive-hotspot" data-title="OneLake Storage Lógico" data-desc="Construído sobre ADLS Gen2. Todo o tenant possui um único OneLake com hierarquia: Workspace -> Lakehouse/Warehouse -> /Tables (Delta) e /Files." style="cursor: pointer;">
+                <rect x="35" y="160" width="790" height="80" rx="14" fill="#252641" stroke="#49BBBD" stroke-width="2"/>
+                <text x="55" y="195" font-size="15" font-weight="700" fill="#00CBB8">ONELAKE (O Data Lake Lógico Único da Organização)</text>
+                <text x="55" y="220" font-size="12" fill="#cbd5e1">Formato de Armazenamento Aberto: Delta Lake (Parquet colunar com _delta_log) + V-Order Optimization</text>
+              </g>
+            </svg>
+
+            <div id="hotspot-details-box" style="display: none; background: var(--callout-teal-bg); border: 1px solid var(--brand-teal); border-radius: 12px; padding: 1rem 1.25rem; margin-top: 1rem; text-align: left; color: var(--text-primary);">
+            </div>
+          </div>
+
+          <!-- TEXTOS DEDICADOS POR LENTE (Renderiza estritamente o perfil escolhido) -->
+
+          <!-- 1. TEXTO DA VISÃO UNIFICADA -->
+          <div class="lens-text-content" data-lens="unificado">
+            <p>
+              O <strong>Microsoft Fabric</strong> é uma plataforma analítica no modelo Software as a Service (SaaS). Ele consolida todas as ferramentas de dados da Microsoft sobre uma fundação única de armazenamento chamada <strong>OneLake</strong>. Ao contrário das arquiteturas tradicionais, onde cada ferramenta mantinha seu próprio formato de arquivo proprietário, o Fabric estabelece o formato aberto <strong>Delta Lake (Parquet colunar com histórico de transações ACID)</strong> como o padrão universal.
+            </p>
+            <p>
+              Isso permite que um time de cientistas processe dados em Python através do <strong>Spark Notebooks</strong>, um time de analistas de negócios consulte as mesmas tabelas via <strong>T-SQL</strong> no <strong>Data Warehouse</strong>, um time de IoT consuma telemetria em alta frequência no <strong>Eventhouse</strong> via <strong>KQL</strong>, e os relatórios do <strong>Power BI</strong> acessem esses dados via <strong>Direct Lake</strong> diretamente na memória, sem nunca mover ou duplicar um único arquivo.
+            </p>
+            <p>
+              Toda a computação é quantificada através de <strong>Capacity Units (CUs)</strong>. O Fabric implementa um algoritmo de <strong>Smoothing</strong> com janela móvel de 24 horas, permitindo que picos pontuais de processamento não causem bloqueios ou custos imprevistos. Para o exame DP-700, é fundamental compreender a separação entre o <strong>Lakehouse</strong> (focado em código e arquivos com endpoint SQL somente leitura) e o <strong>Warehouse</strong> (focado em T-SQL com suporte transacional completo de escrita).
+            </p>
+          </div>
+
+          <!-- 2. TEXTO DO JÚNIOR -->
+          <div class="lens-text-content" data-lens="junior" style="display: none;">
+            <p>
+              Pense no <strong>Microsoft Fabric</strong> como um "pacote Office para dados gigantes". Antigamente, quem trabalhava com dados precisava instalar e configurar vários programas complicados que não conversavam entre si. No Fabric, tudo abre em um único site no seu navegador.
+            </p>
+            <p>
+              O coração do Fabric é o <strong>OneLake</strong>. Ele funciona exatamente como o <em>OneDrive</em> da sua empresa, mas em vez de guardar documentos de texto, ele guarda tabelas de dados. E o grande segredo da velocidade do Fabric é o <strong>armazenamento em colunas (Parquet)</strong>:
+            </p>
+            <ul>
+              <li><strong>Banco de cadastro (Linhas):</strong> Se você tem uma planilha com 1 milhão de clientes e quer apenas somar as idades, o computador lê nome, CPF, endereço e telefone de cada linha, desperdiçando tempo.</li>
+              <li><strong>Banco analítico (Colunas):</strong> No OneLake, a coluna <code>idade</code> é guardada separada em um bloco próprio. O computador lê direto apenas os números da idade e responde em menos de um segundo.</li>
+            </ul>
+          </div>
+
+          <!-- 3. TEXTO DO PLENO -->
+          <div class="lens-text-content" data-lens="pleno" style="display: none;">
+            <p>
+              No dia a dia de engenharia de dados, a maior vantagem prática do Fabric é a redução de código de movimentação. Ao criar um <strong>Lakehouse</strong>, você ganha automaticamente duas pastas essenciais:
+            </p>
+            <ul>
+              <li><code>/Files</code>: Destinada a dados brutos não estruturados ou semi-estruturados (arquivos CSV, JSON, imagens, logs brutos) consumidos via PySpark.</li>
+              <li><code>/Tables</code>: Destinada exclusivamente a tabelas Delta gerenciadas. Qualquer arquivo Delta gravado aqui é registrado automaticamente no catálogo do Fabric e fica disponível instantaneamente no <strong>SQL Analytics Endpoint</strong> para consultas T-SQL.</li>
+            </ul>
+            <p>
+              Para orquestração, você utiliza o <strong>Data Factory</strong>, que une atividades de cópia de alta performance (com suporte a conexões locais via On-premises Data Gateway) e <strong>Dataflows Gen2</strong> para limpezas visuais em Power Query que gravam direto no Lakehouse ou Warehouse de destino.
+            </p>
+          </div>
+
+          <!-- 4. TEXTO DO SÊNIOR & DP-700 -->
+          <div class="lens-text-content" data-lens="senior" style="display: none;">
+            <p>
+              Para obter a pontuação máxima no exame DP-700, você precisa dominar o <em>Decision Matrix</em> da Microsoft entre os motores de armazenamento:
+            </p>
+            <ul>
+              <li><strong>Lakehouse vs. Data Warehouse:</strong> O Lakehouse suporta código aberto (Spark, PySpark, Scala, R) e manipulação de arquivos. Seu <em>SQL Analytics Endpoint</em> é estritamente <strong>somente leitura</strong>. Se o enunciado da prova exigir suporte a comandos DDL/DML em T-SQL clássico (ex: <code>INSERT INTO</code>, <code>UPDATE</code>, <code>MERGE</code> via T-SQL com transações atômicas multi-tabela), a única resposta correta é o <strong>Fabric Warehouse</strong>.</li>
+              <li><strong>Virtualização com OneLake Shortcuts:</strong> Se o cenário exigir expor dados já existentes em um bucket AWS S3 ou ADLS Gen2 externo dentro do Lakehouse <em>com o menor esforço e sem duplicar dados</em>, a resposta da prova é criar um <strong>OneLake Shortcut</strong>, e não um pipeline de cópia.</li>
+              <li><strong>Direct Lake Mode:</strong> Permite que relatórios do Power BI consultem as tabelas Delta sem realizar a tradicional importação (evitando atrasos de refresh agendado) e sem a lentidão do DirectQuery tradicional.</li>
+            </ul>
+          </div>
+
+          <!-- 5. TEXTO DO STAFF / ESPECIALISTA -->
+          <div class="lens-text-content" data-lens="staff" style="display: none;">
+            <p>
+              Sob o capô, o Microsoft Fabric implementa uma série de otimizações de nível de sistema operacional e formato binário:
+            </p>
+            <ul>
+              <li><strong>Native Execution Engine (Velox & Apache Gluten):</strong> O runtime do Spark no Fabric não roda pipelines do Spark SQL puramente na JVM. As etapas físicas de shuffle, projeção e hash joins são delegadas para uma biblioteca nativa em C++ altamente vetorizada com instruções SIMD.</li>
+              <li><strong>Algoritmo V-Order:</strong> É uma ordenação proprietária no momento da gravação de arquivos Parquet. O V-Order reorganiza os row-groups e dicionários de colunas para acelerar leituras analíticas em até 10x nos motores SQL e Direct Lake.</li>
+              <li><strong>Concorrência e Transações:</strong> O Warehouse do Fabric utiliza snapshots baseados no log do Delta com controle de concorrência otimista (OCC). Operações DDL e DML produzem novos commits no Delta Log, mantendo compatibilidade total com o ecossistema aberto.</li>
+            </ul>
+          </div>
+
+          <!-- 6. TEXTO DO C-LEVEL / FINOPS -->
+          <div class="lens-text-content" data-lens="clevel" style="display: none;">
+            <p>
+              Para o Chief Data Officer (CDO) e diretores de engenharia, o Fabric altera substancialmente a estrutura de custos de nuvem da empresa:
+            </p>
+            <ul>
+              <li><strong>Previsibilidade de FinOps via Smoothing:</strong> Em nuvens legadas, um pico de consumo de 10 minutos forçava a contratação de clusters caros dimensionados para o pico. Com o <em>Smoothing de 24 horas</em> do Fabric, os picos de jobs em lote (background) são distribuídos uniformemente ao longo do dia, permitindo contratar SKUs menores (ex.: F64 em vez de clusters dedicados gigantes).</li>
+              <li><strong>Eliminação de Custos de Egress:</strong> O OneLake virtualiza dados através de Shortcuts (inclusive em clouds concorrentes como AWS e GCP), evitando transferências redundantes de petabytes.</li>
+              <li><strong>Governança com Microsoft Purview:</strong> Sensitivity Labels (rótulos de confidencialidade) aplicados no OneLake propagam-se automaticamente até os relatórios do Power BI e consultas SQL, garantindo conformidade regulatória sem silos.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- BLOCO 3: PRÁTICA & SIMULADOR CINESTÉSICO -->
+              <!-- SEÇÃO KINESTHETIC: LAB PRÁTICO ESTILO MICROSOFT LEARN -->
+      <section id="bloco-pratica" style="margin-top: 3.5rem;">
+        <div class="mslearn-lab-box">
+          
+          <!-- Cabeçalho do Exercício -->
+          <div class="mslearn-header">
+            <div class="mslearn-badge-row">
+              <span class="mslearn-badge mslearn-badge-portal">🛠️ Microsoft Fabric Hands-on Lab</span>
+              <span class="mslearn-badge mslearn-badge-duration">⏱️ ~25 minutos</span>
+              <span class="mslearn-badge mslearn-badge-role">👤 Engenheiro de Dados • Domínio 1</span>
+              <span class="vark-badge badge-k" style="margin-left: auto;">K - Prática Guiada</span>
+            </div>
+            <h2 style="margin: 0.25rem 0 0.5rem 0; font-family: var(--font-display); color: var(--text-primary); font-size: 1.6rem;">
+              Exercício Prático: Provisionar Capacidade Fabric e Explorar Lakehouse vs Warehouse
+            </h2>
+            <p style="margin: 0; color: var(--text-secondary); font-size: 0.95rem;">
+              Guia passo a passo para executar diretamente na plataforma em nuvem do <strong>Microsoft Fabric</strong> (ou em simulação local).
+            </p>
+          </div>
+
+          <!-- Cenário de Negócio Oficial -->
+          <div class="mslearn-scenario-card">
+            <h4 style="margin: 0 0 0.5rem 0; color: var(--brand-blue); font-family: var(--font-display);">
+              📋 Cenário do Laboratório
+            </h4>
+            <p style="margin: 0; font-size: 0.92rem; color: var(--text-primary); line-height: 1.55;">
+              A Contoso Global Retail está migrando sua arquitetura legado para o Microsoft Fabric. Como Engenheiro de Dados, você deve criar um Workspace sob uma capacidade Fabric, provisionar um Lakehouse para ingestão de dados em arquivos Delta e um Data Warehouse para relatórios analíticos corporativos com transações T-SQL ACID.
+            </p>
+          </div>
+
+          <!-- Pré-requisitos -->
+          <div class="mslearn-prereqs-card">
+            <h4 style="margin: 0 0 0.4rem 0; color: #0078d4; font-family: var(--font-display);">
+              🔑 Pré-requisitos para Execução no Portal
+            </h4>
+            <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; color: var(--text-primary); line-height: 1.5;">
+              <li>Navegador web moderno (Edge, Chrome ou Firefox).</li>
+              <li>Acesso ao portal <a href="https://app.fabric.microsoft.com/" target="_blank" rel="noopener noreferrer" style="color: #0078d4; font-weight: 600; text-decoration: underline;">Microsoft Fabric (app.fabric.microsoft.com)</a>.</li>
+              <li>Capacidade ativa do Fabric (licença <strong>Fabric Trial</strong> gratuita ou capacidade corporativa).</li>
+              <li>Um Workspace configurado no modo de capacidade Fabric.</li>
+            </ul>
+          </div>
+
+          <!-- Tarefa 1 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">1</div>
+              <h3 class="mslearn-task-title">Acessar o Portal e Criar o Workspace com Capacidade Fabric</h3>
+            </div>
+            <ol class="mslearn-step-list">
+              <li>Acesse o portal do <a href='https://app.fabric.microsoft.com/' target='_blank' rel='noopener noreferrer'>Microsoft Fabric</a> e efetue login.</li>
+              <li>No canto inferior esquerdo, clique no ícone de <strong>Engenharia de Dados (Data Engineering)</strong>.</li>
+              <li>No menu lateral, clique em <strong>Workspaces</strong> e crie um novo workspace nomeado <code>DP700_Foundations_Lab</code>.</li>
+              <li>Nas configurações avançadas, assegure-se de vincular o workspace a uma <strong>Capacidade Fabric (Trial ou F-SKU)</strong>.</li>
+              <li>Clique em <strong>Aplicar</strong>.</li>
+            </ol>
+
+            <!-- Captura de Tela da Tarefa 1 -->
+            <div class="portal-screenshot-frame">
+              <div class="portal-window-bar">
+                <div class="portal-window-dots">
+                  <span class="portal-window-dot dot-red"></span>
+                  <span class="portal-window-dot dot-yellow"></span>
+                  <span class="portal-window-dot dot-green"></span>
+                </div>
+                <div class="portal-address-bar">
+                  🔒 https://app.fabric.microsoft.com/groups/new-workspace
+                </div>
+              </div>
+              <img src="../assets/images/fabric-ui-01-create-lakehouse.svg" alt="Acessar o Portal e Criar o Workspace com Capacidade Fabric" loading="lazy" />
+              <div class="portal-screenshot-caption">
+                📸 <strong>Captura do Portal:</strong> Configurando workspace vinculado à capacidade Fabric e selecionando a experiência de Engenharia de Dados.
+              </div>
+            </div>
+          </div>
+
+          <!-- Tarefa 2 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">2</div>
+              <h3 class="mslearn-task-title">Criar o Lakehouse e Ingerir Arquivos Brutos via PySpark</h3>
+            </div>
+            <ol class="mslearn-step-list">
+              <li>Dentro do workspace, clique em <strong>+ Novo item</strong> e selecione <strong>Lakehouse</strong>.</li>
+              <li>Nomeie como <code>lh_retail_raw</code> e clique em <strong>Criar</strong>.</li>
+              <li>Clique em <strong>Abrir notebook</strong> &gt; <strong>Novo notebook</strong>.</li>
+              <li>Execute o código PySpark abaixo para carregar dados brutos e salvá-los como tabela Delta:</li>
+            </ol>
+
+            <div class="mslearn-code-header">
+              <span>PYTHON (PYSPARK) — LAKEHOUSE NOTEBOOK</span>
+              <span>MICROSOFT FABRIC CODE EDITOR</span>
+            </div>
+            <pre class="mslearn-code-box"><code># Ingestão de dados brutos de vendas no Lakehouse
+dados = [
+    (1, "Notebook Gamer", 4500.00, "Sul"),
+    (2, "Monitor UltraWide", 1800.00, "Sudeste"),
+    (3, "Teclado Mecânico", 350.00, "Sul")
+]
+colunas = ["ProdutoID", "NomeProduto", "Preco", "Regiao"]
+
+df = spark.createDataFrame(dados, colunas)
+df.write.format("delta").mode("overwrite").saveAsTable("raw_produtos")
+print("✅ Tabela raw_produtos gravada com sucesso em Delta Lake!")</code></pre>
+          </div>
+
+          <!-- Tarefa 3 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">3</div>
+              <h3 class="mslearn-task-title">Criar o Data Warehouse e Executar Transações T-SQL ACID</h3>
+            </div>
+            <ol class="mslearn-step-list">
+              <li>Retorne ao workspace, clique em <strong>+ Novo item</strong> e selecione <strong>Data Warehouse</strong>.</li>
+              <li>Nomeie como <code>dw_retail_corporate</code> e clique em <strong>Criar</strong>.</li>
+              <li>Na barra de ferramentas, clique em <strong>Nova consulta SQL</strong> e execute o script T-SQL com suporte a transações multi-tabela:</li>
+            </ol>
+
+            <div class="mslearn-code-header">
+              <span>T-SQL — FABRIC DATA WAREHOUSE</span>
+              <span>MICROSOFT FABRIC CODE EDITOR</span>
+            </div>
+            <pre class="mslearn-code-box"><code>-- Criação de tabela relacional com integridade no Warehouse
+CREATE TABLE dbo.DimProduto (
+    ProdutoID INT NOT NULL,
+    NomeProduto VARCHAR(100) NOT NULL,
+    Preco DECIMAL(10,2) NOT NULL,
+    Regiao VARCHAR(50) NOT NULL
+);
+
+-- Transação ACID atômica
+BEGIN TRANSACTION;
+INSERT INTO dbo.DimProduto (ProdutoID, NomeProduto, Preco, Regiao)
+VALUES (1, 'Notebook Gamer', 4500.00, 'Sul'),
+       (2, 'Monitor UltraWide', 1800.00, 'Sudeste');
+COMMIT TRANSACTION;
+
+SELECT Regiao, SUM(Preco) AS TotalVendas FROM dbo.DimProduto GROUP BY Regiao;</code></pre>
+
+            <!-- Captura de Tela da Tarefa 3 -->
+            <div class="portal-screenshot-frame">
+              <div class="portal-window-bar">
+                <div class="portal-window-dots">
+                  <span class="portal-window-dot dot-red"></span>
+                  <span class="portal-window-dot dot-yellow"></span>
+                  <span class="portal-window-dot dot-green"></span>
+                </div>
+                <div class="portal-address-bar">
+                  🔒 https://app.fabric.microsoft.com/groups/dw_retail_corporate/editor
+                </div>
+              </div>
+              <img src="../assets/images/fabric-ui-04-data-warehouse-editor.svg" alt="Criar o Data Warehouse e Executar Transações T-SQL ACID" loading="lazy" />
+              <div class="portal-screenshot-caption">
+                📸 <strong>Captura do Portal:</strong> Executando consultas transacionais T-SQL e comandos DDL/DML nativos no Fabric Data Warehouse.
+              </div>
+            </div>
+          </div>
+
+          <!-- Alerta de Exame DP-700 -->
+          <div class="mslearn-exam-note" style="margin-top: 1.5rem;">
+            <strong>⚠️ Atenção para o Exame DP-700:</strong><br>
+            No exame DP-700, lembre-se: o Lakehouse é focado em arquivos e manipulação de Big Data com Spark (possuindo SQL Endpoint somente leitura), enquanto o Data Warehouse oferece suporte transacional completo DDL/DML, multi-table transactions ACID e segurança avançada (RLS/CLS).
+          </div>
+
+          <!-- Fallback: Simulação Local Offline -->
+          <div class="mslearn-local-box">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem;">
+              <h4 style="margin: 0; color: var(--brand-teal); font-family: var(--font-display);">
+                💻 Opção Alternativa: Executar Simulação Local Offline no seu Terminal
+              </h4>
+              <span style="font-size: 0.8rem; background: var(--bg-surface-alt); padding: 3px 8px; border-radius: 6px; color: var(--text-secondary);">Sem necessidade de conta Fabric</span>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+              Se você não possui uma assinatura ativa do Fabric no momento, criamos um simulador completo em Python no seu repositório local que reproduz a execução deste laboratório:
+            </p>
+            <pre><code style="font-family: var(--font-mono); font-size: 0.88rem; display: block; background: var(--bg-surface-alt); padding: 0.85rem 1rem; border-radius: 8px; border: 1px solid var(--border-color); overflow-x: auto;"># Execute este comando no terminal para reproduzir o lab:
+./.venv/bin/python labs/0001-oltp-olap-and-smoothing/lab_simulation.py</code></pre>
+            <div style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-secondary);">
+              📁 Diretório do laboratório prático local: <code>labs/0001-oltp-olap-and-smoothing/</code>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+        <!-- BLOCO 4: SÍNTESE & QUIZ OFICIAL DP-700 -->
+        <section id="bloco-quiz" class="totc-card">
+          <h2 style="margin-top: 0;">Pontos Críticos para a Prática e para o Exame DP-700</h2>
+
+          <div class="summary-card">
+            <h3 style="margin-top: 0; color: var(--brand-teal);">📝 Síntese dos Pontos Críticos Aprendidos:</h3>
+            <ol style="margin-bottom: 0;">
+              <li><strong>OneLake como Pilar Central:</strong> O OneLake elimina a cópia redundante de dados entre Data Lake, Data Warehouse e relatórios de BI através do formato aberto <strong>Delta Parquet</strong>.</li>
+              <li><strong>Lakehouse vs. Warehouse na Prova DP-700:</strong> O SQL Analytics Endpoint do Lakehouse é <strong>somente leitura</strong>. Se um cenário exigir operações DDL/DML e transações ACID via T-SQL, a escolha correta é sempre o <strong>Fabric Data Warehouse</strong>.</li>
+              <li><strong>Smoothing de 24 Horas:</strong> O Fabric amortiza o consumo de operações em segundo plano (background) ao longo de 86.400 segundos, permitindo rodar jobs intensos sem interrupções por falta momentânea de recursos.</li>
+              <li><strong>Direct Lake no Power BI:</strong> Elimina a necessidade de atualizações de dados periódicas ao ler diretamente os metadados e arquivos Delta do OneLake na memória do Analysis Services.</li>
+            </ol>
+          </div>
+
+          <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+            <h3>🎯 Desafio de Exame DP-700</h3>
+            <p>Questão elaborada no padrão da Microsoft com alternativas isomórficas:</p>
+
+            <div class="quiz-card" data-explanation="O Fabric Warehouse fornece suporte nativo a T-SQL completo com transações ACID multi-tabela, enquanto o SQL Analytics Endpoint do Lakehouse é estritamente somente leitura. Utilizar o Warehouse atende ao requisito sem exigir conversão de código para Spark.">
+              <p><strong style="color: var(--text-primary);">Cenário de Exame DP-700:</strong> Uma equipe de engenharia precisa implementar transações atômicas multi-tabela utilizando exclusivamente comandos T-SQL com suporte a DML (INSERT, UPDATE e DELETE). Qual artefato do Microsoft Fabric atende a esse requisito com o menor esforço de reescrita?</p>
+              
+              <ul class="quiz-options">
+                <li>
+                  <button class="quiz-option-btn" data-correct="true">
+                    A) Data Warehouse padrão com suporte transacional
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    B) SQL Analytics Endpoint do Lakehouse corporativo
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    C) KQL Database configurado para streaming contínuo
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    D) Pipeline de orquestração com atividade de cópia
+                  </button>
+                </li>
+              </ul>
+              <div class="quiz-feedback"></div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--border-color); flex-wrap: wrap; gap: 1rem;">
+            <a href="../reference/01-glossary-and-fundamentals-visual-guide.html" style="font-weight: 600;">
+              📑 Abrir Folha de Referência 01 (Glossário Visual)
+            </a>
+            <a href="0002-storage-fundamentals-parquet-delta-medallion.html" class="audio-btn" style="color: #fff !important;">
+              Próxima Lição: 0002 (Parquet, Delta & Medallion) →
+            </a>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+</body>
+</html>

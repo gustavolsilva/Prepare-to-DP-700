@@ -1,0 +1,154 @@
+<svg viewBox="0 0 920 540" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;">
+  <defs>
+    <filter id="shadow3" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Fundo do Portal -->
+  <rect width="920" height="540" fill="#0b1120"/>
+
+  <!-- Top Bar do Fabric -->
+  <rect x="0" y="0" width="920" height="42" fill="#002447"/>
+  <circle cx="24" cy="21" r="10" fill="#0078d4"/>
+  <text x="24" y="25" text-anchor="middle" font-size="11" font-weight="900" fill="#ffffff">F</text>
+  <text x="44" y="26" font-size="13" font-weight="700" fill="#ffffff">Microsoft Fabric</text>
+  <text x="175" y="25" font-size="12" fill="#64748b">/</text>
+  <text x="190" y="25" font-size="12" fill="#cbd5e1">DP-700-Workspace</text>
+  <text x="320" y="25" font-size="12" fill="#64748b">/</text>
+  <text x="335" y="25" font-size="12" font-weight="700" fill="#38bdf8">lh_sales_medallion</text>
+
+  <!-- DESTAQUE CRÍTICO: Alternador Lakehouse vs SQL Analytics Endpoint (Canto Superior Direito) -->
+  <g transform="translate(640, 6)">
+    <rect x="0" y="0" width="220" height="30" rx="6" fill="#0c4a6e" stroke="#38bdf8" stroke-width="2"/>
+    <text x="12" y="20" font-size="12">🏛️</text>
+    <text x="30" y="20" font-size="12" font-weight="700" fill="#ffffff">SQL analytics endpoint  ▾</text>
+
+    <!-- Chamada Visual 5: Pulsing Badge -->
+    <g transform="translate(-180, 36)">
+      <rect x="0" y="0" width="230" height="40" rx="8" fill="#f59e0b" filter="url(#shadow3)"/>
+      <polygon points="180,0 170,12 190,12" fill="#f59e0b"/>
+      <text x="12" y="18" font-size="11" font-weight="800" fill="#0f172a">PASSO 7.1: ALTERNADOR</text>
+      <text x="12" y="32" font-size="10.5" font-weight="600" fill="#451a03">Mudar de Lakehouse para SQL endpoint</text>
+    </g>
+  </g>
+
+  <!-- Barra de Ações do SQL Endpoint -->
+  <rect x="0" y="42" width="920" height="40" fill="#111f38" stroke-bottom="#1e293b"/>
+  <rect x="15" y="48" width="135" height="28" rx="5" fill="#0284c7"/>
+  <text x="82" y="66" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">+ Nova consulta SQL</text>
+
+  <rect x="160" y="48" width="140" height="28" rx="5" fill="#1e293b" stroke="#334155"/>
+  <text x="230" y="66" text-anchor="middle" font-size="12" fill="#cbd5e1">📊 Novo Modelo Semântico</text>
+
+  <!-- Painel Esquerdo: Object Explorer T-SQL -->
+  <rect x="0" y="82" width="240" height="458" fill="#0f172a" stroke-right="#1e293b"/>
+  <rect x="0" y="82" width="240" height="34" fill="#162238"/>
+  <text x="15" y="104" font-size="12" font-weight="700" fill="#38bdf8">OBJETOS DO BANCO T-SQL</text>
+
+  <!-- Árvore de Objetos T-SQL -->
+  <g transform="translate(10, 125)">
+    <text x="0" y="14" font-size="13">🏛️</text>
+    <text x="22" y="14" font-size="12" font-weight="700" fill="#f8fafc">lh_sales_medallion (SQL)</text>
+
+    <!-- Schemas > dbo > Tables -->
+    <g transform="translate(15, 26)">
+      <text x="0" y="14" font-size="12">📂</text>
+      <text x="18" y="14" font-size="11.5" fill="#cbd5e1">Schemas &gt; dbo</text>
+
+      <g transform="translate(15, 24)">
+        <text x="0" y="14" font-size="12">📂</text>
+        <text x="18" y="14" font-size="11.5" font-weight="600" fill="#cbd5e1">Tables</text>
+
+        <!-- silver_vendas -->
+        <g transform="translate(15, 24)">
+          <rect x="-6" y="-3" width="180" height="26" rx="5" fill="#064e3b" stroke="#10b981"/>
+          <text x="2" y="15" font-size="11">📋</text>
+          <text x="18" y="15" font-size="11" font-weight="700" fill="#a7f3d0">dbo.silver_vendas</text>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <!-- Área de Consulta T-SQL & Resultados -->
+  <rect x="240" y="82" width="680" height="458" fill="#070d19"/>
+
+  <!-- Aba da Consulta -->
+  <rect x="250" y="88" width="140" height="28" rx="6" fill="#1e293b"/>
+  <text x="265" y="106" font-size="11.5" font-weight="600" fill="#38bdf8">SQL Query 1</text>
+  <text x="375" y="106" font-size="12" fill="#94a3b8">✕</text>
+
+  <!-- Editor de Código T-SQL -->
+  <g transform="translate(250, 120)">
+    <rect x="0" y="0" width="655" height="150" rx="8" fill="#0f172a" stroke="#1e293b"/>
+    
+    <!-- Linhas numeradas -->
+    <rect x="0" y="0" width="30" height="150" rx="8" fill="#162238"/>
+    <text x="15" y="25" text-anchor="middle" font-size="11" font-family="monospace" fill="#64748b">1</text>
+    <text x="15" y="47" text-anchor="middle" font-size="11" font-family="monospace" fill="#64748b">2</text>
+    <text x="15" y="69" text-anchor="middle" font-size="11" font-family="monospace" fill="#64748b">3</text>
+    <text x="15" y="91" text-anchor="middle" font-size="11" font-family="monospace" fill="#64748b">4</text>
+    <text x="15" y="113" text-anchor="middle" font-size="11" font-family="monospace" fill="#64748b">5</text>
+    <text x="15" y="135" text-anchor="middle" font-size="11" font-family="monospace" fill="#64748b">6</text>
+
+    <!-- Código T-SQL com Syntax Highlighting -->
+    <text x="45" y="25" font-family="Courier, monospace" font-size="12" font-weight="700" fill="#0284c7">SELECT</text>
+    <text x="100" y="25" font-family="Courier, monospace" font-size="12" fill="#f8fafc">Cliente,</text>
+    <text x="45" y="47" font-family="Courier, monospace" font-size="12" fill="#38bdf8">COUNT<tspan fill="#f8fafc">(PedidoID)</tspan> AS <tspan fill="#f59e0b">TotalPedidos</tspan>,</text>
+    <text x="45" y="69" font-family="Courier, monospace" font-size="12" fill="#38bdf8">SUM<tspan fill="#f8fafc">(Quantidade * ValorUnitario)</tspan> AS <tspan fill="#f59e0b">ReceitaTotal</tspan></text>
+    <text x="45" y="91" font-family="Courier, monospace" font-size="12" font-weight="700" fill="#0284c7">FROM</text>
+    <text x="85" y="91" font-family="Courier, monospace" font-size="12" fill="#34d399">silver_vendas</text>
+    <text x="45" y="113" font-family="Courier, monospace" font-size="12" font-weight="700" fill="#0284c7">GROUP BY</text>
+    <text x="115" y="113" font-family="Courier, monospace" font-size="12" fill="#f8fafc">Cliente</text>
+    <text x="45" y="135" font-family="Courier, monospace" font-size="12" font-weight="700" fill="#0284c7">ORDER BY</text>
+    <text x="115" y="135" font-family="Courier, monospace" font-size="12" fill="#f59e0b">ReceitaTotal DESC</text>
+    <text x="250" y="135" font-family="Courier, monospace" font-size="12" fill="#f8fafc">;</text>
+  </g>
+
+  <!-- Grid de Resultados T-SQL (Zero-Copy) -->
+  <g transform="translate(250, 285)">
+    <rect x="0" y="0" width="655" height="235" rx="8" fill="#0f172a" stroke="#059669" stroke-width="1.5"/>
+    
+    <!-- Barra de Metadados do Resultado -->
+    <rect x="0" y="0" width="655" height="32" rx="8" fill="#162238"/>
+    <text x="15" y="21" font-size="12" font-weight="700" fill="#34d399">RESULTADOS (5 linhas retornadas)</text>
+    <text x="375" y="21" font-size="10.5" fill="#94a3b8">⏱️ 0.12s • Leitura Direta OneLake</text>
+
+    <!-- Cabeçalho das Colunas -->
+    <g transform="translate(15, 45)">
+      <rect x="0" y="0" width="625" height="26" rx="4" fill="#1e293b"/>
+      <text x="15" y="17" font-size="11" font-weight="700" fill="#38bdf8">Cliente</text>
+      <text x="220" y="17" font-size="11" font-weight="700" fill="#38bdf8">TotalPedidos</text>
+      <text x="420" y="17" font-size="11" font-weight="700" fill="#38bdf8">ReceitaTotal (R$)</text>
+
+      <!-- Linhas de Dados -->
+      <g transform="translate(0, 32)">
+        <rect x="0" y="0" width="625" height="28" fill="#0f172a"/>
+        <text x="15" y="19" font-size="11.5" font-weight="600" fill="#f8fafc">Fabrikam</text>
+        <text x="220" y="19" font-size="11.5" fill="#cbd5e1">1</text>
+        <text x="420" y="19" font-size="11.5" font-family="Courier, monospace" font-weight="700" fill="#34d399">8.400,00</text>
+      </g>
+
+      <g transform="translate(0, 64)">
+        <rect x="0" y="0" width="625" height="28" fill="#111c33"/>
+        <text x="15" y="19" font-size="11.5" font-weight="600" fill="#f8fafc">Contoso</text>
+        <text x="220" y="19" font-size="11.5" fill="#cbd5e1">2</text>
+        <text x="420" y="19" font-size="11.5" font-family="Courier, monospace" font-weight="700" fill="#34d399">3.998,00</text>
+      </g>
+
+      <g transform="translate(0, 96)">
+        <rect x="0" y="0" width="625" height="28" fill="#0f172a"/>
+        <text x="15" y="19" font-size="11.5" font-weight="600" fill="#f8fafc">Litware</text>
+        <text x="220" y="19" font-size="11.5" fill="#cbd5e1">1</text>
+        <text x="420" y="19" font-size="11.5" font-family="Courier, monospace" font-weight="700" fill="#34d399">1.996,00</text>
+      </g>
+
+      <g transform="translate(0, 128)">
+        <rect x="0" y="0" width="625" height="28" fill="#111c33"/>
+        <text x="15" y="19" font-size="11.5" font-weight="600" fill="#f8fafc">AdventureWorks</text>
+        <text x="220" y="19" font-size="11.5" fill="#cbd5e1">1</text>
+        <text x="420" y="19" font-size="11.5" font-family="Courier, monospace" font-weight="700" fill="#34d399">899,00</text>
+      </g>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,123 @@
+<svg viewBox="0 0 920 540" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;">
+  <defs>
+    <filter id="shadow10" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <rect width="920" height="540" fill="#0b1120"/>
+  <!-- Top Bar -->
+  <rect x="0" y="0" width="920" height="42" fill="#002447"/>
+  <circle cx="24" cy="21" r="10" fill="#0078d4"/>
+  <text x="24" y="25" text-anchor="middle" font-size="11" font-weight="900" fill="#ffffff">F</text>
+  <text x="44" y="26" font-size="13" font-weight="700" fill="#ffffff">Microsoft Fabric</text>
+  <text x="175" y="25" font-size="12" fill="#64748b">/</text>
+  <text x="190" y="25" font-size="12" fill="#cbd5e1">Pipelines de Implantação (Deployment Pipelines)</text>
+  <text x="520" y="25" font-size="12" font-weight="700" fill="#38bdf8">CI/CD &amp; Git Integration</text>
+
+  <!-- Left: Git Source Control Status -->
+  <rect x="0" y="42" width="240" height="498" fill="#0f172a" stroke-right="#1e293b"/>
+  <rect x="0" y="42" width="240" height="34" fill="#162238"/>
+  <text x="15" y="64" font-size="12" font-weight="700" fill="#38bdf8">CONTROLE DO CÓDIGO-FONTE (GIT)</text>
+  
+  <g transform="translate(15, 90)">
+    <rect x="0" y="0" width="210" height="80" rx="8" fill="#1e293b" stroke="#059669"/>
+    <text x="12" y="24" font-size="13">🐙</text>
+    <text x="32" y="24" font-size="12" font-weight="700" fill="#a7f3d0">GitHub / Azure Repos</text>
+    <text x="12" y="46" font-size="10.5" fill="#cbd5e1">Branch: <tspan font-family="monospace" fill="#38bdf8">feature/sales-scd2</tspan></text>
+    <text x="12" y="66" font-size="10.5" fill="#f59e0b">● 3 itens com alterações locais</text>
+  </g>
+
+  <g transform="translate(15, 185)">
+    <text x="0" y="16" font-size="11" font-weight="700" fill="#94a3b8">ITENS SINCRONIZADOS:</text>
+    <text x="0" y="40" font-size="11.5" fill="#cbd5e1">📓 02_Delta_Medallion.Notebook</text>
+    <text x="0" y="64" font-size="11.5" fill="#cbd5e1">📋 pl_daily_etl.DataPipeline</text>
+    <text x="0" y="88" font-size="11.5" fill="#cbd5e1">🏛️ dw_sales.Warehouse</text>
+  </g>
+
+  <!-- Main Area: 3-Stage Deployment Pipeline (Dev -> Test -> Prod) -->
+  <rect x="240" y="42" width="680" height="498" fill="#070d19"/>
+
+  <g transform="translate(260, 60)">
+    <text x="0" y="24" font-size="18" font-weight="700" fill="#f8fafc">Pipeline de Implantação Enterprise (DP-700)</text>
+    <text x="0" y="46" font-size="12" fill="#94a3b8">Promoção de artefatos com regras de parâmetros de conexão automáticas entre ambientes.</text>
+
+    <!-- Estágio 1: Desenvolvimento (Dev) -->
+    <g transform="translate(0, 75)" filter="url(#shadow10)">
+      <rect x="0" y="0" width="180" height="280" rx="10" fill="#1e293b" stroke="#0284c7" stroke-width="2"/>
+      <rect x="0" y="0" width="180" height="34" rx="10" fill="#0369a1"/>
+      <text x="90" y="22" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">1. DESENVOLVIMENTO</text>
+      
+      <g transform="translate(15, 55)">
+        <text x="0" y="15" font-size="11" font-weight="600" fill="#cbd5e1">Workspace:</text>
+        <text x="0" y="32" font-size="10.5" fill="#38bdf8">DP700_Sales_DEV</text>
+
+        <rect x="0" y="55" width="150" height="30" rx="6" fill="#0f172a" stroke="#334155"/>
+        <text x="10" y="74" font-size="11" fill="#cbd5e1">Itens: 14 artefatos</text>
+
+        <rect x="0" y="100" width="150" height="45" rx="6" fill="#064e3b" stroke="#10b981"/>
+        <text x="10" y="118" font-size="10.5" font-weight="700" fill="#a7f3d0">Git Conectado</text>
+        <text x="10" y="134" font-size="10" fill="#ffffff">Branch: dev</text>
+
+        <rect x="0" y="170" width="150" height="34" rx="6" fill="#0284c7"/>
+        <text x="75" y="191" text-anchor="middle" font-size="11.5" font-weight="700" fill="#ffffff">Implantar p/ Teste →</text>
+      </g>
+    </g>
+
+    <!-- Seta Conectora 1 -->
+    <g transform="translate(190, 195)">
+      <line x1="0" y1="20" x2="30" y2="20" stroke="#38bdf8" stroke-width="3"/>
+      <polygon points="30,20 22,14 22,26" fill="#38bdf8"/>
+    </g>
+
+    <!-- Estágio 2: Teste / Homologação (Test/UAT) -->
+    <g transform="translate(230, 75)" filter="url(#shadow10)">
+      <rect x="0" y="0" width="180" height="280" rx="10" fill="#1e293b" stroke="#f59e0b" stroke-width="2"/>
+      <rect x="0" y="0" width="180" height="34" rx="10" fill="#b45309"/>
+      <text x="90" y="22" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">2. TESTE / HOMOLOGAÇÃO</text>
+      
+      <g transform="translate(15, 55)">
+        <text x="0" y="15" font-size="11" font-weight="600" fill="#cbd5e1">Workspace:</text>
+        <text x="0" y="32" font-size="10.5" fill="#fcd34d">DP700_Sales_TEST</text>
+
+        <rect x="0" y="55" width="150" height="30" rx="6" fill="#0f172a" stroke="#334155"/>
+        <text x="10" y="74" font-size="11" fill="#cbd5e1">Itens: 14 artefatos</text>
+
+        <rect x="0" y="100" width="150" height="45" rx="6" fill="#451a03" stroke="#f59e0b"/>
+        <text x="10" y="118" font-size="10.5" font-weight="700" fill="#fde68a">Regras de Parâmetros</text>
+        <text x="10" y="134" font-size="10" fill="#ffffff">Aponta p/ SQL Test</text>
+
+        <rect x="0" y="170" width="150" height="34" rx="6" fill="#f59e0b"/>
+        <text x="75" y="191" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0f172a">Implantar p/ Prod →</text>
+      </g>
+    </g>
+
+    <!-- Seta Conectora 2 -->
+    <g transform="translate(420, 195)">
+      <line x1="0" y1="20" x2="30" y2="20" stroke="#10b981" stroke-width="3"/>
+      <polygon points="30,20 22,14 22,26" fill="#10b981"/>
+    </g>
+
+    <!-- Estágio 3: Produção (Prod) -->
+    <g transform="translate(460, 75)" filter="url(#shadow10)">
+      <rect x="0" y="0" width="180" height="280" rx="10" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+      <rect x="0" y="0" width="180" height="34" rx="10" fill="#065f46"/>
+      <text x="90" y="22" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">3. PRODUÇÃO</text>
+      
+      <g transform="translate(15, 55)">
+        <text x="0" y="15" font-size="11" font-weight="600" fill="#cbd5e1">Workspace:</text>
+        <text x="0" y="32" font-size="10.5" fill="#6ee7b7">DP700_Sales_PROD</text>
+
+        <rect x="0" y="55" width="150" height="30" rx="6" fill="#0f172a" stroke="#334155"/>
+        <text x="10" y="74" font-size="11" fill="#cbd5e1">Itens: 14 artefatos</text>
+
+        <rect x="0" y="100" width="150" height="45" rx="6" fill="#064e3b" stroke="#10b981"/>
+        <text x="10" y="118" font-size="10.5" font-weight="700" fill="#a7f3d0">Proteção Ativa</text>
+        <text x="10" y="134" font-size="10" fill="#ffffff">Somente Deploy Aprovado</text>
+
+        <rect x="0" y="170" width="150" height="34" rx="6" fill="#334155"/>
+        <text x="75" y="191" text-anchor="middle" font-size="11.5" font-weight="600" fill="#94a3b8">Ambiente Final</text>
+      </g>
+    </g>
+  </g>
+</svg>

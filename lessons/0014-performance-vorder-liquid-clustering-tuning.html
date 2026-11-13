@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lição 0014: Otimização de Performance, V-Order, Liquid Clustering & Tuning</title>
+  <link rel="stylesheet" href="../assets/tufte.css?v=totc6">
+  <link rel="stylesheet" href="../assets/vark.css?v=totc6">
+  <script src="../assets/lens.js?v=totc6"></script>
+  <script src="../assets/quiz.js?v=totc6" defer></script>
+  <script src="../assets/vark.js?v=totc6" defer></script>
+</head>
+<body>
+
+  <div class="course-app-shell">
+
+    <!-- SIDEBAR DE CURRÍCULO E NAVEGAÇÃO -->
+    <aside class="course-sidebar">
+      <div class="sidebar-top-nav">
+        <a href="../index.html?v=totc6" class="back-square-btn" title="Voltar ao Portal do Curso">←</a>
+        <div style="font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--text-primary);">
+          FABRIC <span style="color: var(--brand-teal);">DP-700</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="sidebar-section-title">Módulo 3: Governança, CI/CD & Otimização</div>
+        <div class="sidebar-pill-list">
+          <a href="#bloco-contexto" class="curriculum-pill active">
+            <span class="pill-left">📖 Lição 14: Tuning & V-Order</span>
+            <span class="pill-duration">30 mins</span>
+          </a>
+          <a href="#bloco-audio" class="curriculum-pill pill-orange">
+            <span class="pill-left">🎧 Narração Neural da Aula</span>
+            <span class="pill-duration">02:50</span>
+          </a>
+          <a href="#bloco-teoria" class="curriculum-pill pill-blue">
+            <span class="pill-left">👁️ V-Order & Liquid Cluster</span>
+            <span class="pill-duration">Visual</span>
+          </a>
+          <a href="../simulados/index.html?v=totc6" class="curriculum-pill pill-coral">
+            <span class="pill-left">🎯 Centro de Simulados</span>
+            <span class="pill-duration">Exam</span>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <div class="sidebar-section-title">PRACTICE QUIZ & LABS</div>
+        <div class="sidebar-pill-list">
+          <a href="#bloco-pratica" class="curriculum-pill pill-teal">
+            <span class="pill-left">⚡ Lab: V-Order & Skew Tuning</span>
+            <span class="pill-duration">Python</span>
+          </a>
+          <a href="#bloco-quiz" class="curriculum-pill pill-orange">
+            <span class="pill-left">🎯 Desafio Exame DP-700</span>
+            <span class="pill-duration">Quiz</span>
+          </a>
+        </div>
+      </div>
+
+      <div style="margin-top: auto; padding: 1rem; background: var(--bg-surface-alt); border: 1px solid var(--border-color); border-radius: 14px; font-size: 0.82rem; color: var(--text-secondary);">
+        <strong style="color: var(--text-primary); display: block; margin-bottom: 0.25rem;">💡 Dica de Ouro DP-700</strong>
+        O <strong>V-Order</strong> gera arquivos 100% compatíveis com o padrão aberto Parquet; qualquer motor open-source consegue lê-los sem alteração!
+      </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="course-main-content">
+
+      <header class="course-header-banner">
+        <div>
+          <div class="course-badge">Módulo 3 • Domínio 3 do Exame DP-700 (Optimize Environment)</div>
+          <h1 class="course-title">Lição 0014: Otimização de Performance, V-Order, Liquid Clustering & Tuning de Consultas</h1>
+          <p class="course-meta">
+            Duração estimada: 30 minutos • Domínio 3 (Monitoramento e Otimização) • Áudio Neural & Lab de Performance
+          </p>
+        </div>
+        <div class="theme-toggle-container">
+          <button class="theme-toggle-btn" onclick="window.toggleAppTheme()" title="Alternar entre Modo Claro e Escuro">
+            <span class="theme-toggle-icon">🌙</span> Alternar Tema
+          </button>
+        </div>
+      </header>
+
+      <nav class="lens-selector-bar" aria-label="Seletor de Nível Pedagógico">
+        <div class="lens-tab-group">
+          <button class="lens-tab" data-lens="unificado">📚 Unificado (Geral)</button>
+          <button class="lens-tab" data-lens="junior">🌱 Júnior / Fundamentos</button>
+          <button class="lens-tab" data-lens="pleno">🌿 Pleno / Implementador</button>
+          <button class="lens-tab" data-lens="senior">🛠️ Sênior / DP-700</button>
+          <button class="lens-tab" data-lens="staff">⚙️ Staff / Under the Hood</button>
+          <button class="lens-tab" data-lens="clevel">🏛️ C-Level / FinOps & TCO</button>
+        </div>
+        <div style="margin-left: auto;">
+          <button class="theme-toggle-btn" onclick="window.toggleAppTheme()" title="Alternar Modo Dark / Light">
+            <span class="theme-toggle-icon">🌙</span> Modo Dark
+          </button>
+        </div>
+      </nav>
+
+      <nav class="vark-nav-bar" aria-label="Atalhos das Modalidades VARK">
+        <a href="#bloco-audio" class="vark-btn"><span class="vark-badge badge-a">A</span> 🎧 Áudio Neural (Auditivo)</a>
+        <a href="#bloco-teoria" class="vark-btn"><span class="vark-badge badge-v">V</span> 👁️ Z-Order vs Liquid (Visual)</a>
+        <a href="#bloco-contexto" class="vark-btn"><span class="vark-badge badge-r">R</span> 📖 Texto Técnico (Leitura)</a>
+        <a href="#bloco-pratica" class="vark-btn"><span class="vark-badge badge-k">K</span> ⚡ Lab Otimização (Cinestésico)</a>
+      </nav>
+
+      <!-- REPRODUTOR DE ÁUDIO NEURAL -->
+      <div id="bloco-audio" class="audio-player-card">
+        <div class="audio-card-header">
+          <div class="audio-avatar">🎙️</div>
+          <div>
+            <div class="audio-title">Narração Técnica Neural da Lição 0014</div>
+            <div class="audio-subtitle">Voz: Microsoft pt-BR-AntonioNeural • V-Order, Liquid Clustering, VACUUM e Mitigação de Skew</div>
+          </div>
+        </div>
+        <div class="audio-controls-row">
+          <button id="audio-play-btn" class="audio-play-button" aria-label="Reproduzir áudio da lição">▶ Reproduzir Aula</button>
+          <div class="audio-scrubber-track">
+            <div id="audio-progress-bar" class="audio-scrubber-fill" style="width: 0%;"></div>
+          </div>
+          <div id="audio-time-label" class="audio-time-display">00:00 / 02:50</div>
+          <audio id="vark-audio-element" preload="metadata">
+            <source src="../assets/audio/lesson-0014-pt.mp3?v=totc6" type="audio/mpeg">
+            Seu navegador não suporta o elemento de áudio HTML5.
+          </audio>
+        </div>
+      </div>
+
+      <!-- CONTEÚDO MULTI-LENS -->
+      <article id="bloco-contexto" class="lens-panel" data-lens-content="unificado">
+        <h2>Maximizando Throughput e Minimizando Consumo de CUs no Fabric</h2>
+        <p>
+          Em ambientes analíticos sobre o <strong>OneLake</strong>, otimizar performance não é apenas uma questão de velocidade de resposta para os usuários do Power BI: é uma decisão direta de <strong>FinOps</strong> que evita o consumo desnecessário de Capacity Units (CUs) e previne o estrangulamento da capacidade (Throttling). A arquitetura do Microsoft Fabric introduz inovações profundas no formato de armazenamento e no gerenciamento de tabelas Delta.
+        </p>
+
+        <div class="diagram-container" id="bloco-teoria">
+          <h3>Evolução da Organização Física: Z-Order vs. Liquid Clustering</h3>
+          <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+            Por que o Microsoft Fabric recomenda Liquid Clustering para tabelas de grande escala.
+          </p>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+            <div style="background: var(--bg-surface-alt); padding: 1.25rem; border-radius: 12px; border: 1px solid var(--border-color);">
+              <h4 style="margin: 0 0 0.5rem 0; color: var(--brand-coral); display: flex; align-items: center; gap: 0.5rem;">
+                <span>📦</span> 1. Particionamento Estático & Z-Order
+              </h4>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+                Padrão clássico de Data Lakes baseado em pastas rígidas (ex: <code>/ano=2024/mes=10/</code>) + OPTIMIZE Z-Order.
+              </p>
+              <ul style="font-size: 0.85rem; color: var(--text-primary); padding-left: 1.25rem; line-height: 1.6;">
+                <li><strong>Overpartitioning:</strong> Cria milhões de arquivos pequenos quando a cardinalidade é alta.</li>
+                <li><strong>Custo de Reescrita:</strong> O comando <code>OPTIMIZE table ZORDER BY (...)</code> reescreve todos os arquivos do cluster, consumindo muitas CUs.</li>
+                <li><strong>Rigidez:</strong> Mudar as colunas de particionamento exige reescrever a tabela inteira do zero.</li>
+              </ul>
+            </div>
+
+            <div style="background: var(--bg-surface-alt); padding: 1.25rem; border-radius: 12px; border: 1px solid var(--border-color);">
+              <h4 style="margin: 0 0 0.5rem 0; color: var(--brand-teal); display: flex; align-items: center; gap: 0.5rem;">
+                <span>💧</span> 2. Liquid Clustering (CLUSTER BY)
+              </h4>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+                Nova geração de layout físico declarativo no protocolo Delta Lake nativo do Fabric.
+              </p>
+              <ul style="font-size: 0.85rem; color: var(--text-primary); padding-left: 1.25rem; line-height: 1.6;">
+                <li><strong>Incremental & Eficiente:</strong> Apenas os dados novos ou alterados são reorganizados, economizando até 80% de tempo de escrita.</li>
+                <li><strong>Alta Cardinalidade:</strong> Suporta colunas como IDs de clientes ou timestamps sem criar subpastas infinitas.</li>
+                <li><strong>Evolução Dinâmica:</strong> Permite alterar as colunas de agrupamento com <code>ALTER TABLE CLUSTER BY</code> sem reescrever o histórico.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <h3 style="margin-top: 2rem;">V-Order: Aceleração em Tempo de Escrita</h3>
+        <p>
+          O <strong>V-Order</strong> é um algoritmo de otimização no nível de escrita proprietário da Microsoft, mas totalmente aderente à especificação aberta do <strong>Apache Parquet</strong>. Ao gravar dados via Fabric Spark ou Data Warehouse:
+        </p>
+        <ul>
+          <li>As linhas dentro de cada Row Group são ordenadas e os metadados estatísticos (min/max) são organizados de modo a maximizar o <strong>Data Skipping</strong>.</li>
+          <li>Os dicionários colunares são alinhados à estrutura interna do motor <strong>VertiPaq</strong> do Power BI.</li>
+          <li><strong>Benefício:</strong> Leituras no modo <strong>Direct Lake</strong> alcançam velocidades de subsegundo equivalentes à memória sem que os arquivos percam compatibilidade com bibliotecas abertas como DuckDB, PyArrow ou Polars.</li>
+        </ul>
+
+        <div class="note-box note-warning" style="margin-top: 1.5rem;">
+          <strong>⚠️ Alerta do Exame DP-700: Manutenção com VACUUM e Perda de Time Travel</strong><br>
+          O comando <code>VACUUM</code> limpa arquivos Parquet que não pertencem mais ao snapshot ativo do Delta Lake. O limiar de retenção padrão é de <strong>7 dias (168 horas)</strong>. Se você executar o VACUUM com retenção zero (<code>RETAIN 0 HOURS</code>), você não conseguirá mais consultar versões anteriores da tabela via <strong>Time Travel</strong> (<code>TIMESTAMP AS OF</code> ou <code>VERSION AS OF</code>).
+        </div>
+      </article>
+
+      <article class="lens-panel" data-lens-content="junior" style="display: none;">
+        <h2>Entendendo Otimização de Forma Simples</h2>
+        <p>
+          Imagine que o OneLake é uma imensa biblioteca de livros:
+        </p>
+        <ul>
+          <li><strong>Sem V-Order:</strong> Os livros estão jogados aleatoriamente nas prateleiras. Para achar uma palavra, você precisa folhear página por página.</li>
+          <li><strong>Com V-Order:</strong> Os livros estão em ordem alfabética e têm um índice no final. Você vai direto na página certa em um instante!</li>
+          <li><strong>Z-Order vs. Liquid Clustering:</strong> No Z-Order, toda vez que chega um livro novo, você precisa reorganizar a estante inteira. No Liquid Clustering, a estante é elástica e só ajusta o cantinho onde o livro novo entrou.</li>
+          <li><strong>VACUUM:</strong> É o caminhão de reciclagem. Ele recolhe os livros velhos rasgados. Mas se você mandar reciclar livros de ontem, nunca mais poderá reler o que foi escrito ontem (Time Travel)!</li>
+        </ul>
+      </article>
+
+      <article class="lens-panel" data-lens-content="pleno" style="display: none;">
+        <h2>Implementação Prática de Tuning em SQL e Spark</h2>
+        <p>
+          Como aplicar as técnicas de otimização no dia a dia com T-SQL e PySpark:
+        </p>
+        <h3>1. Criando Tabela Delta com Liquid Clustering</h3>
+        <pre><code style="font-family: var(--font-mono); font-size: 0.88rem; display: block; background: var(--bg-surface-alt); padding: 1rem; border-radius: 8px;">-- Sintaxe Spark SQL no Fabric Notebook
+CREATE TABLE bronze_orders (
+    order_id BIGINT,
+    customer_id STRING,
+    order_date DATE,
+    amount DECIMAL(10, 2)
+)
+USING DELTA
+CLUSTER BY (customer_id, order_date);
+
+-- Para re-otimizar periodicamente de forma incremental
+OPTIMIZE bronze_orders;</code></pre>
+
+        <h3>2. Manutenção Segura com VACUUM</h3>
+        <pre><code style="font-family: var(--font-mono); font-size: 0.88rem; display: block; background: var(--bg-surface-alt); padding: 1rem; border-radius: 8px;">-- Remove arquivos órfãos mantendo 7 dias para Time Travel
+VACUUM bronze_orders RETAIN 168 HOURS;</code></pre>
+
+        <h3>3. Mitigação de Data Skew no Apache Spark</h3>
+        <p>
+          Quando uma partição contém muito mais dados que as outras, utilize o recurso de <strong>Adaptive Query Execution (AQE)</strong>:
+        </p>
+        <pre><code style="font-family: var(--font-mono); font-size: 0.88rem; display: block; background: var(--bg-surface-alt); padding: 1rem; border-radius: 8px;">-- Habilitado por padrão no Fabric Spark
+SET spark.sql.adaptive.enabled = true;
+SET spark.sql.adaptive.skewJoin.enabled = true;
+
+-- Ou via hint direto na consulta PySpark:
+df_orders.hint("skew", "customer_id").join(df_customers, "customer_id")</code></pre>
+      </article>
+
+      <article class="lens-panel" data-lens-content="senior" style="display: none;">
+        <h2>Arquitetura de Tuning para o Exame DP-700</h2>
+        <p>
+          Checklist de armadilhas e decisões arquiteturais cobradas na prova:
+        </p>
+        <ul>
+          <li><strong>V-Order está ligado por padrão:</strong> No Fabric, novos arquivos Parquet gerados pelo Spark e pelo Warehouse já possuem V-Order ativo. Não tente desativá-lo a menos que haja uma restrição severa de latência de escrita.</li>
+          <li><strong>Z-Order em tabelas com frequentes updates:</strong> O exame questionará o aumento abusivo no tempo de jobs e consumo de CUs quando uma tabela particionada e Z-Ordered sofre muitas operações de <code>MERGE</code>. A recomendação correta é migrar para <strong>Liquid Clustering</strong>.</li>
+          <li><strong>Small File Problem:</strong> O uso de <code>OPTIMIZE</code> sem Z-Order apenas compacta arquivos pequenos (bin-packing) em arquivos maiores de ~1GB, melhorando drasticamente consultas no Lakehouse.</li>
+          <li><strong>Estatísticas no Data Warehouse:</strong> O motor T-SQL do Fabric mantém estatísticas automáticas. Em tabelas voláteis com consultas complexas, validar ou atualizar estatísticas manuais (<code>CREATE STATISTICS</code>) garante planos de execução eficientes.</li>
+        </ul>
+      </article>
+
+      <article class="lens-panel" data-lens-content="staff" style="display: none;">
+        <h2>Internals: Engenharia de Arquivos V-Order e Data Skipping</h2>
+        <p>
+          Como o V-Order opera no nível binário do arquivo Parquet:
+        </p>
+        <p>
+          O formato Parquet tradicional armazena dados em blocos chamados Row Groups contendo colunas comprimidas com Snappy ou ZSTD. Quando o VertiPaq do Power BI em Direct Lake lê esse arquivo, ele precisa decodificar os dicionários e reconstruir vetores em memória.
+        </p>
+        <p>
+          O algoritmo <strong>V-Order</strong> reorganiza os valores ordenando linhas de acordo com um algoritmo hierárquico multivariável. Isso produz:
+        </p>
+        <ol>
+          <li>Dicionários de coluna menores e com maior taxa de compressão por repetição contígua (Run-Length Encoding).</li>
+          <li>Metadados de cabeçalho e rodapé (Footer Metadata) com intervalos Min/Max muito mais estreitos, permitindo ao otimizador do Fabric descartar (skip) blocos inteiros de disco sem precisar ler um único byte dos dados brutos.</li>
+        </ol>
+      </article>
+
+      <article class="lens-panel" data-lens-content="clevel" style="display: none;">
+        <h2>FinOps & Eficiência de Capacidade (Redução de TCO)</h2>
+        <p>
+          O impacto financeiro de um design analítico bem otimizado no Microsoft Fabric:
+        </p>
+        <ul>
+          <li><strong>Evitar Upsizing Prematuro da Capacidade:</strong> Uma capacidade F64 que sofre lentidão frequentemente não precisa de upgrade para F128; quase sempre, o problema é falta de V-Order, arquivos pequenos (small files) ou particionamento incorreto gerando excesso de CUs.</li>
+          <li><strong>Prevenção de Throttling e Rejeição de Relatórios:</strong> Consultas que leem arquivos compactados e com Liquid Clustering terminam em centenas de milissegundos, mantendo o consumo de CUs suavizado (Smoothing) abaixo do teto de 100%.</li>
+          <li><strong>Custo de Armazenamento no OneLake:</strong> O V-Order reduz o volume físico dos dados em até 30% a 40%, diminuindo o custo recorrente de storage no Azure.</li>
+        </ul>
+      </article>
+
+      <!-- SEÇÃO DO LABORATÓRIO HANDS-ON -->
+            <!-- SEÇÃO KINESTHETIC: LAB PRÁTICO ESTILO MICROSOFT LEARN -->
+      <section id="bloco-pratica" style="margin-top: 3.5rem;">
+        <div class="mslearn-lab-box">
+          
+          <!-- Cabeçalho do Exercício -->
+          <div class="mslearn-header">
+            <div class="mslearn-badge-row">
+              <span class="mslearn-badge mslearn-badge-portal">🛠️ Microsoft Fabric Hands-on Lab</span>
+              <span class="mslearn-badge mslearn-badge-duration">⏱️ ~25 minutos</span>
+              <span class="mslearn-badge mslearn-badge-role">👤 Engenheiro de Dados • Domínio 3</span>
+              <span class="vark-badge badge-k" style="margin-left: auto;">K - Prática Guiada</span>
+            </div>
+            <h2 style="margin: 0.25rem 0 0.5rem 0; font-family: var(--font-display); color: var(--text-primary); font-size: 1.6rem;">
+              Exercício Prático: Otimização Extrema com V-Order, Liquid Clustering e Compaction
+            </h2>
+            <p style="margin: 0; color: var(--text-secondary); font-size: 0.95rem;">
+              Guia passo a passo para executar diretamente na plataforma em nuvem do <strong>Microsoft Fabric</strong> (ou em simulação local).
+            </p>
+          </div>
+
+          <!-- Cenário de Negócio Oficial -->
+          <div class="mslearn-scenario-card">
+            <h4 style="margin: 0 0 0.5rem 0; color: var(--brand-blue); font-family: var(--font-display);">
+              📋 Cenário do Laboratório
+            </h4>
+            <p style="margin: 0; font-size: 0.92rem; color: var(--text-primary); line-height: 1.55;">
+              Otimizar uma tabela analítica de bilhões de registros que sofria degradação de performance por sobrecarga de arquivos pequenos, aplicando Liquid Clustering (CLUSTER BY) e ordenação V-Order no OneLake.
+            </p>
+          </div>
+
+          <!-- Pré-requisitos -->
+          <div class="mslearn-prereqs-card">
+            <h4 style="margin: 0 0 0.4rem 0; color: #0078d4; font-family: var(--font-display);">
+              🔑 Pré-requisitos para Execução no Portal
+            </h4>
+            <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; color: var(--text-primary); line-height: 1.5;">
+              <li>Navegador web moderno (Edge, Chrome ou Firefox).</li>
+              <li>Acesso ao portal <a href="https://app.fabric.microsoft.com/" target="_blank" rel="noopener noreferrer" style="color: #0078d4; font-weight: 600; text-decoration: underline;">Microsoft Fabric (app.fabric.microsoft.com)</a>.</li>
+              <li>Capacidade ativa do Fabric (licença <strong>Fabric Trial</strong> gratuita ou capacidade corporativa).</li>
+              <li>Um Workspace configurado no modo de capacidade Fabric.</li>
+            </ul>
+          </div>
+
+          <!-- Tarefa 1 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">1</div>
+              <h3 class="mslearn-task-title">Criar Tabela com Liquid Clustering (Delta 3.0)</h3>
+            </div>
+            <ol class="mslearn-step-list">
+              <li>No Notebook Spark, crie a tabela particionada logicamente via Liquid Clustering:</li>
+              <li><code>df.write.format('delta').clusterBy('DataVenda', 'RegiaoId').saveAsTable('gold_telemetria_clustered')</code></li>
+              <li>Observe que o Liquid Clustering elimina a proliferação excessiva de pastas físicas em disco.</li>
+            </ol>
+          </div>
+
+          <!-- Tarefa 2 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">2</div>
+              <h3 class="mslearn-task-title">Executar Compactação e Avaliar Métricas de Data Skipping</h3>
+            </div>
+            <ol class="mslearn-step-list">
+              <li>Execute o comando: <code>%%sql OPTIMIZE gold_telemetria_clustered;</code></li>
+              <li>Analise a métrica de execução do Spark: veja que consultas com filtro em <code>RegiaoId</code> saltam mais de 95% dos arquivos lidos.</li>
+              <li>Comprove a aceleração de leitura em modo Direct Lake no Power BI.</li>
+            </ol>
+
+            <!-- Captura de Tela da Tarefa 2 -->
+            <div class="portal-screenshot-frame">
+              <div class="portal-window-bar">
+                <div class="portal-window-dots">
+                  <span class="portal-window-dot dot-red"></span>
+                  <span class="portal-window-dot dot-yellow"></span>
+                  <span class="portal-window-dot dot-green"></span>
+                </div>
+                <div class="portal-address-bar">
+                  🔒 https://app.fabric.microsoft.com/groups/performance/liquid-clustering
+                </div>
+              </div>
+              <img src="../assets/images/fabric-ui-11-liquid-clustering-vorder.svg" alt="Executar Compactação e Avaliar Métricas de Data Skipping" loading="lazy" />
+              <div class="portal-screenshot-caption">
+                📸 <strong>Captura do Portal:</strong> Métricas de aceleração por Liquid Clustering e V-Order exibindo redução de 98% na leitura de I/O de disco.
+              </div>
+            </div>
+          </div>
+
+          <!-- Alerta de Exame DP-700 -->
+          <div class="mslearn-exam-note" style="margin-top: 1.5rem;">
+            <strong>⚠️ Atenção para o Exame DP-700:</strong><br>
+            Conceito Chave do DP-700: O Liquid Clustering substitui o particionamento tradicional (Partition By) e o Z-Order. Ele permite alterar as colunas de clusterização sem a necessidade de reescrever toda a tabela histórica existente.
+          </div>
+
+          <!-- Fallback: Simulação Local Offline -->
+          <div class="mslearn-local-box">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem;">
+              <h4 style="margin: 0; color: var(--brand-teal); font-family: var(--font-display);">
+                💻 Opção Alternativa: Executar Simulação Local Offline no seu Terminal
+              </h4>
+              <span style="font-size: 0.8rem; background: var(--bg-surface-alt); padding: 3px 8px; border-radius: 6px; color: var(--text-secondary);">Sem necessidade de conta Fabric</span>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+              Se você não possui uma assinatura ativa do Fabric no momento, criamos um simulador completo em Python no seu repositório local que reproduz a execução deste laboratório:
+            </p>
+            <pre><code style="font-family: var(--font-mono); font-size: 0.88rem; display: block; background: var(--bg-surface-alt); padding: 0.85rem 1rem; border-radius: 8px; border: 1px solid var(--border-color); overflow-x: auto;"># Execute este comando no terminal para reproduzir o lab:
+./.venv/bin/python labs/0014-performance-vorder-liquid-clustering/lab_simulation.py</code></pre>
+            <div style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-secondary);">
+              📁 Diretório do laboratório prático local: <code>labs/0014-performance-vorder-liquid-clustering/</code>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SEÇÃO DE QUIZ DP-700 -->
+              <section id="bloco-quiz" class="totc-card">
+          <h2 style="margin-top: 0;">Pontos Críticos para a Prática e para o Exame DP-700</h2>
+
+          <div class="summary-card">
+            <h3 style="margin-top: 0; color: var(--brand-teal);">📝 Síntese dos Pontos Críticos Aprendidos:</h3>
+            <ol style="margin-bottom: 0;">
+              <li><strong>Liquid Clustering (CLUSTER BY):</strong> Substitui o particionamento Hive e Z-Order. Elimina problemas de arquivos pequenos e permite alterar chaves de agrupamento sem reescrever dados.</li>
+              <li><strong>Otimização V-Order:</strong> Ordena internamente os valores dentro de cada Row Group do arquivo Parquet, maximizando o Data Skipping no Power BI Direct Lake.</li>
+              <li><strong>Compactação com OPTIMIZE:</strong> Agrupa arquivos minúsculos em blocos ideais de 1GB (Bin-Packing), reduzindo o overhead de metadados em consultas analíticas.</li>
+              <li><strong>Limpeza Controlada com VACUUM:</strong> Remove fisicamente do disco arquivos obsoletos após expirar a janela de retenção, liberando espaço sem corromper transações ativas.</li>
+            </ol>
+          </div>
+
+          <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+            <h3>🎯 Desafio de Exame DP-700</h3>
+            <p>Questão elaborada no padrão da Microsoft com alternativas isomórficas:</p>
+
+            <div class="quiz-card" data-explanation="O <strong>Liquid Clustering (CLUSTER BY)</strong> foi desenhado especificamente para substituir o particionamento estático e o Z-Order em tabelas Delta com escritas frequentes e consultas por colunas de alta cardinalidade. Ele reorganiza os dados incrementalmente sem reescrever partições inteiras.">
+              <p><strong style="color: var(--text-primary);">Cenário de Exame DP-700:</strong> Você gerencia uma tabela Delta no Lakehouse do Microsoft Fabric com centenas de milhões de registros de transações de vendas. A tabela sofre frequentes operações de escrita e atualização diárias (MERGE), e os relatórios do Power BI consultam os dados filtrando por múltiplos atributos com alta cardinalidade (como ID do Cliente e Timestamp). O particionamento tradicional por data e o comando Z-Order tornaram-se caros e lentos devido à constante reescrita de dados. Qual recurso você deve adotar para otimizar essa tabela de forma eficiente e incremental?</p>
+              
+              <ul class="quiz-options">
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    A) Desativar o algoritmo V-Order em todas as operações de escrita realizadas nos notebooks Spark.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    B) Executar o comando VACUUM com retenção de zero horas imediatamente após cada carga diária.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="true">
+                    C) Configurar a tabela Delta utilizando o recurso nativo de Liquid Clustering com CLUSTER BY.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    D) Migrar a tabela inteira para arquivos em formato CSV com particionamento por cada coluna.
+                  </button>
+                </li>
+              </ul>
+              <div class="quiz-feedback"></div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--border-color); flex-wrap: wrap; gap: 1rem;">
+            <a href="../reference/06-performance-vorder-clustering-monitoring-cheatsheet.html" style="font-weight: 600;">
+              📑 Abrir Folha de Referência 06 (Performance & Tuning Cheatsheet)
+            </a>
+            <a href="0015-monitoring-hub-capacity-metrics-troubleshooting.html" class="audio-btn" style="color: #fff !important;">
+              Próxima Lição: 0015 (Monitoring Hub e Capacity Metrics App) →
+            </a>
+          </div>
+        </section>
+
+      <footer style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+        <a href="../lessons/0013-cicd-git-deployment-pipelines-sqlproj.html?v=totc6" class="btn-secondary">
+          ← Lição Anterior: 0013
+        </a>
+        <a href="../lessons/0015-monitoring-hub-capacity-metrics-troubleshooting.html?v=totc6" class="btn-primary">
+          Próxima Lição: 0015 →
+        </a>
+      </footer>
+
+    </main>
+  </div>
+
+  
+</body>
+</html>

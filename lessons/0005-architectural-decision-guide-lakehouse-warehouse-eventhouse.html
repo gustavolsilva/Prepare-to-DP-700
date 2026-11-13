@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lição 0005: Guia de Decisão Arquitetural: Lakehouse vs. Warehouse vs. Eventhouse</title>
+  <link rel="stylesheet" href="../assets/tufte.css?v=totc6">
+  <link rel="stylesheet" href="../assets/vark.css?v=totc6">
+  <script src="../assets/lens.js?v=totc6"></script>
+  <script src="../assets/quiz.js?v=totc6" defer></script>
+  <script src="../assets/vark.js?v=totc6" defer></script>
+</head>
+<body>
+
+  <div class="course-app-shell">
+
+    <!-- SIDEBAR DE CURRÍCULO E NAVEGAÇÃO -->
+    <aside class="course-sidebar">
+      <div class="sidebar-top-nav">
+        <a href="../index.html?v=totc6" class="back-square-btn" title="Voltar ao Portal do Curso">←</a>
+        <div style="font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--text-primary);">
+          FABRIC <span style="color: var(--brand-teal);">DP-700</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="sidebar-section-title">Módulo 1: Core & Capacidades</div>
+        <div class="sidebar-pill-list">
+          <a href="../lessons/0004-onelake-capacities-smoothing-domains-spark-pools.html?v=totc6" class="curriculum-pill">
+            <span class="pill-left">📖 Lição 04: Capacidades & Spark</span>
+            <span class="pill-duration">25 mins</span>
+          </a>
+          <a href="#bloco-contexto" class="curriculum-pill active">
+            <span class="pill-left">📖 Lição 05: Guia de Decisão</span>
+            <span class="pill-duration">30 mins</span>
+          </a>
+          <a href="#bloco-audio" class="curriculum-pill pill-orange">
+            <span class="pill-left">🎧 Narração Neural da Aula</span>
+            <span class="pill-duration">02:30</span>
+          </a>
+          <a href="#bloco-teoria" class="curriculum-pill pill-blue">
+            <span class="pill-left">👁️ Matriz Comparativa Oficial</span>
+            <span class="pill-duration">Visual</span>
+          </a>
+          <a href="../simulados/index.html?v=totc6" class="curriculum-pill pill-coral">
+            <span class="pill-left">🎯 Centro de Simulados</span>
+            <span class="pill-duration">Exam</span>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <div class="sidebar-section-title">PRACTICE QUIZ & LABS</div>
+        <div class="sidebar-pill-list">
+          <a href="#bloco-pratica" class="curriculum-pill pill-teal">
+            <span class="pill-left">⚡ Lab: Matriz Interativa</span>
+            <span class="pill-duration">Python</span>
+          </a>
+          <a href="#bloco-quiz" class="curriculum-pill pill-orange">
+            <span class="pill-left">🎯 Desafio Exame DP-700</span>
+            <span class="pill-duration">Quiz</span>
+          </a>
+        </div>
+      </div>
+
+      <div style="margin-top: auto; padding: 1rem; background: var(--bg-surface-alt); border: 1px solid var(--border-color); border-radius: 14px; font-size: 0.82rem; color: var(--text-secondary);">
+        <strong style="color: var(--text-primary); display: block; margin-bottom: 0.25rem;">💡 Dica de Estudo VARK</strong>
+        A decisão entre Lakehouse e Data Warehouse é o tema com maior incidência de pegadinhas no Exame DP-700.
+      </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="course-main-content">
+
+      <header class="course-header-banner">
+        <div>
+          <div class="course-badge">Módulo 1 • Domínio 1 do Exame DP-700</div>
+          <h1 class="course-title">Lição 0005: Guia de Decisão Arquitetural: Lakehouse vs. Warehouse vs. Eventhouse vs. SQL Database</h1>
+          <p class="course-meta">
+            Duração estimada: 30 minutos • Domínio 1 & 2 do DP-700 • Áudio Neural & Lab de Decisão
+          </p>
+        </div>
+        <div class="theme-toggle-container">
+          <button class="theme-toggle-btn" onclick="window.toggleAppTheme()" title="Alternar entre Modo Claro e Escuro">
+            <span class="theme-toggle-icon">🌙</span> Alternar Tema
+          </button>
+        </div>
+      </header>
+
+      <nav class="lens-selector-bar" aria-label="Seletor de Nível Pedagógico">
+        <div class="lens-tab-group">
+          <button class="lens-tab" data-lens="unificado">📚 Unificado (Geral)</button>
+          <button class="lens-tab" data-lens="junior">🌱 Júnior / Fundamentos</button>
+          <button class="lens-tab" data-lens="pleno">🌿 Pleno / Implementador</button>
+          <button class="lens-tab" data-lens="senior">🛠️ Sênior / DP-700</button>
+          <button class="lens-tab" data-lens="staff">⚙️ Staff / Under the Hood</button>
+          <button class="lens-tab" data-lens="clevel">🏛️ C-Level / FinOps & TCO</button>
+        </div>
+        <div style="margin-left: auto;">
+          <button class="theme-toggle-btn" onclick="window.toggleAppTheme()" title="Alternar Modo Dark / Light">
+            <span class="theme-toggle-icon">🌙</span> Modo Dark
+          </button>
+        </div>
+      </nav>
+
+      <nav class="vark-nav-bar" aria-label="Atalhos das Modalidades VARK">
+        <a href="#bloco-audio" class="vark-btn"><span class="vark-badge badge-a">A</span> 🎧 Áudio Neural (Auditivo)</a>
+        <a href="#bloco-teoria" class="vark-btn"><span class="vark-badge badge-v">V</span> 👁️ Matriz Oficial de Decisão (Visual)</a>
+        <a href="#bloco-contexto" class="vark-btn"><span class="vark-badge badge-r">R</span> 📖 Texto Técnico (Leitura)</a>
+        <a href="#bloco-pratica" class="vark-btn"><span class="vark-badge badge-k">K</span> ⚡ Lab Python Decisão (Cinestésico)</a>
+      </nav>
+
+      <!-- REPRODUTOR DE ÁUDIO NEURAL -->
+      <div id="bloco-audio" class="audio-player-card">
+        <div class="audio-card-header">
+          <div class="audio-avatar">🎙️</div>
+          <div>
+            <div class="audio-title">Narração Técnica Neural da Lição 0005</div>
+            <div class="audio-subtitle">Voz: Microsoft pt-BR-AntonioNeural • Decisões de Lakehouse, Warehouse e Eventhouse</div>
+          </div>
+        </div>
+        <div class="audio-controls-row">
+          <button id="audio-play-btn" class="audio-play-button" aria-label="Reproduzir áudio da lição">▶ Reproduzir Aula</button>
+          <div class="audio-scrubber-track">
+            <div id="audio-progress-bar" class="audio-scrubber-fill" style="width: 0%;"></div>
+          </div>
+          <div id="audio-time-label" class="audio-time-display">00:00 / 02:30</div>
+          <audio id="vark-audio-element" preload="metadata">
+            <source src="../assets/audio/lesson-0005-pt.mp3?v=totc6" type="audio/mpeg">
+            Seu navegador não suporta o elemento de áudio HTML5.
+          </audio>
+        </div>
+      </div>
+
+      <!-- CONTEÚDO MULTI-LENS -->
+      <article id="bloco-contexto" class="lens-panel" data-lens-content="unificado">
+        <h2>A Matriz Oficial de Decisão Arquitetural do Microsoft Fabric</h2>
+        <p>
+          Um dos maiores pontos de falha no Exame DP-700 ocorre quando os candidatos tratam o <strong>Fabric Lakehouse</strong> e o <strong>Fabric Data Warehouse</strong> como produtos redundantes. Eles foram concebidos com propósitos técnicos complementares e motores de execução inteiramente distintos sobre a mesma camada unificada de armazenamento <strong>OneLake</strong>.
+        </p>
+
+        <div class="diagram-container" id="bloco-teoria">
+          <h3>Tabela Comparativa Rigorosa dos 4 Motores de Dados do Fabric</h3>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.92rem;">
+            <thead>
+              <tr style="background: var(--bg-surface-alt); border-bottom: 2px solid var(--border-color); text-align: left;">
+                <th style="padding: 10px;">Critério / Propriedade</th>
+                <th style="padding: 10px;">Fabric Lakehouse</th>
+                <th style="padding: 10px;">Fabric Data Warehouse</th>
+                <th style="padding: 10px;">Fabric Eventhouse</th>
+                <th style="padding: 10px;">Fabric SQL Database</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--border-color);">
+                <td style="padding: 10px; font-weight: bold;">Motor Principal</td>
+                <td style="padding: 10px;">Apache Spark</td>
+                <td style="padding: 10px;">Polaris (T-SQL Distribuído)</td>
+                <td style="padding: 10px;">Kusto Engine (KQL)</td>
+                <td style="padding: 10px;">Azure SQL Serverless</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border-color);">
+                <td style="padding: 10px; font-weight: bold;">Gravação de Dados (DML)</td>
+                <td style="padding: 10px;">PySpark, Scala, Spark SQL</td>
+                <td style="padding: 10px; color: var(--brand-teal); font-weight: 700;">T-SQL DML Completo</td>
+                <td style="padding: 10px;">Eventstreams / Ingestion API</td>
+                <td style="padding: 10px;">T-SQL OLTP Completo</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border-color);">
+                <td style="padding: 10px; font-weight: bold;">SQL Endpoint</td>
+                <td style="padding: 10px; color: var(--brand-orange); font-weight: 700;">Somente Leitura (Read-Only)</td>
+                <td style="padding: 10px;">Leitura e Escrita Total</td>
+                <td style="padding: 10px;">KQL / T-SQL (Read-Only)</td>
+                <td style="padding: 10px;">Endpoint TDS Relacional</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border-color);">
+                <td style="padding: 10px; font-weight: bold;">Tipos de Dados Suportados</td>
+                <td style="padding: 10px;">Estruturados, Semiestruturados e Arquivos Brutos (Files)</td>
+                <td style="padding: 10px;">Tabelas Estruturadas com Tipagem Estrita</td>
+                <td style="padding: 10px;">Séries Temporais, Logs e JSON Dinâmico</td>
+                <td style="padding: 10px;">Esquema Relacional Normalizado</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border-color);">
+                <td style="padding: 10px; font-weight: bold;">Segurança Granular</td>
+                <td style="padding: 10px;">OneLake Data Access Roles</td>
+                <td style="padding: 10px;">RLS, CLS, DDM em T-SQL</td>
+                <td style="padding: 10px;">Row-Level Sharing em KQL</td>
+                <td style="padding: 10px;">RLS, CLS, Always Encrypted</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; font-weight: bold;">Papel na Arquitetura Medallion</td>
+                <td style="padding: 10px;">Bronze e Silver (e Gold Data Science)</td>
+                <td style="padding: 10px;">Gold (Star Schema corporativo e BI)</td>
+                <td style="padding: 10px;">Camada de Streaming e Telemetria</td>
+                <td style="padding: 10px;">Sistemas Operacionais de Origem</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>A Regra de Ouro do SQL Endpoint no Lakehouse</h3>
+        <p>
+          Toda tabela Delta gravada na pasta <code>Tables/</code> do Lakehouse é imediatamente mapeada de forma automática para o <strong>SQL Analytics Endpoint</strong>.
+        </p>
+        <p>
+          Isso permite que ferramentas de BI e usuários de SQL executem comandos <code>SELECT</code>, criem <code>VIEWS</code> lógicas e configurem medidas. No entanto, se um usuário tentar executar <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code> ou <code>MERGE</code> diretamente pelo SQL Endpoint, o sistema retornará um erro imediato de permissão. <strong>O SQL Endpoint do Lakehouse é 100% somente leitura.</strong>
+        </p>
+      </article>
+
+      <!-- 2. LENTE JÚNIOR -->
+      <article class="lens-panel" data-lens-content="junior">
+        <h2>🌱 Como Lembrar a Diferença Facilmente?</h2>
+        <p>
+          Pense no <strong>Lakehouse</strong> como uma oficina mecânica com ferramentas pesadas de Spark para desmanchar, limpar e transformar peças brutas (arquivos bagunçados, JSONs, fotos, logs).
+        </p>
+        <p>
+          Pense no <strong>Data Warehouse</strong> como uma vitrine de joalheria relacional. Tudo já está limpo, organizado em gavetas numeradas (tabelas de fatos e dimensões) e pronto para ser ajustado com precisão usando a linguagem tradicional <strong>T-SQL</strong>.
+        </p>
+      </article>
+
+      <!-- 3. LENTE PLENO -->
+      <article class="lens-panel" data-lens-content="pleno">
+        <h2>🌿 Cenários de Implementação Prática no Workspace</h2>
+        <p>
+          Quando criar um Lakehouse vs. Warehouse no seu projeto:
+        </p>
+        <ul>
+          <li><strong>Crie um Lakehouse quando:</strong> O time for composto por engenheiros Python/PySpark, houver necessidade de salvar arquivos não estruturados na pasta <code>Files/</code> e para a ingestão e limpeza das camadas Bronze e Silver.</li>
+          <li><strong>Crie um Data Warehouse quando:</strong> O time for especialista em SQL Server, houver procedimentos armazenados (Stored Procedures), triggers, restrições relacionais e comandos <code>UPDATE/DELETE</code> frequentes em tabelas analíticas.</li>
+        </ul>
+      </article>
+
+      <!-- 4. LENTE SÊNIOR / DP-700 -->
+      <article class="lens-panel" data-lens-content="senior">
+        <h2>🛠️ Pegadinhas Clássicas do Exame DP-700</h2>
+        <div style="border-left: 4px solid var(--brand-orange); background: var(--bg-surface-alt); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+          <strong style="color: var(--brand-orange); display: block; margin-bottom: 0.25rem;">⚠️ Armadilha #1 de Decisão:</strong>
+          <em>"A equipe precisa expor dados para analistas de dados que usarão SQL Server Management Studio (SSMS) e exigem executar scripts periódicos contendo comandos UPDATE e MERGE para reconciliação manual. Qual item do Fabric você deve provisionar?"</em>
+        </div>
+        <p>
+          <strong>Cuidado com o distrator:</strong> Se uma opção for <em>"Criar um Lakehouse e conceder permissão de escrita no SQL Analytics Endpoint"</em>, essa alternativa é <strong>falsa e impossível tecnicamente</strong>. A resposta correta é invariavelmente o <strong>Fabric Data Warehouse</strong>.
+        </p>
+        <div style="border-left: 4px solid var(--brand-coral); background: var(--bg-surface-alt); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+          <strong style="color: var(--brand-coral); display: block; margin-bottom: 0.25rem;">⚠️ Armadilha #2 de Decisão (Eventhouse vs Lakehouse):</strong>
+          <em>"Milhares de caminhões transmitem telemetria de GPS e temperatura a cada 3 segundos. A diretoria exige alertas com latência inferior a 5 segundos e retenção compactada com indexação de texto livre."</em>
+        </div>
+        <p>
+          <strong>Resposta Oficial:</strong> <strong>Fabric Eventhouse (KQL)</strong>. Spark Streaming no Lakehouse até suporta a ingestão, mas não atinge a latência de milissegundos com indexação de texto livre com a mesma eficiência de CUs do Kusto Engine.
+        </p>
+      </article>
+
+      <!-- 5. LENTE STAFF -->
+      <article class="lens-panel" data-lens-content="staff">
+        <h2>⚙️ Arquitetura Interna: O Motor Polaris vs. Spark Native Engine</h2>
+        <p>
+          O Fabric Data Warehouse é alimentado pelo motor <strong>Polaris</strong>, a evolução da tecnologia de computação distribuída serverless da Microsoft desenvolvida originalmente para o Synapse Serverless SQL.
+        </p>
+        <p>
+          O Polaris separa totalmente o pool de computação dos dados persistidos em Delta Lake no OneLake. Durante a execução de um <code>UPDATE</code> ou <code>MERGE</code>, os nós de computação compilam o plano de execução relacional em código C++ vetorial, reescrevem os arquivos Parquet afetados e gravam o commit atômico no <code>_delta_log</code> com conformidade ACID completa.
+        </p>
+      </article>
+
+      <!-- 6. LENTE C-LEVEL -->
+      <article class="lens-panel" data-lens-content="clevel">
+        <h2>🏛️ Visão Estratégica & FinOps: Sem Duplicação de Licenças</h2>
+        <p>
+          Tanto o Lakehouse quanto o Data Warehouse e o Eventhouse utilizam a mesma capacidade de <strong>Capacity Units (CUs)</strong> e gravam seus dados físicos no <strong>OneLake</strong>.
+        </p>
+        <p>
+          Isso significa que a organização não precisa contratar uma licença de Spark separada e um data warehouse de outro fornecedor. Todos os motores dividem a mesma piscina elástica de recursos com pagamento unificado por segundo.
+        </p>
+      </article>
+
+      <!-- SEÇÃO KINESTHETIC: LAB PRÁTICO -->
+            <!-- SEÇÃO KINESTHETIC: LAB PRÁTICO ESTILO MICROSOFT LEARN -->
+      <section id="bloco-pratica" style="margin-top: 3.5rem;">
+        <div class="mslearn-lab-box">
+          
+          <!-- Cabeçalho do Exercício -->
+          <div class="mslearn-header">
+            <div class="mslearn-badge-row">
+              <span class="mslearn-badge mslearn-badge-portal">🛠️ Microsoft Fabric Hands-on Lab</span>
+              <span class="mslearn-badge mslearn-badge-duration">⏱️ ~25 minutos</span>
+              <span class="mslearn-badge mslearn-badge-role">👤 Engenheiro de Dados • Domínio 1</span>
+              <span class="vark-badge badge-k" style="margin-left: auto;">K - Prática Guiada</span>
+            </div>
+            <h2 style="margin: 0.25rem 0 0.5rem 0; font-family: var(--font-display); color: var(--text-primary); font-size: 1.6rem;">
+              Exercício Prático: Matriz Decisória - Lakehouse vs Warehouse vs Eventhouse
+            </h2>
+            <p style="margin: 0; color: var(--text-secondary); font-size: 0.95rem;">
+              Guia passo a passo para executar diretamente na plataforma em nuvem do <strong>Microsoft Fabric</strong> (ou em simulação local).
+            </p>
+          </div>
+
+          <!-- Cenário de Negócio Oficial -->
+          <div class="mslearn-scenario-card">
+            <h4 style="margin: 0 0 0.5rem 0; color: var(--brand-blue); font-family: var(--font-display);">
+              📋 Cenário do Laboratório
+            </h4>
+            <p style="margin: 0; font-size: 0.92rem; color: var(--text-primary); line-height: 1.55;">
+              Construir uma prova de conceito com os três tipos de armazenamento analítico no Fabric, testando qual motor deve ser recomendado para cada caso de uso corporativo.
+            </p>
+          </div>
+
+          <!-- Pré-requisitos -->
+          <div class="mslearn-prereqs-card">
+            <h4 style="margin: 0 0 0.4rem 0; color: #0078d4; font-family: var(--font-display);">
+              🔑 Pré-requisitos para Execução no Portal
+            </h4>
+            <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; color: var(--text-primary); line-height: 1.5;">
+              <li>Navegador web moderno (Edge, Chrome ou Firefox).</li>
+              <li>Acesso ao portal <a href="https://app.fabric.microsoft.com/" target="_blank" rel="noopener noreferrer" style="color: #0078d4; font-weight: 600; text-decoration: underline;">Microsoft Fabric (app.fabric.microsoft.com)</a>.</li>
+              <li>Capacidade ativa do Fabric (licença <strong>Fabric Trial</strong> gratuita ou capacidade corporativa).</li>
+              <li>Um Workspace configurado no modo de capacidade Fabric.</li>
+            </ul>
+          </div>
+
+          <!-- Tarefa 1 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">1</div>
+              <h3 class="mslearn-task-title">Provisionar os Três Motores no Mesmo Workspace</h3>
+            </div>
+            <ol class="mslearn-step-list">
+              <li>No workspace, crie um item <strong>Lakehouse</strong> (<code>lh_telemetry_files</code>).</li>
+              <li>Crie um item <strong>Data Warehouse</strong> (<code>dw_financial_acid</code>).</li>
+              <li>Crie um item <strong>Eventhouse</strong> (<code>evh_sensor_live</code>).</li>
+            </ol>
+
+            <!-- Captura de Tela da Tarefa 1 -->
+            <div class="portal-screenshot-frame">
+              <div class="portal-window-bar">
+                <div class="portal-window-dots">
+                  <span class="portal-window-dot dot-red"></span>
+                  <span class="portal-window-dot dot-yellow"></span>
+                  <span class="portal-window-dot dot-green"></span>
+                </div>
+                <div class="portal-address-bar">
+                  🔒 https://app.fabric.microsoft.com/groups/workspace/new-items
+                </div>
+              </div>
+              <img src="../assets/images/fabric-ui-01-create-lakehouse.svg" alt="Provisionar os Três Motores no Mesmo Workspace" loading="lazy" />
+              <div class="portal-screenshot-caption">
+                📸 <strong>Captura do Portal:</strong> Criando e organizando Lakehouses, Warehouses e Eventhouses no mesmo ambiente corporativo OneLake.
+              </div>
+            </div>
+          </div>
+
+          <!-- Tarefa 2 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">2</div>
+              <h3 class="mslearn-task-title">Comparar Capacidades de Escrita e Latência</h3>
+            </div>
+            <ol class="mslearn-step-list">
+              <li>No Warehouse, execute comandos relacionais transacionais com <code>BEGIN TRANSACTION</code> e <code>MERGE</code>.</li>
+              <li>No Lakehouse, execute transformações em arquivos Parquet com Spark Notebook.</li>
+              <li>No Eventhouse, ingira streaming em alta velocidade e execute consultas KQL de latência de milissegundos.</li>
+            </ol>
+
+            <!-- Captura de Tela da Tarefa 2 -->
+            <div class="portal-screenshot-frame">
+              <div class="portal-window-bar">
+                <div class="portal-window-dots">
+                  <span class="portal-window-dot dot-red"></span>
+                  <span class="portal-window-dot dot-yellow"></span>
+                  <span class="portal-window-dot dot-green"></span>
+                </div>
+                <div class="portal-address-bar">
+                  🔒 https://app.fabric.microsoft.com/groups/workspace/t-sql-vs-kql
+                </div>
+              </div>
+              <img src="../assets/images/fabric-ui-04-data-warehouse-editor.svg" alt="Comparar Capacidades de Escrita e Latência" loading="lazy" />
+              <div class="portal-screenshot-caption">
+                📸 <strong>Captura do Portal:</strong> Comparativo operacional de execução entre T-SQL relacional no Warehouse e KQL no Eventhouse.
+              </div>
+            </div>
+          </div>
+
+          <!-- Alerta de Exame DP-700 -->
+          <div class="mslearn-exam-note" style="margin-top: 1.5rem;">
+            <strong>⚠️ Atenção para o Exame DP-700:</strong><br>
+            Decisão de Exame: Se o requisito exigir DDL/DML nativo, integridade transacional multi-tabela e RLS/CLS, escolha WAREHOUSE. Se exigir engenharia em Python/Scala com arquivos não estruturados, escolha LAKEHOUSE. Se exigir ingestão contínua de telemetria em tempo real e consultas temporais, escolha EVENTHOUSE.
+          </div>
+
+          <!-- Fallback: Simulação Local Offline -->
+          <div class="mslearn-local-box">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem;">
+              <h4 style="margin: 0; color: var(--brand-teal); font-family: var(--font-display);">
+                💻 Opção Alternativa: Executar Simulação Local Offline no seu Terminal
+              </h4>
+              <span style="font-size: 0.8rem; background: var(--bg-surface-alt); padding: 3px 8px; border-radius: 6px; color: var(--text-secondary);">Sem necessidade de conta Fabric</span>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+              Se você não possui uma assinatura ativa do Fabric no momento, criamos um simulador completo em Python no seu repositório local que reproduz a execução deste laboratório:
+            </p>
+            <pre><code style="font-family: var(--font-mono); font-size: 0.88rem; display: block; background: var(--bg-surface-alt); padding: 0.85rem 1rem; border-radius: 8px; border: 1px solid var(--border-color); overflow-x: auto;"># Execute este comando no terminal para reproduzir o lab:
+./.venv/bin/python labs/0005-architectural-decision-guide/lab_simulation.py</code></pre>
+            <div style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-secondary);">
+              📁 Diretório do laboratório prático local: <code>labs/0005-architectural-decision-guide/</code>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SEÇÃO DE QUIZ DP-700 -->
+              <section id="bloco-quiz" class="totc-card">
+          <h2 style="margin-top: 0;">Pontos Críticos para a Prática e para o Exame DP-700</h2>
+
+          <div class="summary-card">
+            <h3 style="margin-top: 0; color: var(--brand-teal);">📝 Síntese dos Pontos Críticos Aprendidos:</h3>
+            <ol style="margin-bottom: 0;">
+              <li><strong>Lakehouse (Foco em Arquivos & Spark):</strong> Ideal para engenheiros Python/Scala e dados não estruturados; SQL Endpoint fornece acesso analítico somente leitura.</li>
+              <li><strong>Warehouse (Foco em T-SQL & ACID):</strong> Exigido quando o cenário necessita de transações ACID multi-tabela, Stored Procedures, DDL/DML nativo e segurança RLS/CLS no banco.</li>
+              <li><strong>Eventhouse (Foco em Streaming & KQL):</strong> Projetado para ingestão contínua em tempo real de logs, telemetria de sensores e consultas temporais ultrarrápidas.</li>
+              <li><strong>Fundação OneLake Compartilhada:</strong> Todos os três motores leem e gravam em tabelas Delta abertas sem cópias ou movimentação física de dados.</li>
+            </ol>
+          </div>
+
+          <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+            <h3>🎯 Desafio de Exame DP-700</h3>
+            <p>Questão elaborada no padrão da Microsoft com alternativas isomórficas:</p>
+
+            <div class="quiz-card" data-explanation="O <strong>Fabric Data Warehouse</strong> é o item que fornece suporte nativo a comandos T-SQL DML (INSERT, UPDATE, DELETE, MERGE) e Stored Procedures com transações ACID completas. O SQL Analytics Endpoint do Lakehouse é estritamente somente leitura.">
+              <p><strong style="color: var(--text-primary);">Cenário de Exame DP-700:</strong> Uma empresa está construindo sua camada de relatórios no Microsoft Fabric. A equipe de analistas de negócios possui procedimentos armazenados (Stored Procedures) existentes em T-SQL que executam operações de <code>UPDATE</code> e <code>DELETE</code> diretamente nas tabelas analíticas para aplicar correções contábeis mensais. Qual item do Fabric deve ser provisionado para atender a essa exigência técnica com o menor esforço de refatoração?</p>
+              
+              <ul class="quiz-options">
+                <li>
+                  <button class="quiz-option-btn" data-correct="true">
+                    A) Fabric Data Warehouse com suporte completo a comandos T-SQL DML.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    B) Fabric Lakehouse acessado pelo seu SQL Analytics Endpoint.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    C) Fabric Eventhouse configurado com ingestão contínua de telemetria.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    D) Fabric Dataflow Gen2 executando scripts M agendados no gateway.
+                  </button>
+                </li>
+              </ul>
+              <div class="quiz-feedback"></div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--border-color); flex-wrap: wrap; gap: 1rem;">
+            <a href="../reference/03-architectural-engines-decision-matrix.html" style="font-weight: 600;">
+              📑 Abrir Folha de Referência 03 (Matriz Decisória de Motores)
+            </a>
+            <a href="0006-shortcuts-and-mirroring-zero-copy-integration.html" class="audio-btn" style="color: #fff !important;">
+              Próxima Lição: 0006 (Atalhos e Espelhamento Zero-Copy) →
+            </a>
+          </div>
+        </section>
+
+      <footer style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+        <a href="../lessons/0004-onelake-capacities-smoothing-domains-spark-pools.html?v=totc6" class="btn-secondary">
+          ← Lição Anterior: 0004
+        </a>
+        <a href="../simulados/index.html?v=totc6" class="btn-primary">
+          Ir para o Centro de Simulados DP-700 →
+        </a>
+      </footer>
+
+    </main>
+  </div>
+
+  
+</body>
+</html>
+

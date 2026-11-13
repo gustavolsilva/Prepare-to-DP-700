@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ref 03: Matriz Decisória de Motores Analíticos do Fabric</title>
+  <link rel="stylesheet" href="../assets/tufte.css?v=totc6">
+  <link rel="stylesheet" href="../assets/vark.css?v=totc6">
+  <script src="../assets/lens.js?v=totc6"></script>
+  <style>
+    .ref-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.25rem 0;
+      font-size: 0.88rem;
+    }
+    .ref-table th, .ref-table td {
+      border: 1px solid var(--border-color);
+      padding: 0.75rem 0.85rem;
+      text-align: left;
+      vertical-align: top;
+      color: var(--text-primary);
+    }
+    .ref-table th {
+      background-color: var(--bg-surface-alt);
+      font-family: var(--font-display);
+      font-weight: 600;
+      color: var(--text-heading);
+    }
+    .ref-table tr:nth-child(even) { background-color: var(--bg-surface-alt); }
+    .tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      border-radius: 50px;
+      font-family: var(--font-display);
+    }
+    .tag-lh  { background: var(--pill-teal-bg); color: var(--brand-teal); }
+    .tag-wh  { background: var(--pill-orange-bg); color: var(--text-primary); }
+    .tag-eh  { background: var(--pill-blue-bg); color: var(--text-primary); }
+    .tag-sql { background: var(--pill-coral-bg); color: var(--text-primary); }
+  </style>
+</head>
+<body>
+
+  <header class="course-header-banner">
+    <div class="landing-container">
+      <div class="banner-top-row">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <a href="../index.html?v=totc6" class="back-square-btn" style="background: rgba(255,255,255,0.2); box-shadow: none;" title="Voltar ao Portal">←</a>
+          <div>
+            <h1 class="banner-title">Folha de Referência 03: Matriz Decisória de Motores Analíticos</h1>
+            <p class="banner-subtitle">Lakehouse vs. Data Warehouse vs. Eventhouse vs. Fabric SQL Database (Domínio 1)</p>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <button onclick="window.print()" class="banner-time-badge" style="border: none; cursor: pointer;">🖨️ Imprimir / PDF</button>
+          <button type="button" class="theme-toggle-btn" onclick="window.toggleAppTheme()">🌙 Modo Dark</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="landing-container" style="padding-top: 2rem; padding-bottom: 4rem;">
+
+    <section class="totc-card">
+      <h2 style="margin-top: 0;">Matriz Comparativa de Motores para o Exame DP-700</h2>
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th style="width: 15%;">Característica</th>
+            <th style="width: 21%;"><span class="tag tag-lh">Lakehouse</span></th>
+            <th style="width: 21%;"><span class="tag tag-wh">Data Warehouse</span></th>
+            <th style="width: 21%;"><span class="tag tag-eh">Eventhouse</span></th>
+            <th style="width: 22%;"><span class="tag tag-sql">Fabric SQL Database</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Perfil Primário</strong></td>
+            <td>Engenharia de dados Spark, ciência de dados e machine learning.</td>
+            <td>BI corporativo, analistas de negócios e data warehouse relacional.</td>
+            <td>Telemetria IoT, streaming em tempo real, logs e eventos de máquina.</td>
+            <td>Aplicações operacionais OLTP leves integradas ao OneLake.</td>
+          </tr>
+          <tr>
+            <td><strong>Linguagens Principais</strong></td>
+            <td>PySpark, Scala, Spark SQL, R (e SQL read-only via Endpoint).</td>
+            <td>T-SQL completo (DDL e DML: INSERT, UPDATE, DELETE, MERGE).</td>
+            <td>KQL (Kusto Query Language) e subset de T-SQL.</td>
+            <td>T-SQL completo para operações OLTP transacionais.</td>
+          </tr>
+          <tr>
+            <td><strong>Escrita via T-SQL</strong></td>
+            <td>❌ Não (SQL Analytics Endpoint é estritamente Read-Only).</td>
+            <td>✅ Sim (Suporte pleno a comandos DML transacionais).</td>
+            <td>⚠️ Parcial (.ingest / KQL Update Policies).</td>
+            <td>✅ Sim (Com suporte completo a índices OLTP).</td>
+          </tr>
+          <tr>
+            <td><strong>Segurança Granular</strong></td>
+            <td>Apenas no SQL Analytics Endpoint (mas causa Direct Lake Fallback).</td>
+            <td>✅ Nativa no T-SQL: RLS, CLS e Dynamic Data Masking (DDM).</td>
+            <td>✅ Políticas de Row-Level no KQL e restrições de tabela.</td>
+            <td>✅ RLS, CLS, DDM e encriptação nativa do SQL Server.</td>
+          </tr>
+          <tr>
+            <td><strong>Zero-Copy Clones</strong></td>
+            <td>Deep e Shallow clones via comando Delta Spark.</td>
+            <td>✅ Nativo via instrução <code>CREATE TABLE AS CLONE OF</code>.</td>
+            <td>Políticas de retenção e cache gerenciadas pelo motor.</td>
+            <td>Pontos de restauração transacionais (PITR).</td>
+          </tr>
+          <tr>
+            <td><strong>Regra de Ouro DP-700</strong></td>
+            <td>Escolha quando a equipe for fluente em Python/Spark ou precisar de arquivos semiestruturados/não estruturados.</td>
+            <td>Escolha quando for exigido suporte a transações multi-tabela ACID em T-SQL e segurança centralizada de RLS/CLS.</td>
+            <td>Escolha quando a exigência for subsegundo para milhões de eventos por segundo e buscas indexadas de logs.</td>
+            <td>Escolha para microsserviços e apps OLTP que necessitem de espelhamento contínuo zero-ETL no OneLake.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+</body>
+</html>
+

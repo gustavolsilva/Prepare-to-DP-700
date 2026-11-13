@@ -1,0 +1,60 @@
+# ==============================================================================
+# .gitignore: Prepare to DP-700 Workspace
+# Regras completas para Python, Web, Ambientes Virtuais, IDEs e Logs
+# ==============================================================================
+
+# Python Byte-Compiled Files & Caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Python Environments & Distributions
+.venv/
+venv/
+ENV/
+env/
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# IDE & Editor Configurations
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# Operating System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+[Dd]esktop.ini
+
+# Test, Coverage & Tooling Caches
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+.cache/
+
+# Runtime Logs & Temporary Artifacts
+*.log
+*.tmp
+*.bak
+
+# Lab Simulation Runtime Generated Directories (gerados durante a execução dos labs)
+labs/*/bronze/
+labs/*/silver_delta/
+labs/*/external_aws_s3_bucket/
+labs/*/external_adls_gen2/
+labs/*/lakehouse_onelake/
+labs/*/mirrored_azure_sql/

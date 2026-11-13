@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lição 0006: Integração Zero-Copy: OneLake Shortcuts & Database Mirroring</title>
+  <link rel="stylesheet" href="../assets/tufte.css?v=totc6">
+  <link rel="stylesheet" href="../assets/vark.css?v=totc6">
+  <script src="../assets/lens.js?v=totc6"></script>
+  <script src="../assets/quiz.js?v=totc6" defer></script>
+  <script src="../assets/vark.js?v=totc6" defer></script>
+</head>
+<body>
+
+  <div class="course-app-shell">
+
+    <!-- SIDEBAR DE CURRÍCULO E NAVEGAÇÃO -->
+    <aside class="course-sidebar">
+      <div class="sidebar-top-nav">
+        <a href="../index.html?v=totc6" class="back-square-btn" title="Voltar ao Portal do Curso">←</a>
+        <div style="font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--text-primary);">
+          FABRIC <span style="color: var(--brand-teal);">DP-700</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="sidebar-section-title">Módulo 1: Core & Capacidades</div>
+        <div class="sidebar-pill-list">
+          <a href="../lessons/0005-architectural-decision-guide-lakehouse-warehouse-eventhouse.html?v=totc6" class="curriculum-pill">
+            <span class="pill-left">📖 Lição 05: Guia de Decisão</span>
+            <span class="pill-duration">30 mins</span>
+          </a>
+          <a href="#bloco-contexto" class="curriculum-pill active">
+            <span class="pill-left">📖 Lição 06: Shortcuts & Mirroring</span>
+            <span class="pill-duration">25 mins</span>
+          </a>
+          <a href="#bloco-audio" class="curriculum-pill pill-orange">
+            <span class="pill-left">🎧 Narração Neural da Aula</span>
+            <span class="pill-duration">02:15</span>
+          </a>
+          <a href="#bloco-teoria" class="curriculum-pill pill-blue">
+            <span class="pill-left">👁️ Topologia Zero-Copy</span>
+            <span class="pill-duration">Visual</span>
+          </a>
+          <a href="../simulados/index.html?v=totc6" class="curriculum-pill pill-coral">
+            <span class="pill-left">🎯 Centro de Simulados</span>
+            <span class="pill-duration">Exam</span>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <div class="sidebar-section-title">PRACTICE QUIZ & LABS</div>
+        <div class="sidebar-pill-list">
+          <a href="#bloco-pratica" class="curriculum-pill pill-teal">
+            <span class="pill-left">⚡ Lab: Shortcuts & CDC</span>
+            <span class="pill-duration">Python</span>
+          </a>
+          <a href="#bloco-quiz" class="curriculum-pill pill-orange">
+            <span class="pill-left">🎯 Desafio Exame DP-700</span>
+            <span class="pill-duration">Quiz</span>
+          </a>
+        </div>
+      </div>
+
+      <div style="margin-top: auto; padding: 1rem; background: var(--bg-surface-alt); border: 1px solid var(--border-color); border-radius: 14px; font-size: 0.82rem; color: var(--text-secondary);">
+        <strong style="color: var(--text-primary); display: block; margin-bottom: 0.25rem;">💡 Dica de Estudo VARK</strong>
+        A tecnologia Zero-Copy (Shortcuts + Mirroring) é essencial para resolver cenários de economia de rede e armazenamento no DP-700.
+      </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="course-main-content">
+
+      <header class="course-header-banner">
+        <div>
+          <div class="course-badge">Módulo 1 • Domínio 1 do Exame DP-700</div>
+          <h1 class="course-title">Lição 0006: Integração Zero-Copy: OneLake Shortcuts & Database Mirroring</h1>
+          <p class="course-meta">
+            Duração estimada: 25 minutos • Domínio 1 (OneLake & Ingestão) • Áudio Neural & Lab de Simulação
+          </p>
+        </div>
+        <div class="theme-toggle-container">
+          <button class="theme-toggle-btn" onclick="window.toggleAppTheme()" title="Alternar entre Modo Claro e Escuro">
+            <span class="theme-toggle-icon">🌙</span> Alternar Tema
+          </button>
+        </div>
+      </header>
+
+      <nav class="lens-selector-bar" aria-label="Seletor de Nível Pedagógico">
+        <div class="lens-tab-group">
+          <button class="lens-tab" data-lens="unificado">📚 Unificado (Geral)</button>
+          <button class="lens-tab" data-lens="junior">🌱 Júnior / Fundamentos</button>
+          <button class="lens-tab" data-lens="pleno">🌿 Pleno / Implementador</button>
+          <button class="lens-tab" data-lens="senior">🛠️ Sênior / DP-700</button>
+          <button class="lens-tab" data-lens="staff">⚙️ Staff / Under the Hood</button>
+          <button class="lens-tab" data-lens="clevel">🏛️ C-Level / FinOps & TCO</button>
+        </div>
+        <div style="margin-left: auto;">
+          <button class="theme-toggle-btn" onclick="window.toggleAppTheme()" title="Alternar Modo Dark / Light">
+            <span class="theme-toggle-icon">🌙</span> Modo Dark
+          </button>
+        </div>
+      </nav>
+
+      <nav class="vark-nav-bar" aria-label="Atalhos das Modalidades VARK">
+        <a href="#bloco-audio" class="vark-btn"><span class="vark-badge badge-a">A</span> 🎧 Áudio Neural (Auditivo)</a>
+        <a href="#bloco-teoria" class="vark-btn"><span class="vark-badge badge-v">V</span> 👁️ Diagrama de Shortcuts & Mirroring (Visual)</a>
+        <a href="#bloco-contexto" class="vark-btn"><span class="vark-badge badge-r">R</span> 📖 Texto Técnico (Leitura)</a>
+        <a href="#bloco-pratica" class="vark-btn"><span class="vark-badge badge-k">K</span> ⚡ Lab Shortcuts & CDC (Cinestésico)</a>
+      </nav>
+
+      <!-- REPRODUTOR DE ÁUDIO NEURAL -->
+      <div id="bloco-audio" class="audio-player-card">
+        <div class="audio-card-header">
+          <div class="audio-avatar">🎙️</div>
+          <div>
+            <div class="audio-title">Narração Técnica Neural da Lição 0006</div>
+            <div class="audio-subtitle">Voz: Microsoft pt-BR-AntonioNeural • OneLake Shortcuts, ADLS Gen2, S3 e Mirroring</div>
+          </div>
+        </div>
+        <div class="audio-controls-row">
+          <button id="audio-play-btn" class="audio-play-button" aria-label="Reproduzir áudio da lição">▶ Reproduzir Aula</button>
+          <div class="audio-scrubber-track">
+            <div id="audio-progress-bar" class="audio-scrubber-fill" style="width: 0%;"></div>
+          </div>
+          <div id="audio-time-label" class="audio-time-display">00:00 / 02:15</div>
+          <audio id="vark-audio-element" preload="metadata">
+            <source src="../assets/audio/lesson-0006-pt.mp3?v=totc6" type="audio/mpeg">
+            Seu navegador não suporta o elemento de áudio HTML5.
+          </audio>
+        </div>
+      </div>
+
+      <!-- CONTEÚDO MULTI-LENS -->
+      <article id="bloco-contexto" class="lens-panel" data-lens-content="unificado">
+        <h2>Eliminando Silos e Custos de Egress: Shortcuts e Mirroring no OneLake</h2>
+        <p>
+          Antes do Microsoft Fabric, conectar um data lake corporativo a dados legados em outras nuvens (AWS S3 ou Google Cloud) ou bancos transacionais exigia construir rotinas de ETL pesadas que copiavam terabytes de dados diariamente pela internet, incorrendo em tarifas abusivas de tráfego de rede (Egress fees) e duplicação desnecessária de armazenamento.
+        </p>
+        <p>
+          O Microsoft Fabric introduziu uma nova filosofia de arquitetura: <strong>Zero-Copy Integration</strong>.
+        </p>
+
+        <div class="diagram-container" id="bloco-teoria">
+          <h3>Topologia de Integração Zero-Copy: Shortcuts vs. Database Mirroring</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 1rem;">
+            <div style="background: var(--bg-surface-alt); padding: 1.25rem; border-radius: 12px; border: 1.5px solid var(--brand-teal);">
+              <h4 style="margin: 0 0 0.5rem 0; color: var(--brand-teal);">1. OneLake Shortcuts (Ponteiros Virtuais)</h4>
+              <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                Mapeia dados onde eles já residem sem transferir a cópia física.
+              </p>
+              <ul style="font-size: 0.88rem; padding-left: 1.2rem; color: var(--text-primary); margin: 0;">
+                <li><strong>Destinos Suportados:</strong> ADLS Gen2, Amazon S3, Google Cloud Storage, Dataverse e Workspaces internos do Fabric.</li>
+                <li><strong>Mecanismo:</strong> Objeto de metadados JSON no OneLake que aponta para o bucket ou container remoto.</li>
+                <li><strong>Visibilidade:</strong> Tratado de forma transparente pelos motores Spark, SQL Endpoint e Power BI Direct Lake.</li>
+              </ul>
+            </div>
+
+            <div style="background: var(--bg-surface-alt); padding: 1.25rem; border-radius: 12px; border: 1.5px solid var(--brand-orange);">
+              <h4 style="margin: 0 0 0.5rem 0; color: var(--brand-orange);">2. Database Mirroring (Zero-ETL CDC)</h4>
+              <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                Sincronização contínua de bancos relacionais operacionais para o OneLake.
+              </p>
+              <ul style="font-size: 0.88rem; padding-left: 1.2rem; color: var(--text-primary); margin: 0;">
+                <li><strong>Bancos Suportados:</strong> Azure SQL Database, Snowflake, Azure Cosmos DB.</li>
+                <li><strong>Mecanismo:</strong> Lê os logs de transação do banco via Change Data Capture (CDC) de baixo impacto.</li>
+                <li><strong>Armazenamento:</strong> Converte e grava automaticamente em tabelas Delta Parquet prontas para consumo em segundos.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <h3>Delegação de Identidade e Segurança em Shortcuts</h3>
+        <p>
+          Ao criar um Shortcut para fontes externas (como Amazon S3 ou ADLS Gen2), a autenticação pode ser realizada via:
+        </p>
+        <ul>
+          <li><strong>Workspace Identity / Managed Identity:</strong> A identidade do workspace assume as permissões de acesso ao recurso sem expor chaves de API fixas.</li>
+          <li><strong>Role ARN (Amazon Web Services):</strong> Permite delegação cruzada de segurança onde a Microsoft assume temporariamente a role IAM definida na AWS.</li>
+          <li><strong>Controle de Caching:</strong> Opcionalmente, pode-se habilitar cache de leitura de curta duração para otimizar acessos repetitivos de relatórios.</li>
+        </ul>
+      </article>
+
+      <!-- 2. LENTE JÚNIOR -->
+      <article class="lens-panel" data-lens-content="junior">
+        <h2>🌱 O que são Atalhos (Shortcuts) e Espelhamento (Mirroring)?</h2>
+        <p>
+          Pense no <strong>Shortcut</strong> como o atalho que você cria na área de trabalho do seu computador. O arquivo pesado está guardado lá na outra pasta (ou na nuvem da Amazon), mas você clica no ícone da sua mesa e abre o arquivo instantaneamente sem precisar criar uma cópia dele.
+        </p>
+        <p>
+          Pense no <strong>Mirroring</strong> como um espelho mágico. Toda vez que um cliente faz uma compra no banco de dados da loja, o espelho reflete essa mudança no OneLake em poucos segundos, sem que ninguém precise rodar um programa manual de cópia.
+        </p>
+      </article>
+
+      <!-- 3. LENTE PLENO -->
+      <article class="lens-panel" data-lens-content="pleno">
+        <h2>🌿 Como Criar um Shortcut no Lakehouse Passo a Passo</h2>
+        <p>
+          Para integrar um bucket do Amazon S3 ou container ADLS Gen2 no Fabric:
+        </p>
+        <ol>
+          <li>Abra o seu <strong>Lakehouse</strong> no Fabric.</li>
+          <li>Clique com o botão direito na pasta <strong>Tables</strong> ou <strong>Files</strong> e selecione <strong>New shortcut</strong>.</li>
+          <li>Selecione a fonte externa (ex: <code>Amazon S3</code> ou <code>Azure Data Lake Storage Gen2</code>).</li>
+          <li>Insira a URL do bucket (ex: <code>s3://meu-bucket/vendas/</code>), informe as credenciais de conexão e confirme.</li>
+          <li>A pasta aparece imediatamente como uma tabela Delta local pronta para consultas em PySpark e T-SQL!</li>
+        </ol>
+      </article>
+
+      <!-- 4. LENTE SÊNIOR / DP-700 -->
+      <article class="lens-panel" data-lens-content="senior">
+        <h2>🛠️ Cenários de Prova DP-700: Shortcuts vs. Copy Data & Mirroring Constraints</h2>
+        <div style="border-left: 4px solid var(--brand-orange); background: var(--bg-surface-alt); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+          <strong style="color: var(--brand-orange); display: block; margin-bottom: 0.25rem;">⚠️ Padrão Clássico de Questão da Certificação:</strong>
+          <em>"A empresa possui 40 TB de dados históricos em formato Delta Lake armazenados em um bucket do Amazon S3. A equipe precisa realizar consultas analíticas no Fabric minimizando os custos de armazenamento e evitando qualquer duplicação física de dados. O que você deve fazer?"</em>
+        </div>
+        <p>
+          <strong>Solução Invariável:</strong> Criar um <strong>OneLake Shortcut</strong> apontando para o bucket do Amazon S3. Se o enunciado mencionar <em>"Criar um pipeline no Data Factory para copiar os dados periodicamente"</em>, descarte imediatamente essa alternativa pois ela duplica dados e viola o requisito de custo mínimo.
+        </p>
+        <h3>Requisitos Técnicos Mandatórios do Mirroring:</h3>
+        <ul>
+          <li>O banco de dados operacional de origem precisa ter a opção de <strong>Change Data Capture (CDC)</strong> ativa e suportada.</li>
+          <li>No caso do Azure SQL Database, o nível de serviço deve ser <strong>General Purpose</strong> ou superior (Standard S3 ou superior).</li>
+          <li>A sincronização de metadados e arquivos Delta gerados pelo Mirroring fica disponível no catálogo do OneLake e é consultável via T-SQL e Direct Lake.</li>
+        </ul>
+      </article>
+
+      <!-- 5. LENTE STAFF -->
+      <article class="lens-panel" data-lens-content="staff">
+        <h2>⚙️ Arquitetura Interna: Resolução de Metadados e Latência de Rede</h2>
+        <p>
+          Quando um nó executor de Spark executa um <em>Scan</em> sobre uma tabela mapeada via OneLake Shortcut para o S3:
+        </p>
+        <ol>
+          <li>O driver do Fabric consulta o metadado do Shortcut no OneLake para resolver o endpoint remoto e as credenciais temporárias do IAM Role.</li>
+          <li>O plano de execução empurra a leitura diretamente contra as APIs REST do S3 (<em>GetObject</em>).</li>
+          <li>Os blocos colunares do Parquet são transmitidos diretamente para a memória do executor Spark.</li>
+          <li>Se o cache do Shortcut estiver habilitado, blocos frequentemente lidos são mantidos no SSD NVMe local do nó de computação do Fabric por até 24 horas, acelerando leituras subsequentes.</li>
+        </ol>
+      </article>
+
+      <!-- 6. LENTE C-LEVEL -->
+      <article class="lens-panel" data-lens-content="clevel">
+        <h2>🏛️ Visão Estratégica & FinOps: Economia Brutal em Taxas de Egress</h2>
+        <p>
+          Empresas multinacionais que operam em ambientes multi-cloud (AWS + Azure) gastam dezenas de milhares de dólares por mês em taxas de transferência de saída (Egress fees) ao sincronizar data lakes completos.
+        </p>
+        <p>
+          Com <strong>OneLake Shortcuts</strong>:
+        </p>
+        <ul>
+          <li>Apenas os bytes das colunas efetivamente consultadas (graças ao <em>Column Pruning</em> do Parquet) trafegam pela rede, gerando uma redução de até <strong>85% no tráfego de dados entre nuvens</strong>.</li>
+          <li>Elimina-se o pagamento de armazenamento duplicado em duas nuvens simultâneas.</li>
+        </ul>
+      </article>
+
+      <!-- SEÇÃO KINESTHETIC: LAB PRÁTICO -->
+            <!-- SEÇÃO KINESTHETIC: LAB PRÁTICO ESTILO MICROSOFT LEARN -->
+      <section id="bloco-pratica" style="margin-top: 3.5rem;">
+        <div class="mslearn-lab-box">
+          
+          <!-- Cabeçalho do Exercício -->
+          <div class="mslearn-header">
+            <div class="mslearn-badge-row">
+              <span class="mslearn-badge mslearn-badge-portal">🛠️ Microsoft Fabric Hands-on Lab</span>
+              <span class="mslearn-badge mslearn-badge-duration">⏱️ ~25 minutos</span>
+              <span class="mslearn-badge mslearn-badge-role">👤 Engenheiro de Dados • Domínio 1 & 2</span>
+              <span class="vark-badge badge-k" style="margin-left: auto;">K - Prática Guiada</span>
+            </div>
+            <h2 style="margin: 0.25rem 0 0.5rem 0; font-family: var(--font-display); color: var(--text-primary); font-size: 1.6rem;">
+              Exercício Prático: Criar Atalhos (Shortcuts) no OneLake e Mirroring Zero-Copy
+            </h2>
+            <p style="margin: 0; color: var(--text-secondary); font-size: 0.95rem;">
+              Guia passo a passo para executar diretamente na plataforma em nuvem do <strong>Microsoft Fabric</strong> (ou em simulação local).
+            </p>
+          </div>
+
+          <!-- Cenário de Negócio Oficial -->
+          <div class="mslearn-scenario-card">
+            <h4 style="margin: 0 0 0.5rem 0; color: var(--brand-blue); font-family: var(--font-display);">
+              📋 Cenário do Laboratório
+            </h4>
+            <p style="margin: 0; font-size: 0.92rem; color: var(--text-primary); line-height: 1.55;">
+              A empresa possui dados legados no Amazon S3 e no Azure Data Lake Storage Gen2. Em vez de criar pipelines caros de cópia, você criará atalhos (Shortcuts) no OneLake permitindo consultas diretas em subsegundo.
+            </p>
+          </div>
+
+          <!-- Pré-requisitos -->
+          <div class="mslearn-prereqs-card">
+            <h4 style="margin: 0 0 0.4rem 0; color: #0078d4; font-family: var(--font-display);">
+              🔑 Pré-requisitos para Execução no Portal
+            </h4>
+            <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; color: var(--text-primary); line-height: 1.5;">
+              <li>Navegador web moderno (Edge, Chrome ou Firefox).</li>
+              <li>Acesso ao portal <a href="https://app.fabric.microsoft.com/" target="_blank" rel="noopener noreferrer" style="color: #0078d4; font-weight: 600; text-decoration: underline;">Microsoft Fabric (app.fabric.microsoft.com)</a>.</li>
+              <li>Capacidade ativa do Fabric (licença <strong>Fabric Trial</strong> gratuita ou capacidade corporativa).</li>
+              <li>Um Workspace configurado no modo de capacidade Fabric.</li>
+            </ul>
+          </div>
+
+          <!-- Tarefa 1 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">1</div>
+              <h3 class="mslearn-task-title">Criar um Atalho (Shortcut) para o Amazon S3</h3>
+            </div>
+            <ol class="mslearn-step-list">
+              <li>Abra o Lakehouse <code>lh_global_enterprise</code>.</li>
+              <li>Passe o mouse sobre a pasta <strong>Tables</strong>, clique nos três pontos (<strong>...</strong>) e selecione <strong>Novo atalho (New shortcut)</strong>.</li>
+              <li>Selecione o provedor <strong>Amazon S3</strong>.</li>
+              <li>Preencha o caminho do bucket (ex: <code>s3://corp-telemetry-data/</code>) e as credenciais de acesso.</li>
+              <li>Nomeie o atalho como <code>s3_telemetria_shortcut</code> e clique em <strong>Criar</strong>.</li>
+            </ol>
+
+            <!-- Captura de Tela da Tarefa 1 -->
+            <div class="portal-screenshot-frame">
+              <div class="portal-window-bar">
+                <div class="portal-window-dots">
+                  <span class="portal-window-dot dot-red"></span>
+                  <span class="portal-window-dot dot-yellow"></span>
+                  <span class="portal-window-dot dot-green"></span>
+                </div>
+                <div class="portal-address-bar">
+                  🔒 https://app.fabric.microsoft.com/groups/lh_global_enterprise/shortcuts
+                </div>
+              </div>
+              <img src="../assets/images/fabric-ui-05-shortcuts-modal.svg" alt="Criar um Atalho (Shortcut) para o Amazon S3" loading="lazy" />
+              <div class="portal-screenshot-caption">
+                📸 <strong>Captura do Portal:</strong> Assistente de criação de atalhos (Shortcuts) para fontes internas OneLake, ADLS Gen2 e Amazon S3.
+              </div>
+            </div>
+          </div>
+
+          <!-- Tarefa 2 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">2</div>
+              <h3 class="mslearn-task-title">Consultar o Atalho Diretamente sem Duplicação</h3>
+            </div>
+            <ol class="mslearn-step-list">
+              <li>Abra o Notebook Spark vinculado ao Lakehouse.</li>
+              <li>Leia os dados da tabela criada pelo atalho exatamente como se fosse uma tabela local:</li>
+              <li><code>df_s3 = spark.table('s3_telemetria_shortcut'); display(df_s3.limit(10))</code></li>
+              <li>Observe que o OneLake busca os dados sob demanda sem transferir armazenamento permanente.</li>
+            </ol>
+          </div>
+
+          <!-- Alerta de Exame DP-700 -->
+          <div class="mslearn-exam-note" style="margin-top: 1.5rem;">
+            <strong>⚠️ Atenção para o Exame DP-700:</strong><br>
+            Pegadinha de Exame: Os atalhos não copiam arquivos físicos; eles apenas criam metadados apontando para a fonte externa. Se a credencial na AWS/Azure expirar ou os dados forem deletados no bucket de origem, o atalho no Fabric apresentará falha de leitura.
+          </div>
+
+          <!-- Fallback: Simulação Local Offline -->
+          <div class="mslearn-local-box">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem;">
+              <h4 style="margin: 0; color: var(--brand-teal); font-family: var(--font-display);">
+                💻 Opção Alternativa: Executar Simulação Local Offline no seu Terminal
+              </h4>
+              <span style="font-size: 0.8rem; background: var(--bg-surface-alt); padding: 3px 8px; border-radius: 6px; color: var(--text-secondary);">Sem necessidade de conta Fabric</span>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+              Se você não possui uma assinatura ativa do Fabric no momento, criamos um simulador completo em Python no seu repositório local que reproduz a execução deste laboratório:
+            </p>
+            <pre><code style="font-family: var(--font-mono); font-size: 0.88rem; display: block; background: var(--bg-surface-alt); padding: 0.85rem 1rem; border-radius: 8px; border: 1px solid var(--border-color); overflow-x: auto;"># Execute este comando no terminal para reproduzir o lab:
+./.venv/bin/python labs/0006-shortcuts-and-mirroring/lab_simulation.py</code></pre>
+            <div style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-secondary);">
+              📁 Diretório do laboratório prático local: <code>labs/0006-shortcuts-and-mirroring/</code>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SEÇÃO DE QUIZ DP-700 -->
+              <section id="bloco-quiz" class="totc-card">
+          <h2 style="margin-top: 0;">Pontos Críticos para a Prática e para o Exame DP-700</h2>
+
+          <div class="summary-card">
+            <h3 style="margin-top: 0; color: var(--brand-teal);">📝 Síntese dos Pontos Críticos Aprendidos:</h3>
+            <ol style="margin-bottom: 0;">
+              <li><strong>Conceito de Shortcuts (Atalhos):</strong> Ponteiros lógicos no OneLake que referenciam dados em fontes externas (ADLS Gen2, Amazon S3, Dataverse) sem duplicar armazenamento.</li>
+              <li><strong>Zero-Copy Architecture:</strong> Consultas analíticas executadas no Fabric leem os dados diretamente na nuvem de origem, reduzindo custos de tráfego de rede e tempo de ETL.</li>
+              <li><strong>Shortcuts Internos:</strong> Permitem reutilizar tabelas entre diferentes Lakehouses e Warehouses sem quebrar limites de workspace ou duplicar dados.</li>
+              <li><strong>Mirroring no Fabric:</strong> Replicação automática e contínua de bancos relacionais (Cosmos DB, Azure SQL, Snowflake) em formato Delta Parquet no OneLake.</li>
+            </ol>
+          </div>
+
+          <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+            <h3>🎯 Desafio de Exame DP-700</h3>
+            <p>Questão elaborada no padrão da Microsoft com alternativas isomórficas:</p>
+
+            <div class="quiz-card" data-explanation="Os <strong>OneLake Shortcuts</strong> criam links simbólicos virtuais diretamente para o bucket do Amazon S3, permitindo que os notebooks PySpark acessem os dados sem mover ou duplicar nenhum arquivo físico no OneLake.">
+              <p><strong style="color: var(--text-primary);">Cenário de Exame DP-700:</strong> Você precisa disponibilizar 30 TB de dados históricos em formato Delta Lake armazenados em um bucket do Amazon S3 para cientistas de dados que utilizam notebooks PySpark no Microsoft Fabric. A solução deve evitar a duplicação física dos dados e minimizar os custos operacionais de armazenamento no OneLake. Qual recurso você deve implementar?</p>
+              
+              <ul class="quiz-options">
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    A) Criar uma atividade de Copy Data no pipeline do Data Factory.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    B) Exportar os dados para arquivos BCP via máquina virtual EC2.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="true">
+                    C) Criar um OneLake Shortcut apontando para o bucket do Amazon S3.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    D) Configurar Database Mirroring com replicação CDC para o S3.
+                  </button>
+                </li>
+              </ul>
+              <div class="quiz-feedback"></div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--border-color); flex-wrap: wrap; gap: 1rem;">
+            <a href="../reference/02-storage-delta-medallion-shortcuts-guide.html" style="font-weight: 600;">
+              📑 Abrir Folha de Referência 02 (Storage, Delta & Shortcuts)
+            </a>
+            <a href="0007-orchestration-pipelines-dataflows-dag.html" class="audio-btn" style="color: #fff !important;">
+              Próxima Lição: 0007 (Orquestração: Pipelines e Dataflows Gen2) →
+            </a>
+          </div>
+        </section>
+
+      <footer style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+        <a href="../lessons/0005-architectural-decision-guide-lakehouse-warehouse-eventhouse.html?v=totc6" class="btn-secondary">
+          ← Lição Anterior: 0005
+        </a>
+        <a href="../simulados/index.html?v=totc6" class="btn-primary">
+          Ir para o Centro de Simulados DP-700 →
+        </a>
+      </footer>
+
+    </main>
+  </div>
+
+  
+</body>
+</html>
+

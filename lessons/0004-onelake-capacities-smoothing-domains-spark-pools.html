@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lição 0004: OneLake, Capacidades F-SKU, Smoothing, Domínios & Spark Pools</title>
+  <link rel="stylesheet" href="../assets/tufte.css?v=totc6">
+  <link rel="stylesheet" href="../assets/vark.css?v=totc6">
+  <script src="../assets/lens.js?v=totc6"></script>
+  <script src="../assets/quiz.js?v=totc6" defer></script>
+  <script src="../assets/vark.js?v=totc6" defer></script>
+</head>
+<body>
+
+  <div class="course-app-shell">
+
+    <!-- COLUNA ESQUERDA: SIDEBAR DE CURRÍCULO E NAVEGAÇÃO -->
+    <aside class="course-sidebar">
+      <div class="sidebar-top-nav">
+        <a href="../index.html?v=totc6" class="back-square-btn" title="Voltar ao Portal do Curso">←</a>
+        <div style="font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--text-primary);">
+          FABRIC <span style="color: var(--brand-teal);">DP-700</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="sidebar-section-title">Módulo 1: Core & Capacidades</div>
+        <div class="sidebar-pill-list">
+          <a href="#bloco-contexto" class="curriculum-pill active">
+            <span class="pill-left">📖 Lição 04: Capacidades & Spark</span>
+            <span class="pill-duration">25 mins</span>
+          </a>
+          <a href="#bloco-audio" class="curriculum-pill pill-orange">
+            <span class="pill-left">🎧 Narração Neural da Aula</span>
+            <span class="pill-duration">02:20</span>
+          </a>
+          <a href="#bloco-teoria" class="curriculum-pill pill-blue">
+            <span class="pill-left">👁️ Arquitetura de CUs & Mesh</span>
+            <span class="pill-duration">Visual</span>
+          </a>
+          <a href="../simulados/index.html?v=totc6" class="curriculum-pill pill-coral">
+            <span class="pill-left">🎯 Centro de Simulados</span>
+            <span class="pill-duration">Exam</span>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <div class="sidebar-section-title">PRACTICE QUIZ & LABS</div>
+        <div class="sidebar-pill-list">
+          <a href="#bloco-pratica" class="curriculum-pill pill-teal">
+            <span class="pill-left">⚡ Lab: Sizing F-SKU & Pools</span>
+            <span class="pill-duration">Python</span>
+          </a>
+          <a href="#bloco-quiz" class="curriculum-pill pill-orange">
+            <span class="pill-left">🎯 Desafio Exame DP-700</span>
+            <span class="pill-duration">Quiz</span>
+          </a>
+        </div>
+      </div>
+
+      <div style="margin-top: auto; padding: 1rem; background: var(--bg-surface-alt); border: 1px solid var(--border-color); border-radius: 14px; font-size: 0.82rem; color: var(--text-secondary);">
+        <strong style="color: var(--text-primary); display: block; margin-bottom: 0.25rem;">💡 Dica de Estudo VARK</strong>
+        A SKU F64 e o mecanismo de Smoothing de 24h são temas recorrentes em questões de dimensionamento no exame DP-700.
+      </div>
+    </aside>
+
+    <!-- COLUNA DIREITA: CONTEÚDO PRINCIPAL -->
+    <main class="course-main-content">
+
+      <header class="course-header-banner">
+        <div>
+          <div class="course-badge">Módulo 1 • Domínio 1 do Exame DP-700</div>
+          <h1 class="course-title">Lição 0004: OneLake, Capacidades F-SKU, Smoothing, Domínios & Spark Pools</h1>
+          <p class="course-meta">
+            Duração estimada: 25 minutos • Domínio 1 (30–35% do Exame) • Áudio Neural & Lab de Sizing
+          </p>
+        </div>
+        <div class="theme-toggle-container">
+          <button class="theme-toggle-btn" onclick="window.toggleAppTheme()" title="Alternar entre Modo Claro e Escuro">
+            <span class="theme-toggle-icon">🌙</span> Alternar Tema
+          </button>
+        </div>
+      </header>
+
+      <nav class="lens-selector-bar" aria-label="Seletor de Nível Pedagógico">
+        <div class="lens-tab-group">
+          <button class="lens-tab" data-lens="unificado">📚 Unificado (Geral)</button>
+          <button class="lens-tab" data-lens="junior">🌱 Júnior / Fundamentos</button>
+          <button class="lens-tab" data-lens="pleno">🌿 Pleno / Implementador</button>
+          <button class="lens-tab" data-lens="senior">🛠️ Sênior / DP-700</button>
+          <button class="lens-tab" data-lens="staff">⚙️ Staff / Under the Hood</button>
+          <button class="lens-tab" data-lens="clevel">🏛️ C-Level / FinOps & TCO</button>
+        </div>
+        <div style="margin-left: auto;">
+          <button class="theme-toggle-btn" onclick="window.toggleAppTheme()" title="Alternar Modo Dark / Light">
+            <span class="theme-toggle-icon">🌙</span> Modo Dark
+          </button>
+        </div>
+      </nav>
+
+      <nav class="vark-nav-bar" aria-label="Atalhos das Modalidades VARK">
+        <a href="#bloco-audio" class="vark-btn"><span class="vark-badge badge-a">A</span> 🎧 Áudio Neural (Auditivo)</a>
+        <a href="#bloco-teoria" class="vark-btn"><span class="vark-badge badge-v">V</span> 👁️ Diagrama de Capacidades & Smoothing (Visual)</a>
+        <a href="#bloco-contexto" class="vark-btn"><span class="vark-badge badge-r">R</span> 📖 Texto Técnico (Leitura)</a>
+        <a href="#bloco-pratica" class="vark-btn"><span class="vark-badge badge-k">K</span> ⚡ Lab Sizing & Smoothing (Cinestésico)</a>
+      </nav>
+
+      <!-- REPRODUTOR DE ÁUDIO NEURAL -->
+      <div id="bloco-audio" class="audio-player-card">
+        <div class="audio-card-header">
+          <div class="audio-avatar">🎙️</div>
+          <div>
+            <div class="audio-title">Narração Técnica Neural da Lição 0004</div>
+            <div class="audio-subtitle">Voz: Microsoft pt-BR-AntonioNeural • Fonética de F-SKU, CUs, Smoothing e Spark Pools</div>
+          </div>
+        </div>
+        <div class="audio-controls-row">
+          <button id="audio-play-btn" class="audio-play-button" aria-label="Reproduzir áudio da lição">▶ Reproduzir Aula</button>
+          <div class="audio-scrubber-track">
+            <div id="audio-progress-bar" class="audio-scrubber-fill" style="width: 0%;"></div>
+          </div>
+          <div id="audio-time-label" class="audio-time-display">00:00 / 02:20</div>
+          <audio id="vark-audio-element" preload="metadata">
+            <source src="../assets/audio/lesson-0004-pt.mp3?v=totc6" type="audio/mpeg">
+            Seu navegador não suporta o elemento de áudio HTML5.
+          </audio>
+        </div>
+      </div>
+
+      <!-- CONTEÚDO MULTI-LENS -->
+      <article id="bloco-contexto" class="lens-panel" data-lens-content="unificado">
+        <h2>A Unificação Computacional do Fabric: Capacidades, CUs e Domínios</h2>
+        <p>
+          No modelo tradicional de nuvem, cada serviço mantinha sua própria infraestrutura isolada com custos fixos e capacidades ociosas (ex: nós Spark no Databricks, DWUs no Synapse Dedicated, instâncias do Analysis Services).
+        </p>
+        <p>
+          O <strong>Microsoft Fabric</strong> revoluciona essa gestão unificando toda a computação em uma única entidade: a <strong>Fabric Capacity (F-SKU)</strong>, medida em <strong>Capacity Units (CUs)</strong>. Uma capacidade F64 fornece 64 CUs constantes por segundo para todos os workspaces associados a ela.
+        </p>
+
+        <div class="diagram-container" id="bloco-teoria">
+          <h3>Como o Mecanismo de Smoothing Protege a Capacidade contra Picos</h3>
+          <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">
+            O Smoothing calcula a média móvel do consumo em janelas distintas dependendo do tipo de operação.
+          </p>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+            <div style="background: var(--bg-surface-alt); padding: 1.25rem; border-radius: 12px; border: 1.5px solid var(--brand-teal);">
+              <h4 style="margin: 0 0 0.5rem 0; color: var(--brand-teal);">Operações em Segundo Plano (Background)</h4>
+              <p style="font-size: 0.9rem; color: var(--text-secondary); margin: 0 0 0.5rem 0;">
+                Exemplos: Notebooks PySpark agendados, Dataflows Gen2, pipelines do Data Factory.
+              </p>
+              <div style="font-weight: 700; font-size: 1.05rem; color: var(--text-primary);">
+                Janela de Smoothing: <span style="color: var(--brand-teal);">24 Horas Móveis</span>
+              </div>
+              <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                Um pico pesado de 10 minutos é dividido por 1.440 minutos, impedindo interrupção imediata da capacidade.
+              </p>
+            </div>
+
+            <div style="background: var(--bg-surface-alt); padding: 1.25rem; border-radius: 12px; border: 1.5px solid var(--brand-orange);">
+              <h4 style="margin: 0 0 0.5rem 0; color: var(--brand-orange);">Operações Interativas (Interactive)</h4>
+              <p style="font-size: 0.9rem; color: var(--text-secondary); margin: 0 0 0.5rem 0;">
+                Exemplos: Consultas sob demanda no SQL Analytics Endpoint, exploração de relatórios Power BI, células manuais no notebook.
+              </p>
+              <div style="font-weight: 700; font-size: 1.05rem; color: var(--text-primary);">
+                Janela de Smoothing: <span style="color: var(--brand-orange);">5 Minutos Móveis</span>
+              </div>
+              <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                Amortização rápida para acomodar interações instantâneas de usuários analíticos.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <h3>Governança de Data Mesh com Domínios no OneLake</h3>
+        <p>
+          Em grandes organizações, múltiplos times compartilham a mesma capacidade. O Microsoft Fabric introduziu os <strong>Domínios (Domains)</strong> para implementar o padrão <strong>Data Mesh</strong>:
+        </p>
+        <ul>
+          <li><strong>Agrupamento Lógico:</strong> Permite agrupar dezenas de workspaces sob unidades de negócio (ex: <code>Vendas</code>, <code>Supply Chain</code>, <code>RH</code>).</li>
+          <li><strong>Administração Delegada:</strong> Administradores de Domínio podem gerenciar permissões e definir políticas de conformidade sem precisar de privilégios de Administrador de Tenant global.</li>
+          <li><strong>Descoberta no OneLake Data Hub:</strong> Usuários de negócios podem filtrar dados homologados e certificados por domínio.</li>
+        </ul>
+
+        <h3>Starter Pools vs. Custom Spark Pools</h3>
+        <p>
+          Para execução de código PySpark, o Fabric disponibiliza:
+        </p>
+        <ul>
+          <li><strong>Starter Pools:</strong> Nós compartilhados pré-aquecidos pela Microsoft com inicialização de 5 a 10 segundos. Ideais para exploração interativa.</li>
+          <li><strong>Custom Pools:</strong> Pools criadas no nível do workspace que permitem fixar tamanhos de nós (Small, Medium, Large, X-Large), limites de escalabilidade automática (Autoscale) e alocação dinâmica de executores para pipelines de produção de missão crítica.</li>
+        </ul>
+      </article>
+
+      <!-- 2. LENTE JÚNIOR -->
+      <article class="lens-panel" data-lens-content="junior">
+        <h2>🌱 O que são Capacidades e CUs no Microsoft Fabric?</h2>
+        <p>
+          Pense na <strong>Capacidade Fabric</strong> como a conta de luz da sua casa. Em vez de comprar um motor separado para a geladeira, outro para a televisão e outro para o chuveiro, você contrata uma quantidade de energia compartilhada (as chamadas <strong>CUs</strong>).
+        </p>
+        <p>
+          Se você ligar o chuveiro por 10 minutos (um processamento pesado), o sistema de <strong>Smoothing</strong> do Fabric distribui esse consumo ao longo do dia inteiro para que o disjuntor geral não caia!
+        </p>
+      </article>
+
+      <!-- 3. LENTE PLENO -->
+      <article class="lens-panel" data-lens-content="pleno">
+        <h2>🌿 Configurando Spark Pools e Workspaces no Fabric</h2>
+        <p>
+          Como Engenheiro de Dados, você deve configurar as propriedades do Spark no seu Workspace:
+        </p>
+        <ol>
+          <li>Acesse <strong>Workspace Settings → Data Engineering/Science → Spark settings</strong>.</li>
+          <li>Em <strong>Environment</strong>, defina o pool padrão (Starter Pool ou Custom Pool).</li>
+          <li>Configure o <strong>Timeout de Inatividade</strong> (ex: 20 minutos) para liberar CUs ociosas de volta para a capacidade corporativa.</li>
+        </ol>
+      </article>
+
+      <!-- 4. LENTE SÊNIOR / DP-700 -->
+      <article class="lens-panel" data-lens-content="senior">
+        <h2>🛠️ Armadilhas de Prova: F64, Licenciamento e Estágios de Throttling</h2>
+        <div style="border-left: 4px solid var(--brand-orange); background: var(--bg-surface-alt); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+          <strong style="color: var(--brand-orange); display: block; margin-bottom: 0.25rem;">⚠️ Questão Recorrente no Exame DP-700:</strong>
+          Qual é a SKU mínima necessária para compartilhar relatórios do Power BI com usuários que possuem apenas a licença gratuita (Fabric Free)?
+        </div>
+        <p>
+          <strong>Resposta Oficial:</strong> A SKU mínima é a <strong>F64</strong>. Capacidades menores (como F2, F4, F8, F16 e F32) exigem que todos os consumidores possuam uma licença individual paga <strong>Power BI Pro</strong> para visualizar relatórios hospedados no workspace.
+        </p>
+        <h3>Estágios de Throttling do Fabric:</h3>
+        <ol>
+          <li><strong>Interactive Delay:</strong> Pequeno atraso em requisições interativas para aliviar picos.</li>
+          <li><strong>Interactive Rejection:</strong> Novas consultas interativas são rejeitadas imediatamente (código HTTP 429).</li>
+          <li><strong>Background Rejection:</strong> Bloqueio total de novas execuções de pipelines e notebooks em segundo plano.</li>
+        </ol>
+      </article>
+
+      <!-- 5. LENTE STAFF -->
+      <article class="lens-panel" data-lens-content="staff">
+        <h2>⚙️ Arquitetura Interna: Alocação de vCores e Dynamic Allocation</h2>
+        <p>
+          Cada Capacity Unit (CU) no Fabric equivale a <strong>2 vCores de Spark</strong>. Em uma capacidade F64 (64 CUs), o cluster pode provisionar até <strong>128 Spark vCores</strong> simultâneos.
+        </p>
+        <p>
+          Quando a alocação dinâmica de executores (<em>Dynamic Allocation</em>) está ativa, o driver do Spark monitora a fila de tarefas pendentes e escala horizontalmente o número de executores entre o mínimo e o máximo estipulados no Custom Pool, desalocando nós ociosos automaticamente assim que a etapa de processamento é concluída.
+        </p>
+      </article>
+
+      <!-- 6. LENTE C-LEVEL -->
+      <article class="lens-panel" data-lens-content="clevel">
+        <h2>🏛️ Visão Executiva & FinOps: Otimização de Custos com Capacidades Reservadas</h2>
+        <p>
+          As capacidades Fabric (F-SKUs) podem ser contratadas no modelo <strong>Pay-as-you-go</strong> ou no modelo de <strong>Instâncias Reservadas (RI) de 1 ou 3 anos</strong> com até <strong>40% de desconto</strong> no custo de computação do Azure.
+        </p>
+        <p>
+          Além disso, o recurso de <strong>Pausa e Retomada (Pause & Resume)</strong> permite que capacidades de desenvolvimento e homologação sejam pausadas fora do horário comercial (ex: noites e finais de semana), gerando uma economia adicional de até <strong>60% na fatura mensal</strong>.
+        </p>
+      </article>
+
+      <!-- SEÇÃO KINESTHETIC: LAB PRÁTICO -->
+            <!-- SEÇÃO KINESTHETIC: LAB PRÁTICO ESTILO MICROSOFT LEARN -->
+      <section id="bloco-pratica" style="margin-top: 3.5rem;">
+        <div class="mslearn-lab-box">
+          
+          <!-- Cabeçalho do Exercício -->
+          <div class="mslearn-header">
+            <div class="mslearn-badge-row">
+              <span class="mslearn-badge mslearn-badge-portal">🛠️ Microsoft Fabric Hands-on Lab</span>
+              <span class="mslearn-badge mslearn-badge-duration">⏱️ ~25 minutos</span>
+              <span class="mslearn-badge mslearn-badge-role">👤 Engenheiro de Dados • Domínio 1</span>
+              <span class="vark-badge badge-k" style="margin-left: auto;">K - Prática Guiada</span>
+            </div>
+            <h2 style="margin: 0.25rem 0 0.5rem 0; font-family: var(--font-display); color: var(--text-primary); font-size: 1.6rem;">
+              Exercício Prático: Gerenciar Capacidade OneLake, Starter Pools do Spark e Domínios
+            </h2>
+            <p style="margin: 0; color: var(--text-secondary); font-size: 0.95rem;">
+              Guia passo a passo para executar diretamente na plataforma em nuvem do <strong>Microsoft Fabric</strong> (ou em simulação local).
+            </p>
+          </div>
+
+          <!-- Cenário de Negócio Oficial -->
+          <div class="mslearn-scenario-card">
+            <h4 style="margin: 0 0 0.5rem 0; color: var(--brand-blue); font-family: var(--font-display);">
+              📋 Cenário do Laboratório
+            </h4>
+            <p style="margin: 0; font-size: 0.92rem; color: var(--text-primary); line-height: 1.55;">
+              A corporação precisa estruturar a governança de múltiplos times (Vendas, RH e Logística), associando workspaces a Domínios do Fabric e configurando Starter Pools de inicialização rápida para Spark, sem estourar o limite de CUs.
+            </p>
+          </div>
+
+          <!-- Pré-requisitos -->
+          <div class="mslearn-prereqs-card">
+            <h4 style="margin: 0 0 0.4rem 0; color: #0078d4; font-family: var(--font-display);">
+              🔑 Pré-requisitos para Execução no Portal
+            </h4>
+            <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; color: var(--text-primary); line-height: 1.5;">
+              <li>Navegador web moderno (Edge, Chrome ou Firefox).</li>
+              <li>Acesso ao portal <a href="https://app.fabric.microsoft.com/" target="_blank" rel="noopener noreferrer" style="color: #0078d4; font-weight: 600; text-decoration: underline;">Microsoft Fabric (app.fabric.microsoft.com)</a>.</li>
+              <li>Capacidade ativa do Fabric (licença <strong>Fabric Trial</strong> gratuita ou capacidade corporativa).</li>
+              <li>Um Workspace configurado no modo de capacidade Fabric.</li>
+            </ul>
+          </div>
+
+          <!-- Tarefa 1 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">1</div>
+              <h3 class="mslearn-task-title">Configurar Domínios de Governança no Admin Portal</h3>
+            </div>
+            <ol class="mslearn-step-list">
+              <li>Acesse o <strong>Portal de Administração (Admin Portal)</strong> do Fabric.</li>
+              <li>No menu lateral, selecione <strong>Domínios (Domains)</strong>.</li>
+              <li>Clique em <strong>+ Novo domínio</strong>, insira o nome <code>Vendas_Corporativo</code> e atribua o administrador.</li>
+              <li>Vincule os workspaces do departamento de vendas a este domínio para delegação descentralizada.</li>
+            </ol>
+          </div>
+
+          <!-- Tarefa 2 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">2</div>
+              <h3 class="mslearn-task-title">Configurar Starter Pools e Custom Spark Pools</h3>
+            </div>
+            <ol class="mslearn-step-list">
+              <li>Acesse as <strong>Configurações do Workspace</strong> &gt; <strong>Engenharia de Dados/Computação</strong>.</li>
+              <li>Ative a opção de <strong>Starter Pools</strong> para inicialização imediata (&lt; 10s).</li>
+              <li>Crie um Pool Personalizado com alocação máxima de 8 nós executores e parada automática após 15 minutos de inatividade.</li>
+            </ol>
+          </div>
+
+          <!-- Tarefa 3 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">3</div>
+              <h3 class="mslearn-task-title">Analisar a Curva de Smoothing no Capacity Metrics App</h3>
+            </div>
+            <ol class="mslearn-step-list">
+              <li>Abra o <strong>Microsoft Fabric Capacity Metrics App</strong>.</li>
+              <li>Analise a métrica de utilização da capacidade F64.</li>
+              <li>Identifique como picos instantâneos de Spark de 180% são normalizados pela janela de Smoothing de 24 horas, evitando throttling.</li>
+            </ol>
+
+            <!-- Captura de Tela da Tarefa 3 -->
+            <div class="portal-screenshot-frame">
+              <div class="portal-window-bar">
+                <div class="portal-window-dots">
+                  <span class="portal-window-dot dot-red"></span>
+                  <span class="portal-window-dot dot-yellow"></span>
+                  <span class="portal-window-dot dot-green"></span>
+                </div>
+                <div class="portal-address-bar">
+                  🔒 https://app.fabric.microsoft.com/groups/admin/capacity-metrics
+                </div>
+              </div>
+              <img src="../assets/images/fabric-ui-12-capacity-metrics-app.svg" alt="Analisar a Curva de Smoothing no Capacity Metrics App" loading="lazy" />
+              <div class="portal-screenshot-caption">
+                📸 <strong>Captura do Portal:</strong> Métricas da capacidade Fabric exibindo amortização de picos de carga pelo algoritmo de Smoothing de 24 horas.
+              </div>
+            </div>
+          </div>
+
+          <!-- Alerta de Exame DP-700 -->
+          <div class="mslearn-exam-note" style="margin-top: 1.5rem;">
+            <strong>⚠️ Atenção para o Exame DP-700:</strong><br>
+            Atenção DP-700: Os Starter Pools são instâncias pré-aquecidas gerenciadas pela Microsoft que entram em execução quase instantaneamente; trabalhos interativos sofrem amortização de 5 minutos, enquanto operações em segundo plano (como pipelines agendados) são suavizadas em uma janela contínua de 24 horas.
+          </div>
+
+          <!-- Fallback: Simulação Local Offline -->
+          <div class="mslearn-local-box">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem;">
+              <h4 style="margin: 0; color: var(--brand-teal); font-family: var(--font-display);">
+                💻 Opção Alternativa: Executar Simulação Local Offline no seu Terminal
+              </h4>
+              <span style="font-size: 0.8rem; background: var(--bg-surface-alt); padding: 3px 8px; border-radius: 6px; color: var(--text-secondary);">Sem necessidade de conta Fabric</span>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+              Se você não possui uma assinatura ativa do Fabric no momento, criamos um simulador completo em Python no seu repositório local que reproduz a execução deste laboratório:
+            </p>
+            <pre><code style="font-family: var(--font-mono); font-size: 0.88rem; display: block; background: var(--bg-surface-alt); padding: 0.85rem 1rem; border-radius: 8px; border: 1px solid var(--border-color); overflow-x: auto;"># Execute este comando no terminal para reproduzir o lab:
+./.venv/bin/python labs/0004-onelake-capacities-spark-pools/lab_simulation.py</code></pre>
+            <div style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-secondary);">
+              📁 Diretório do laboratório prático local: <code>labs/0004-onelake-capacities-spark-pools/</code>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SEÇÃO DE QUIZ DP-700 -->
+              <section id="bloco-quiz" class="totc-card">
+          <h2 style="margin-top: 0;">Pontos Críticos para a Prática e para o Exame DP-700</h2>
+
+          <div class="summary-card">
+            <h3 style="margin-top: 0; color: var(--brand-teal);">📝 Síntese dos Pontos Críticos Aprendidos:</h3>
+            <ol style="margin-bottom: 0;">
+              <li><strong>Capacity Units (CUs):</strong> Toda a computação do Fabric é mensurada em CUs; SKUs a partir de F64 dispensam licenças Pro individuais para visualizadores no Power BI.</li>
+              <li><strong>Algoritmo de Smoothing:</strong> Operações interativas amortizam consumo em 5 minutos; operações em segundo plano (background jobs) são diluídas em uma janela contínua de 24 horas.</li>
+              <li><strong>Starter Pools vs Custom Pools:</strong> Starter Pools iniciam em menos de 10 segundos com instâncias pré-aquecidas; pools personalizados oferecem nós dedicados mas demoram 2-3 minutos de boot.</li>
+              <li><strong>Domínios de Governança:</strong> Permitem agrupar workspaces por unidades de negócio (Finanças, Vendas) para auditoria e controle de custos descentralizado.</li>
+            </ol>
+          </div>
+
+          <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+            <h3>🎯 Desafio de Exame DP-700</h3>
+            <p>Questão elaborada no padrão da Microsoft com alternativas isomórficas:</p>
+
+            <div class="quiz-card" data-explanation="A capacidade <strong>F64</strong> (ou superior) é o limiar oficial estabelecido pela Microsoft que concede acesso aos relatórios do Power BI para usuários que possuem apenas a licença Fabric Free, dispensando licenças Pro adicionais.">
+              <p><strong style="color: var(--text-primary);">Cenário de Exame DP-700:</strong> Sua organização planeja disponibilizar um aplicativo analítico no Microsoft Fabric contendo relatórios interativos para 500 colaboradores que possuem apenas a licença Fabric Free (sem licença Power BI Pro atribuída). Qual é a SKU de capacidade Fabric mínima necessária para que esses usuários consigam visualizar os relatórios sem exigir a compra de licenças Pro individuais?</p>
+              
+              <ul class="quiz-options">
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    A) Capacidade F16 com alocação dinâmica de memória no workspace.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="true">
+                    B) Capacidade F64 associada diretamente ao workspace de produção.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    C) Capacidade F32 com habilitação manual do gateway corporativo.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    D) Capacidade F128 com configuração de alta disponibilidade multi-zona.
+                  </button>
+                </li>
+              </ul>
+              <div class="quiz-feedback"></div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--border-color); flex-wrap: wrap; gap: 1rem;">
+            <a href="../reference/03-architectural-engines-decision-matrix.html" style="font-weight: 600;">
+              📑 Abrir Folha de Referência 03 (Matriz Decisória de Motores)
+            </a>
+            <a href="0005-architectural-decision-guide-lakehouse-warehouse-eventhouse.html" class="audio-btn" style="color: #fff !important;">
+              Próxima Lição: 0005 (Guia Decisório: Lakehouse vs Warehouse vs Eventhouse) →
+            </a>
+          </div>
+        </section>
+
+      <footer style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+        <a href="../lessons/0003-dimensional-modeling-and-three-languages-sql-spark-kql.html?v=totc6" class="btn-secondary">
+          ← Lição Anterior: 0003
+        </a>
+        <a href="../simulados/index.html?v=totc6" class="btn-primary">
+          Ir para o Centro de Simulados DP-700 →
+        </a>
+      </footer>
+
+    </main>
+  </div>
+
+  
+</body>
+</html>
+

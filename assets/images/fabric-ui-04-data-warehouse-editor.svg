@@ -1,0 +1,106 @@
+<svg viewBox="0 0 920 540" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;">
+  <defs>
+    <filter id="shadow4" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <rect width="920" height="540" fill="#0b1120"/>
+  <!-- Top Bar -->
+  <rect x="0" y="0" width="920" height="42" fill="#002447"/>
+  <circle cx="24" cy="21" r="10" fill="#0078d4"/>
+  <text x="24" y="25" text-anchor="middle" font-size="11" font-weight="900" fill="#ffffff">F</text>
+  <text x="44" y="26" font-size="13" font-weight="700" fill="#ffffff">Microsoft Fabric</text>
+  <text x="175" y="25" font-size="12" fill="#64748b">/</text>
+  <text x="190" y="25" font-size="12" fill="#cbd5e1">DP-700-Workspace</text>
+  <text x="320" y="25" font-size="12" fill="#64748b">/</text>
+  <text x="335" y="25" font-size="12" font-weight="700" fill="#38bdf8">dw_sales_enterprise</text>
+
+  <!-- Action Bar -->
+  <rect x="0" y="42" width="920" height="40" fill="#111f38" stroke-bottom="#1e293b"/>
+  <rect x="15" y="48" width="135" height="28" rx="5" fill="#0284c7"/>
+  <text x="82" y="66" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">+ Nova consulta SQL</text>
+  <rect x="160" y="48" width="125" height="28" rx="5" fill="#1e293b" stroke="#334155"/>
+  <text x="222" y="66" text-anchor="middle" font-size="12" fill="#cbd5e1">Visualizar dados</text>
+
+  <!-- Left Sidebar: Object Explorer -->
+  <rect x="0" y="82" width="240" height="458" fill="#0f172a" stroke-right="#1e293b"/>
+  <rect x="0" y="82" width="240" height="34" fill="#162238"/>
+  <text x="15" y="104" font-size="12" font-weight="700" fill="#38bdf8">EXPLORADOR DO WAREHOUSE</text>
+  
+  <g transform="translate(10, 125)">
+    <text x="0" y="14" font-size="13">🏛️</text>
+    <text x="22" y="14" font-size="12" font-weight="700" fill="#f8fafc">dw_sales_enterprise</text>
+    <g transform="translate(15, 24)">
+      <text x="0" y="14" font-size="12">📂</text>
+      <text x="18" y="14" font-size="11.5" fill="#cbd5e1">Schemas &gt; dbo</text>
+      <g transform="translate(15, 22)">
+        <text x="0" y="14" font-size="12">📂</text>
+        <text x="18" y="14" font-size="11.5" font-weight="600" fill="#cbd5e1">Tables</text>
+        <g transform="translate(15, 22)">
+          <rect x="-4" y="-2" width="170" height="24" rx="4" fill="#0c4a6e"/>
+          <text x="0" y="15" font-size="11">📋</text>
+          <text x="18" y="15" font-size="11" font-weight="700" fill="#38bdf8">FactVendas</text>
+        </g>
+        <g transform="translate(15, 50)">
+          <text x="0" y="15" font-size="11">📋</text>
+          <text x="18" y="15" font-size="11" fill="#cbd5e1">DimCliente</text>
+        </g>
+        <g transform="translate(15, 76)">
+          <text x="0" y="15" font-size="11">📋</text>
+          <text x="18" y="15" font-size="11" fill="#cbd5e1">DimProduto</text>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <!-- Query Tab -->
+  <rect x="240" y="82" width="680" height="458" fill="#070d19"/>
+  <rect x="250" y="88" width="160" height="28" rx="6" fill="#1e293b"/>
+  <text x="265" y="106" font-size="11.5" font-weight="600" fill="#38bdf8">Star_Schema_MERGE.sql</text>
+
+  <!-- T-SQL Editor Box -->
+  <g transform="translate(250, 115)">
+    <rect x="0" y="0" width="655" height="180" rx="8" fill="#0f172a" stroke="#1e293b"/>
+    <rect x="0" y="0" width="30" height="180" rx="8" fill="#162238"/>
+    <text x="15" y="20" text-anchor="middle" font-size="10.5" font-family="monospace" fill="#64748b">1</text>
+    <text x="15" y="40" text-anchor="middle" font-size="10.5" font-family="monospace" fill="#64748b">2</text>
+    <text x="15" y="60" text-anchor="middle" font-size="10.5" font-family="monospace" fill="#64748b">3</text>
+    <text x="15" y="80" text-anchor="middle" font-size="10.5" font-family="monospace" fill="#64748b">4</text>
+    <text x="15" y="100" text-anchor="middle" font-size="10.5" font-family="monospace" fill="#64748b">5</text>
+    <text x="15" y="120" text-anchor="middle" font-size="10.5" font-family="monospace" fill="#64748b">6</text>
+    <text x="15" y="140" text-anchor="middle" font-size="10.5" font-family="monospace" fill="#64748b">7</text>
+    <text x="15" y="160" text-anchor="middle" font-size="10.5" font-family="monospace" fill="#64748b">8</text>
+
+    <!-- Code -->
+    <text x="45" y="20" font-family="Courier, monospace" font-size="11" fill="#f8fafc"><tspan fill="#0284c7" font-weight="bold">BEGIN TRANSACTION;</tspan> -- Transação ACID no Warehouse</text>
+    <text x="45" y="40" font-family="Courier, monospace" font-size="11" fill="#0284c7" font-weight="bold">MERGE INTO <tspan fill="#34d399">FactVendas</tspan> AS target</text>
+    <text x="45" y="60" font-family="Courier, monospace" font-size="11" fill="#0284c7" font-weight="bold">USING <tspan fill="#38bdf8">StagingVendas</tspan> AS source ON target.VendaID = source.VendaID</text>
+    <text x="45" y="80" font-family="Courier, monospace" font-size="11" fill="#0284c7" font-weight="bold">WHEN MATCHED THEN UPDATE SET</text>
+    <text x="65" y="100" font-family="Courier, monospace" font-size="11" fill="#f8fafc">target.Valor = source.Valor, target.DataModificacao = GETUTCDATE()</text>
+    <text x="45" y="120" font-family="Courier, monospace" font-size="11" fill="#0284c7" font-weight="bold">WHEN NOT MATCHED THEN INSERT</text>
+    <text x="65" y="140" font-family="Courier, monospace" font-size="11" fill="#f8fafc">(VendaID, ClienteSK, Valor, DataVenda)</text>
+    <text x="65" y="160" font-family="Courier, monospace" font-size="11" fill="#f8fafc">VALUES (source.VendaID, source.ClienteSK, source.Valor, source.DataVenda);</text>
+  </g>
+
+  <!-- Query Results -->
+  <g transform="translate(250, 305)">
+    <rect x="0" y="0" width="655" height="215" rx="8" fill="#0f172a" stroke="#0284c7" stroke-width="1.5"/>
+    <rect x="0" y="0" width="655" height="30" rx="8" fill="#162238"/>
+    <text x="15" y="20" font-size="11.5" font-weight="700" fill="#38bdf8">STATUS DA TRANSAÇÃO ACID</text>
+    <text x="370" y="20" font-size="10.5" fill="#34d399">✅ 12.450 inseridas • 320 atualizadas</text>
+    
+    <g transform="translate(15, 45)">
+      <rect x="0" y="0" width="625" height="60" rx="6" fill="#064e3b" stroke="#10b981"/>
+      <text x="15" y="25" font-size="12" font-weight="700" fill="#ffffff">COMMIT TRANSACTION concluído com sucesso</text>
+      <text x="15" y="45" font-size="11" fill="#a7f3d0">OneLake Delta Parquet gerado com ordenação V-Order e estatísticas por Row Group.</text>
+    </g>
+
+    <!-- Callout Badge -->
+    <g transform="translate(260, 120)">
+      <rect x="0" y="0" width="370" height="40" rx="8" fill="#0284c7" filter="url(#shadow4)"/>
+      <text x="15" y="18" font-size="11" font-weight="800" fill="#ffffff">DIFERENÇA CRÍTICA DP-700:</text>
+      <text x="15" y="32" font-size="10.5" fill="#e0f2fe">Warehouse suporta DDL/DML e MERGE com ACID nativo</text>
+    </g>
+  </g>
+</svg>

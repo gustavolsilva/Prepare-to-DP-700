@@ -1,0 +1,85 @@
+<svg viewBox="0 0 920 540" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;">
+  <defs>
+    <filter id="shadow11" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <rect width="920" height="540" fill="#0b1120"/>
+  <!-- Top Bar -->
+  <rect x="0" y="0" width="920" height="42" fill="#002447"/>
+  <circle cx="24" cy="21" r="10" fill="#0078d4"/>
+  <text x="24" y="25" text-anchor="middle" font-size="11" font-weight="900" fill="#ffffff">F</text>
+  <text x="44" y="26" font-size="13" font-weight="700" fill="#ffffff">Microsoft Fabric</text>
+  <text x="175" y="25" font-size="12" fill="#64748b">/</text>
+  <text x="190" y="25" font-size="12" fill="#cbd5e1">Otimização de Performance</text>
+  <text x="400" y="25" font-size="12" font-weight="700" fill="#38bdf8">V-Order &amp; Liquid Clustering (CLUSTER BY)</text>
+
+  <!-- Left: Delta Table Properties -->
+  <rect x="0" y="42" width="240" height="498" fill="#0f172a" stroke-right="#1e293b"/>
+  <rect x="0" y="42" width="240" height="34" fill="#162238"/>
+  <text x="15" y="64" font-size="12" font-weight="700" fill="#38bdf8">PROPRIEDADES DA TABELA</text>
+
+  <g transform="translate(15, 90)">
+    <text x="0" y="16" font-size="11" font-weight="700" fill="#cbd5e1">Tabela:</text>
+    <text x="0" y="34" font-size="12" font-weight="700" fill="#38bdf8">gold_telemetry_clustered</text>
+
+    <rect x="0" y="50" width="210" height="70" rx="6" fill="#064e3b" stroke="#10b981"/>
+    <text x="10" y="70" font-size="11" font-weight="700" fill="#a7f3d0">V-Order Habilitado</text>
+    <text x="10" y="86" font-size="10" fill="#ffffff">Ordenação em nível de row group</text>
+    <text x="10" y="102" font-size="10" fill="#ffffff">VertiPaq Direct Lake Ready</text>
+
+    <rect x="0" y="130" width="210" height="75" rx="6" fill="#0c4a6e" stroke="#38bdf8"/>
+    <text x="10" y="150" font-size="11" font-weight="700" fill="#7dd3fc">Liquid Clustering Ativo</text>
+    <text x="10" y="166" font-size="10" fill="#ffffff">Chaves: (DataEvento, DispositivoId)</text>
+    <text x="10" y="184" font-size="10" fill="#fde047">Substitui Particionamento Físico</text>
+  </g>
+
+  <!-- Main: Notebook Tuning Cell & Query Comparison -->
+  <rect x="240" y="42" width="680" height="498" fill="#070d19"/>
+
+  <g transform="translate(255, 60)">
+    <!-- Célula Spark com CLUSTER BY -->
+    <rect x="0" y="0" width="650" height="185" rx="8" fill="#0f172a" stroke="#0284c7" stroke-width="1.5"/>
+    <rect x="0" y="0" width="30" height="185" rx="8" fill="#162238"/>
+    <text x="15" y="24" text-anchor="middle" font-size="11" font-family="monospace" fill="#38bdf8">[1]</text>
+
+    <!-- Code -->
+    <g transform="translate(45, 24)">
+      <text x="0" y="0" font-family="Courier, monospace" font-size="11.5" fill="#94a3b8"># 1. Criação com Liquid Clustering nativo do Delta Lake 3.0</text>
+      <text x="0" y="22" font-family="Courier, monospace" font-size="11.5" fill="#f8fafc">df.write.format(<tspan fill="#38bdf8">"delta"</tspan>) \</text>
+      <text x="20" y="42" font-family="Courier, monospace" font-size="11.5" fill="#f59e0b">.clusterBy("DataEvento", "DispositivoId") \</text>
+      <text x="20" y="62" font-family="Courier, monospace" font-size="11.5" fill="#f8fafc">.saveAsTable(<tspan fill="#34d399">"gold_telemetry_clustered"</tspan>)</text>
+      <text x="0" y="94" font-family="Courier, monospace" font-size="11.5" fill="#94a3b8"># 2. Re-clusterização incremental via OPTIMIZE</text>
+      <text x="0" y="114" font-family="Courier, monospace" font-size="11.5" fill="#f8fafc">spark.sql(<tspan fill="#0284c7">"OPTIMIZE gold_telemetry_clustered"</tspan>)</text>
+    </g>
+  </g>
+
+  <!-- Painel de Comparação de I/O e Data Skipping -->
+  <g transform="translate(255, 265)">
+    <rect x="0" y="0" width="650" height="255" rx="8" fill="#0f172a" stroke="#1e293b"/>
+    <rect x="0" y="0" width="650" height="30" rx="8" fill="#162238"/>
+    <text x="15" y="20" font-size="12" font-weight="700" fill="#38bdf8">MÉTRICAS DE EXECUÇÃO: DATA SKIPPING E TEMPO DE RESPOSTA</text>
+
+    <g transform="translate(15, 45)">
+      <!-- Box Sem Otimização -->
+      <rect x="0" y="0" width="295" height="185" rx="8" fill="#1e293b" stroke="#7f1d1d"/>
+      <text x="15" y="25" font-size="12" font-weight="700" fill="#fca5a5">❌ Particionamento Hive Tradicional</text>
+      <text x="15" y="50" font-size="11" fill="#cbd5e1">• Small Files múltiplos (&lt; 5MB)</text>
+      <text x="15" y="70" font-size="11" fill="#cbd5e1">• Partições fixas desbalanceadas</text>
+      <text x="15" y="95" font-size="11" fill="#cbd5e1">Varredura de Arquivos:</text>
+      <text x="15" y="115" font-size="13" font-family="monospace" font-weight="700" fill="#f87171">1.420 arquivos lidos</text>
+      <text x="15" y="145" font-size="11" fill="#cbd5e1">Tempo de Consulta: <tspan font-weight="bold" fill="#f87171">14.8 segundos</tspan></text>
+
+      <!-- Box Com Liquid Clustering + V-Order -->
+      <rect x="325" y="0" width="295" height="185" rx="8" fill="#064e3b" stroke="#10b981"/>
+      <text x="340" y="25" font-size="12" font-weight="700" fill="#a7f3d0">✅ Liquid Clustering + V-Order</text>
+      <text x="340" y="50" font-size="11" fill="#ecfdf5">• Z-Cube sem sobrecarga de diretórios</text>
+      <text x="340" y="70" font-size="11" fill="#ecfdf5">• Predicate Pushdown Min/Max eficaz</text>
+      <text x="340" y="95" font-size="11" fill="#ecfdf5">Varredura de Arquivos:</text>
+      <text x="340" y="115" font-size="13" font-family="monospace" font-weight="700" fill="#34d399">18 arquivos lidos (98.7% saltados!)</text>
+      <text x="340" y="140" font-size="11" fill="#ecfdf5">Tempo de Consulta:</text>
+      <text x="340" y="158" font-size="11" font-weight="bold" fill="#34d399">0.24 segundos (59x mais rápido)</text>
+    </g>
+  </g>
+</svg>

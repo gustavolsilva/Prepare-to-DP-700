@@ -1,0 +1,136 @@
+<svg viewBox="0 0 920 540" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;">
+  <defs>
+    <filter id="shadow1" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+    <linearGradient id="fabricGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0078d4" />
+      <stop offset="100%" stop-color="#004e8c" />
+    </linearGradient>
+  </defs>
+
+  <!-- Fundo da Tela do Portal Fabric -->
+  <rect width="920" height="540" fill="#0b1120"/>
+
+  <!-- Top Bar Microsoft Fabric -->
+  <rect x="0" y="0" width="920" height="42" fill="#002447"/>
+  <circle cx="24" cy="21" r="10" fill="#0078d4"/>
+  <text x="24" y="25" text-anchor="middle" font-size="11" font-weight="900" fill="#ffffff">F</text>
+  <text x="44" y="26" font-size="13" font-weight="700" fill="#ffffff">Microsoft Fabric</text>
+  
+  <rect x="220" y="8" width="380" height="26" rx="4" fill="#09315c" stroke="#1a497d"/>
+  <text x="240" y="25" font-size="12" fill="#94a3b8">🔍 Pesquisar itens, workspaces e documentação (Ctrl+/)</text>
+
+  <!-- Usuário e Notificações -->
+  <circle cx="885" cy="21" r="13" fill="#0284c7"/>
+  <text x="885" y="25" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">DE</text>
+  <circle cx="845" cy="21" r="3" fill="#38bdf8"/>
+  <text x="838" y="25" font-size="13" fill="#cbd5e1">🔔</text>
+
+  <!-- Barra de Navegação Lateral Esquerda (Trilho) -->
+  <rect x="0" y="42" width="56" height="498" fill="#061224" stroke-right="#1e293b"/>
+  
+  <!-- Ícone Home -->
+  <rect x="12" y="58" width="32" height="32" rx="6" fill="transparent"/>
+  <text x="28" y="79" text-anchor="middle" font-size="16" fill="#94a3b8">🏠</text>
+
+  <!-- Ícone Workspaces (Selecionado) -->
+  <rect x="8" y="104" width="40" height="38" rx="8" fill="#1e3a5f" stroke="#38bdf8"/>
+  <text x="28" y="128" text-anchor="middle" font-size="16" fill="#38bdf8">📁</text>
+  <rect x="0" y="112" width="4" height="22" rx="2" fill="#38bdf8"/>
+
+  <!-- Ícone Monitoramento -->
+  <rect x="12" y="156" width="32" height="32" rx="6" fill="transparent"/>
+  <text x="28" y="177" text-anchor="middle" font-size="16" fill="#94a3b8">📊</text>
+
+  <!-- Seletor de Experiências (Canto Inferior Esquerdo) - DESTAQUE 1 -->
+  <g>
+    <rect x="6" y="475" width="44" height="44" rx="10" fill="#064e3b" stroke="#10b981" stroke-width="2"/>
+    <text x="28" y="502" text-anchor="middle" font-size="18">⚙️</text>
+    
+    <!-- Chamada Visual 1 -->
+    <rect x="66" y="478" width="235" height="38" rx="8" fill="#059669" filter="url(#shadow1)"/>
+    <polygon points="66,497 56,497 66,491" fill="#059669"/>
+    <text x="76" y="495" font-size="11" font-weight="800" fill="#ffffff">PASSO 1.2: ALTERNADOR</text>
+    <text x="76" y="509" font-size="10.5" fill="#ecfdf5">Selecionar "Data Engineering"</text>
+  </g>
+
+  <!-- Área Principal de Conteúdo do Workspace -->
+  <rect x="56" y="42" width="864" height="498" fill="#0f172a"/>
+
+  <!-- Cabeçalho do Workspace -->
+  <rect x="56" y="42" width="864" height="54" fill="#1e293b" stroke-bottom="#334155"/>
+  <text x="80" y="74" font-size="18" font-weight="700" fill="#f8fafc">DP-700-Production-Workspace</text>
+  <rect x="360" y="60" width="90" height="22" rx="11" fill="#0369a1"/>
+  <text x="405" y="75" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">Capacidade F64</text>
+
+  <!-- Barra de Comandos do Workspace -->
+  <rect x="56" y="96" width="864" height="46" fill="#111f38" stroke-bottom="#1e293b"/>
+  
+  <!-- Botão + Novo Item (Aberto) - DESTAQUE 2 -->
+  <g>
+    <rect x="75" y="104" width="130" height="30" rx="6" fill="#0284c7" stroke="#38bdf8"/>
+    <text x="92" y="123" font-size="13" font-weight="700" fill="#ffffff">+ Novo item  ▾</text>
+  </g>
+
+  <!-- Dropdown de Itens do Fabric -->
+  <g filter="url(#shadow1)">
+    <rect x="75" y="138" width="220" height="150" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>
+    
+    <!-- Item Lakehouse Selecionado -->
+    <rect x="80" y="145" width="210" height="42" rx="6" fill="#0c4a6e" stroke="#0284c7"/>
+    <circle cx="102" cy="166" r="12" fill="#0284c7"/>
+    <text x="102" y="171" text-anchor="middle" font-size="13">🌊</text>
+    <text x="122" y="163" font-size="12" font-weight="700" fill="#ffffff">Lakehouse</text>
+    <text x="122" y="177" font-size="10" fill="#7dd3fc">Armazena dados Delta e arquivos</text>
+
+    <!-- Outros Itens da Lista -->
+    <circle cx="102" cy="208" r="12" fill="#334155"/>
+    <text x="102" y="213" text-anchor="middle" font-size="13">📓</text>
+    <text x="122" y="205" font-size="12" fill="#cbd5e1">Notebook</text>
+    <text x="122" y="218" font-size="10" fill="#64748b">Desenvolvimento Apache Spark</text>
+
+    <circle cx="102" cy="250" r="12" fill="#334155"/>
+    <text x="102" y="255" text-anchor="middle" font-size="13">🏛️</text>
+    <text x="122" y="247" font-size="12" fill="#cbd5e1">Data Warehouse</text>
+    <text x="122" y="260" font-size="10" fill="#64748b">T-SQL relacional com ACID</text>
+  </g>
+
+  <!-- Modal Centralizado "New Lakehouse" (Criação) -->
+  <g filter="url(#shadow1)">
+    <!-- Backdrop com desfoque simulado -->
+    <rect x="56" y="42" width="864" height="498" fill="rgba(0,0,0,0.55)"/>
+
+    <!-- Caixa do Modal -->
+    <rect x="300" y="130" width="440" height="260" rx="14" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+    
+    <!-- Cabeçalho do Modal -->
+    <text x="330" y="168" font-size="18" font-weight="700" fill="#f8fafc">Novo Lakehouse</text>
+    <text x="715" y="166" font-size="16" fill="#94a3b8" cursor="pointer">✕</text>
+    
+    <text x="330" y="205" font-size="12.5" font-weight="600" fill="#cbd5e1">Nome do Lakehouse *</text>
+    
+    <!-- Campo de Entrada com o nome digitado -->
+    <rect x="330" y="216" width="380" height="38" rx="6" fill="#0f172a" stroke="#0284c7" stroke-width="1.5"/>
+    <text x="345" y="240" font-family="Courier, monospace" font-size="13" font-weight="600" fill="#38bdf8">lh_sales_medallion</text>
+    <line x1="505" y1="225" x2="505" y2="245" stroke="#38bdf8" stroke-width="2"/>
+
+    <text x="330" y="280" font-size="11.5" fill="#94a3b8">Esquemas do Lakehouse (versão prévia): Ativado</text>
+
+    <!-- Botões de Ação do Modal -->
+    <rect x="535" y="330" width="85" height="34" rx="6" fill="#334155"/>
+    <text x="577" y="352" text-anchor="middle" font-size="12.5" font-weight="600" fill="#cbd5e1">Cancelar</text>
+
+    <!-- Botão Criar com Destaque -->
+    <rect x="630" y="330" width="80" height="34" rx="6" fill="#0284c7" stroke="#38bdf8" stroke-width="1.5"/>
+    <text x="670" y="352" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">Criar</text>
+
+    <!-- Chamada Visual 2: Apontando para o botão Criar -->
+    <g>
+      <rect x="545" y="380" width="220" height="38" rx="8" fill="#f59e0b" filter="url(#shadow1)"/>
+      <polygon points="670,366 663,380 677,380" fill="#f59e0b"/>
+      <text x="555" y="397" font-size="11" font-weight="800" fill="#0f172a">PASSO 1.5: CONFIRMAR</text>
+      <text x="555" y="411" font-size="10.5" font-weight="600" fill="#451a03">Digitar o nome e clicar em Criar</text>
+    </g>
+  </g>
+</svg>

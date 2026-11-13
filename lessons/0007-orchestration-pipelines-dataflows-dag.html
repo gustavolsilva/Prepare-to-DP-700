@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lição 0007: Orquestração de Dados: Pipelines, Dataflows Gen2 & DAGs (mssparkutils)</title>
+  <link rel="stylesheet" href="../assets/tufte.css?v=totc6">
+  <link rel="stylesheet" href="../assets/vark.css?v=totc6">
+  <script src="../assets/lens.js?v=totc6"></script>
+  <script src="../assets/quiz.js?v=totc6" defer></script>
+  <script src="../assets/vark.js?v=totc6" defer></script>
+</head>
+<body>
+
+  <div class="course-app-shell">
+
+    <!-- SIDEBAR DE CURRÍCULO E NAVEGAÇÃO -->
+    <aside class="course-sidebar">
+      <div class="sidebar-top-nav">
+        <a href="../index.html?v=totc6" class="back-square-btn" title="Voltar ao Portal do Curso">←</a>
+        <div style="font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--text-primary);">
+          FABRIC <span style="color: var(--brand-teal);">DP-700</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="sidebar-section-title">Módulo 2: Ingestão & Transformação</div>
+        <div class="sidebar-pill-list">
+          <a href="#bloco-contexto" class="curriculum-pill active">
+            <span class="pill-left">📖 Lição 07: Orquestração & DAGs</span>
+            <span class="pill-duration">30 mins</span>
+          </a>
+          <a href="#bloco-audio" class="curriculum-pill pill-orange">
+            <span class="pill-left">🎧 Narração Neural da Aula</span>
+            <span class="pill-duration">02:25</span>
+          </a>
+          <a href="#bloco-teoria" class="curriculum-pill pill-blue">
+            <span class="pill-left">👁️ Topologia de DAG & Staging</span>
+            <span class="pill-duration">Visual</span>
+          </a>
+          <a href="../simulados/index.html?v=totc6" class="curriculum-pill pill-coral">
+            <span class="pill-left">🎯 Centro de Simulados</span>
+            <span class="pill-duration">Exam</span>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <div class="sidebar-section-title">PRACTICE QUIZ & LABS</div>
+        <div class="sidebar-pill-list">
+          <a href="#bloco-pratica" class="curriculum-pill pill-teal">
+            <span class="pill-left">⚡ Lab: DAG & mssparkutils</span>
+            <span class="pill-duration">Python</span>
+          </a>
+          <a href="#bloco-quiz" class="curriculum-pill pill-orange">
+            <span class="pill-left">🎯 Desafio Exame DP-700</span>
+            <span class="pill-duration">Quiz</span>
+          </a>
+        </div>
+      </div>
+
+      <div style="margin-top: auto; padding: 1rem; background: var(--bg-surface-alt); border: 1px solid var(--border-color); border-radius: 14px; font-size: 0.82rem; color: var(--text-secondary);">
+        <strong style="color: var(--text-primary); display: block; margin-bottom: 0.25rem;">💡 Dica de Estudo VARK</strong>
+        O DP-700 exige saber exatamente quando usar Dataflows Gen2 (Power Query) vs. Data Factory Pipelines vs. mssparkutils.
+      </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="course-main-content">
+
+      <header class="course-header-banner">
+        <div>
+          <div class="course-badge">Módulo 2 • Domínio 2 do Exame DP-700</div>
+          <h1 class="course-title">Lição 0007: Orquestração de Dados: Data Factory Pipelines, Copy Job, Dataflows Gen2 & DAGs</h1>
+          <p class="course-meta">
+            Duração estimada: 30 minutos • Domínio 2 (30–35% do Exame) • Áudio Neural & Lab de DAG
+          </p>
+        </div>
+        <div class="theme-toggle-container">
+          <button class="theme-toggle-btn" onclick="window.toggleAppTheme()" title="Alternar entre Modo Claro e Escuro">
+            <span class="theme-toggle-icon">🌙</span> Alternar Tema
+          </button>
+        </div>
+      </header>
+
+      <nav class="lens-selector-bar" aria-label="Seletor de Nível Pedagógico">
+        <div class="lens-tab-group">
+          <button class="lens-tab" data-lens="unificado">📚 Unificado (Geral)</button>
+          <button class="lens-tab" data-lens="junior">🌱 Júnior / Fundamentos</button>
+          <button class="lens-tab" data-lens="pleno">🌿 Pleno / Implementador</button>
+          <button class="lens-tab" data-lens="senior">🛠️ Sênior / DP-700</button>
+          <button class="lens-tab" data-lens="staff">⚙️ Staff / Under the Hood</button>
+          <button class="lens-tab" data-lens="clevel">🏛️ C-Level / FinOps & TCO</button>
+        </div>
+        <div style="margin-left: auto;">
+          <button class="theme-toggle-btn" onclick="window.toggleAppTheme()" title="Alternar Modo Dark / Light">
+            <span class="theme-toggle-icon">🌙</span> Modo Dark
+          </button>
+        </div>
+      </nav>
+
+      <nav class="vark-nav-bar" aria-label="Atalhos das Modalidades VARK">
+        <a href="#bloco-audio" class="vark-btn"><span class="vark-badge badge-a">A</span> 🎧 Áudio Neural (Auditivo)</a>
+        <a href="#bloco-teoria" class="vark-btn"><span class="vark-badge badge-v">V</span> 👁️ Diagrama de Orquestração (Visual)</a>
+        <a href="#bloco-contexto" class="vark-btn"><span class="vark-badge badge-r">R</span> 📖 Texto Técnico (Leitura)</a>
+        <a href="#bloco-pratica" class="vark-btn"><span class="vark-badge badge-k">K</span> ⚡ Lab DAG & Spark (Cinestésico)</a>
+      </nav>
+
+      <!-- REPRODUTOR DE ÁUDIO NEURAL -->
+      <div id="bloco-audio" class="audio-player-card">
+        <div class="audio-card-header">
+          <div class="audio-avatar">🎙️</div>
+          <div>
+            <div class="audio-title">Narração Técnica Neural da Lição 0007</div>
+            <div class="audio-subtitle">Voz: Microsoft pt-BR-AntonioNeural • Data Factory, Dataflows Gen2 e mssparkutils</div>
+          </div>
+        </div>
+        <div class="audio-controls-row">
+          <button id="audio-play-btn" class="audio-play-button" aria-label="Reproduzir áudio da lição">▶ Reproduzir Aula</button>
+          <div class="audio-scrubber-track">
+            <div id="audio-progress-bar" class="audio-scrubber-fill" style="width: 0%;"></div>
+          </div>
+          <div id="audio-time-label" class="audio-time-display">00:00 / 02:25</div>
+          <audio id="vark-audio-element" preload="metadata">
+            <source src="../assets/audio/lesson-0007-pt.mp3?v=totc6" type="audio/mpeg">
+            Seu navegador não suporta o elemento de áudio HTML5.
+          </audio>
+        </div>
+      </div>
+
+      <!-- CONTEÚDO MULTI-LENS -->
+      <article id="bloco-contexto" class="lens-panel" data-lens-content="unificado">
+        <h2>O Espectro da Orquestração no Fabric: De No-Code a Grafos DAG em Código</h2>
+        <p>
+          No Microsoft Fabric, a orquestração e movimentação de dados atende tanto a engenheiros que precisam de controle algorítmico rigoroso via código quanto a analistas que operam via interfaces visuais intuitivas.
+        </p>
+
+        <div class="diagram-container" id="bloco-teoria">
+          <h3>As 4 Ferramentas de Ingestão e Orquestração: Matriz de Aplicação</h3>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.92rem;">
+            <thead>
+              <tr style="background: var(--bg-surface-alt); border-bottom: 2px solid var(--border-color); text-align: left;">
+                <th style="padding: 10px;">Recurso</th>
+                <th style="padding: 10px;">Interface / Linguagem</th>
+                <th style="padding: 10px;">Poder Computacional</th>
+                <th style="padding: 10px;">Cenário Recomendado na Prova DP-700</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--border-color);">
+                <td style="padding: 10px; font-weight: bold; color: var(--brand-orange);">Copy Job</td>
+                <td style="padding: 10px;">Wizard No-Code Simples</td>
+                <td style="padding: 10px;">Cópia ponto-a-ponto</td>
+                <td style="padding: 10px;">Carga rápida de tabelas brutas para a camada Bronze sem regras de transformação.</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border-color);">
+                <td style="padding: 10px; font-weight: bold; color: var(--brand-teal);">Dataflows Gen2</td>
+                <td style="padding: 10px;">Power Query M / Low-Code Visual</td>
+                <td style="padding: 10px;">Mashup Engine com Staging Lakehouse</td>
+                <td style="padding: 10px;">Transformação visual para analistas de negócios, limpeza tipada e mesclagem de tabelas.</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border-color);">
+                <td style="padding: 10px; font-weight: bold; color: var(--brand-blue);">Data Factory Pipelines</td>
+                <td style="padding: 10px;">Canvas Visual de Atividades</td>
+                <td style="padding: 10px;">Orquestrador de Atividades e Triggers</td>
+                <td style="padding: 10px;">Fluxo de controle (If, ForEach, Until), chamadas de WebHooks, tolerância a falhas e agendamento.</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; font-weight: bold; color: var(--brand-purple);">mssparkutils DAGs</td>
+                <td style="padding: 10px;">PySpark / JSON / Código</td>
+                <td style="padding: 10px;">Motor Distribuído Apache Spark</td>
+                <td style="padding: 10px;">Disparo paralelo de múltiplos notebooks dependentes (<code>runMultiple</code>) com controle de concorrência.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>A Arquitetura Interna do Staging nos Dataflows Gen2</h3>
+        <p>
+          Um diferencial arquitetural crítico introduzido nos <strong>Dataflows Gen2</strong> é a habilitação automática do <strong>Staging Lakehouse</strong>.
+        </p>
+        <p>
+          Nas versões legadas do Power Query, grandes volumes de dados sofriam com limitações de memória do gateway. No Fabric:
+        </p>
+        <ol>
+          <li>Os dados brutos são extraídos e descarregados imediatamente no Lakehouse de Staging oculto do workspace.</li>
+          <li>As transformações complexas de junção e agregação são processadas diretamente pelo motor Polaris T-SQL ou Spark sob o capô (<em>Query Folding</em> avançado).</li>
+          <li>Os dados finais higienizados são comitados na tabela de destino (Lakehouse ou Data Warehouse) em formato Delta Parquet limpo.</li>
+        </ol>
+      </article>
+
+      <!-- 2. LENTE JÚNIOR -->
+      <article class="lens-panel" data-lens-content="junior">
+        <h2>🌱 Qual é a Diferença Entre Pipeline e Dataflow Gen2?</h2>
+        <p>
+          Pense no <strong>Dataflow Gen2</strong> como o "preparador dos ingredientes na cozinha". Ele limpa as folhas estragadas, corta os legumes, remove números nulos e junta tabelas usando uma tela cheia de botões amigáveis (Power Query).
+        </p>
+        <p>
+          Pense no <strong>Data Factory Pipeline</strong> como o "maestro do restaurante". Ele não cozinha diretamente, mas avisa: "Se o caminhão com os ingredientes chegou com sucesso, mande o assistente limpar; se falhou, mande um e-mail de alerta para o gerente!".
+        </p>
+      </article>
+
+      <!-- 3. LENTE PLENO -->
+      <article class="lens-panel" data-lens-content="pleno">
+        <h2>🌿 Orquestração Prática: Estruturando um Pipeline Completo</h2>
+        <p>
+          Em um projeto corporativo típico no Fabric, as atividades são encadeadas seguindo as regras de dependência de status:
+        </p>
+        <ul>
+          <li><strong>Upon Success (Verde):</strong> Executa a próxima etapa apenas se a anterior finalizar com sucesso.</li>
+          <li><strong>Upon Failure (Vermelho):</strong> Dispara alertas para o Teams ou chama uma Azure Function para registrar o incidente.</li>
+          <li><strong>Upon Completion (Azul):</strong> Executa comandos de limpeza de arquivos temporários, independentemente do sucesso ou falha da atividade anterior.</li>
+        </ul>
+      </article>
+
+      <!-- 4. LENTE SÊNIOR / DP-700 -->
+      <article class="lens-panel" data-lens-content="senior">
+        <h2>🛠️ Armadilhas de Prova DP-700: mssparkutils.notebook.runMultiple & Staging</h2>
+        <div style="border-left: 4px solid var(--brand-orange); background: var(--bg-surface-alt); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+          <strong style="color: var(--brand-orange); display: block; margin-bottom: 0.25rem;">⚠️ Padrão Crítico do Exame DP-700:</strong>
+          <em>"Você possui 15 notebooks de limpeza de dados em PySpark. O notebook Silver_Vendas só pode iniciar após os notebooks Bronze_Clientes e Bronze_Produtos terminarem. Você precisa executar esses notebooks em paralelo minimizando o tempo total e sem criar um pipeline visual no Data Factory. O que você deve utilizar?"</em>
+        </div>
+        <p>
+          <strong>Resposta Oficial:</strong> Utilizar a biblioteca utilitária <code>mssparkutils.notebook.runMultiple(DAG)</code> passando um dicionário com o array de atividades e suas dependências explícitas.
+        </p>
+        <h3>Desabilitando o Staging no Dataflow Gen2:</h3>
+        <p>
+          Por padrão, o Dataflow Gen2 usa o Lakehouse de Staging. No entanto, se o destino final for exatamente o mesmo Lakehouse onde a transformação está sendo salva e os dados forem muito pequenos, é possível desabilitar o staging para economizar uma gravação intermediária de disco.
+        </p>
+      </article>
+
+      <!-- 5. LENTE STAFF -->
+      <article class="lens-panel" data-lens-content="staff">
+        <h2>⚙️ Arquitetura Interna: Execução Paralela e Limites de Concorrência</h2>
+        <p>
+          Ao invocar <code>mssparkutils.notebook.runMultiple</code>, o Fabric aloca sessões subordinadas (<em>child sessions</em>) no Spark Pool.
+        </p>
+        <p>
+          O parâmetro <code>concurrency</code> (ex: <code>"concurrency": 4</code>) limita o número de workers simultâneos competindo pela alocação de vCores do pool. Isso impede que múltiplos notebooks paralelos esgotem as Capacity Units (CUs) da capacidade, evitando que outras tarefas do workspace entrem em fila de espera (<em>throttling</em> ou enfileiramento de jobs).
+        </p>
+      </article>
+
+      <!-- 6. LENTE C-LEVEL -->
+      <article class="lens-panel" data-lens-content="clevel">
+        <h2>🏛️ Visão Estratégica & FinOps: Produtividade vs. Custo Computacional</h2>
+        <p>
+          A escolha da ferramenta de ingestão impacta diretamente no tempo de entrega (Time-to-Market) e no consumo de CUs:
+        </p>
+        <ul>
+          <li><strong>Dataflows Gen2:</strong> Aumentam a produtividade da equipe em até 4x para cargas simples, mas consomem mais CUs devido à camada de mashup do Power Query.</li>
+          <li><strong>Pipelines + Spark Otimizado:</strong> Exigem engenharia de dados especializada, mas são altamente eficientes em custo para volumes massivos de dados (terabytes/petabytes).</li>
+        </ul>
+      </article>
+
+      <!-- SEÇÃO KINESTHETIC: LAB PRÁTICO -->
+            <!-- SEÇÃO KINESTHETIC: LAB PRÁTICO ESTILO MICROSOFT LEARN -->
+      <section id="bloco-pratica" style="margin-top: 3.5rem;">
+        <div class="mslearn-lab-box">
+          
+          <!-- Cabeçalho do Exercício -->
+          <div class="mslearn-header">
+            <div class="mslearn-badge-row">
+              <span class="mslearn-badge mslearn-badge-portal">🛠️ Microsoft Fabric Hands-on Lab</span>
+              <span class="mslearn-badge mslearn-badge-duration">⏱️ ~30 minutos</span>
+              <span class="mslearn-badge mslearn-badge-role">👤 Engenheiro de Dados • Domínio 2</span>
+              <span class="vark-badge badge-k" style="margin-left: auto;">K - Prática Guiada</span>
+            </div>
+            <h2 style="margin: 0.25rem 0 0.5rem 0; font-family: var(--font-display); color: var(--text-primary); font-size: 1.6rem;">
+              Exercício Prático: Orquestrar Pipelines de Dados com Atividades DAG e Dataflows Gen2
+            </h2>
+            <p style="margin: 0; color: var(--text-secondary); font-size: 0.95rem;">
+              Guia passo a passo para executar diretamente na plataforma em nuvem do <strong>Microsoft Fabric</strong> (ou em simulação local).
+            </p>
+          </div>
+
+          <!-- Cenário de Negócio Oficial -->
+          <div class="mslearn-scenario-card">
+            <h4 style="margin: 0 0 0.5rem 0; color: var(--brand-blue); font-family: var(--font-display);">
+              📋 Cenário do Laboratório
+            </h4>
+            <p style="margin: 0; font-size: 0.92rem; color: var(--text-primary); line-height: 1.55;">
+              Construir um pipeline de dados corporativo no Data Factory encadeando uma atividade de extração rápida (Fast Copy), um Dataflow Gen2 de higienização e um Notebook Spark final para alimentar a camada Gold.
+            </p>
+          </div>
+
+          <!-- Pré-requisitos -->
+          <div class="mslearn-prereqs-card">
+            <h4 style="margin: 0 0 0.4rem 0; color: #0078d4; font-family: var(--font-display);">
+              🔑 Pré-requisitos para Execução no Portal
+            </h4>
+            <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; color: var(--text-primary); line-height: 1.5;">
+              <li>Navegador web moderno (Edge, Chrome ou Firefox).</li>
+              <li>Acesso ao portal <a href="https://app.fabric.microsoft.com/" target="_blank" rel="noopener noreferrer" style="color: #0078d4; font-weight: 600; text-decoration: underline;">Microsoft Fabric (app.fabric.microsoft.com)</a>.</li>
+              <li>Capacidade ativa do Fabric (licença <strong>Fabric Trial</strong> gratuita ou capacidade corporativa).</li>
+              <li>Um Workspace configurado no modo de capacidade Fabric.</li>
+            </ul>
+          </div>
+
+          <!-- Tarefa 1 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">1</div>
+              <h3 class="mslearn-task-title">Criar o Pipeline de Dados no Data Factory</h3>
+            </div>
+            <ol class="mslearn-step-list">
+              <li>No workspace, selecione <strong>+ Novo item</strong> &gt; <strong>Data pipeline</strong>.</li>
+              <li>Nomeie como <code>pl_daily_enterprise_etl</code> e clique em <strong>Criar</strong>.</li>
+              <li>No menu de atividades superior, adicione uma atividade <strong>Copy data</strong>.</li>
+              <li>Adicione uma atividade <strong>Dataflow Gen2</strong> e conecte a seta verde (Sucesso) da Copy data nela.</li>
+              <li>Adicione uma atividade <strong>Notebook</strong> conectada à saída com sucesso do Dataflow Gen2.</li>
+            </ol>
+
+            <!-- Captura de Tela da Tarefa 1 -->
+            <div class="portal-screenshot-frame">
+              <div class="portal-window-bar">
+                <div class="portal-window-dots">
+                  <span class="portal-window-dot dot-red"></span>
+                  <span class="portal-window-dot dot-yellow"></span>
+                  <span class="portal-window-dot dot-green"></span>
+                </div>
+                <div class="portal-address-bar">
+                  🔒 https://app.fabric.microsoft.com/groups/pipelines/pl_daily_enterprise_etl
+                </div>
+              </div>
+              <img src="../assets/images/fabric-ui-06-data-factory-pipeline.svg" alt="Criar o Pipeline de Dados no Data Factory" loading="lazy" />
+              <div class="portal-screenshot-caption">
+                📸 <strong>Captura do Portal:</strong> Canvas visual de orquestração no Data Factory montando o Grafo Acíclico Direcionado (DAG).
+              </div>
+            </div>
+          </div>
+
+          <!-- Tarefa 2 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">2</div>
+              <h3 class="mslearn-task-title">Depurar e Monitorar a Execução das Atividades</h3>
+            </div>
+            <ol class="mslearn-step-list">
+              <li>Na barra de ferramentas, clique em <strong>▶ Depurar (Debug)</strong>.</li>
+              <li>Acompanhe na aba inferior <strong>Saída (Output)</strong> o status de cada nó da DAG, taxa de transferência e tempo de execução.</li>
+              <li>Configure um gatilho de agendamento (Schedule Trigger) diário para às 02:00 AM UTC.</li>
+            </ol>
+          </div>
+
+          <!-- Alerta de Exame DP-700 -->
+          <div class="mslearn-exam-note" style="margin-top: 1.5rem;">
+            <strong>⚠️ Atenção para o Exame DP-700:</strong><br>
+            No exame DP-700: Fast Copy acelera cargas maciças de dados para o Lakehouse; Dataflows Gen2 trazem o poder do Power Query M com suporte a transações e staging em Lakehouse; e Pipelines fornecem controle de fluxo com If Condition, ForEach e tratamento de erros.
+          </div>
+
+          <!-- Fallback: Simulação Local Offline -->
+          <div class="mslearn-local-box">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem;">
+              <h4 style="margin: 0; color: var(--brand-teal); font-family: var(--font-display);">
+                💻 Opção Alternativa: Executar Simulação Local Offline no seu Terminal
+              </h4>
+              <span style="font-size: 0.8rem; background: var(--bg-surface-alt); padding: 3px 8px; border-radius: 6px; color: var(--text-secondary);">Sem necessidade de conta Fabric</span>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+              Se você não possui uma assinatura ativa do Fabric no momento, criamos um simulador completo em Python no seu repositório local que reproduz a execução deste laboratório:
+            </p>
+            <pre><code style="font-family: var(--font-mono); font-size: 0.88rem; display: block; background: var(--bg-surface-alt); padding: 0.85rem 1rem; border-radius: 8px; border: 1px solid var(--border-color); overflow-x: auto;"># Execute este comando no terminal para reproduzir o lab:
+./.venv/bin/python labs/0007-orchestration-pipelines-dataflows-dag/lab_simulation.py</code></pre>
+            <div style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-secondary);">
+              📁 Diretório do laboratório prático local: <code>labs/0007-orchestration-pipelines-dataflows-dag/</code>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SEÇÃO DE QUIZ DP-700 -->
+              <section id="bloco-quiz" class="totc-card">
+          <h2 style="margin-top: 0;">Pontos Críticos para a Prática e para o Exame DP-700</h2>
+
+          <div class="summary-card">
+            <h3 style="margin-top: 0; color: var(--brand-teal);">📝 Síntese dos Pontos Críticos Aprendidos:</h3>
+            <ol style="margin-bottom: 0;">
+              <li><strong>Data Pipelines (DAG):</strong> Orquestrador corporativo com suporte a dependências (Sucesso, Falha, Conclusão), atividades de fluxo (ForEach, If Condition, Until) e parâmetros dinâmicos.</li>
+              <li><strong>Fast Copy no Data Factory:</strong> Acelera transferências massivas de bancos relacionais e arquivos para o Lakehouse com paralelismo otimizado em rede.</li>
+              <li><strong>Dataflows Gen2:</strong> Transformação visual e baseada em código Power Query M com suporte a transações e staging automático em Lakehouse.</li>
+              <li><strong>Tratamento de Exceções:</strong> Pipelines devem implementar branches de falha enviando notificações via Web Activity ou integrando com o Azure Monitor.</li>
+            </ol>
+          </div>
+
+          <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+            <h3>🎯 Desafio de Exame DP-700</h3>
+            <p>Questão elaborada no padrão da Microsoft com alternativas isomórficas:</p>
+
+            <div class="quiz-card" data-explanation="A função <code>mssparkutils.notebook.runMultiple()</code> é o recurso oficial do Fabric para executar múltiplos notebooks em paralelo ou sequencialmente definindo um Grafo Acíclico Dirigido (DAG) em código PySpark.">
+              <p><strong style="color: var(--text-primary);">Cenário de Exame DP-700:</strong> Você precisa orquestrar a execução de dez notebooks PySpark no Microsoft Fabric. Alguns notebooks possuem dependências estritas entre si e outros podem ser executados em paralelo para reduzir o tempo total de processamento. A equipe determinou que a lógica de orquestração deve ser mantida inteiramente dentro do código Spark. Qual recurso você deve implementar?</p>
+              
+              <ul class="quiz-options">
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    A) Configurar atalhos simbólicos de leitura para o Amazon S3 bucket.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    B) Criar uma atividade de Dataflow Gen2 executando scripts M visuais.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    C) Executar o comando VACUUM com tempo de retenção fixado em zero.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="true">
+                    D) Utilizar o método nativo mssparkutils.notebook.runMultiple com um DAG.
+                  </button>
+                </li>
+              </ul>
+              <div class="quiz-feedback"></div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--border-color); flex-wrap: wrap; gap: 1rem;">
+            <a href="../reference/04-three-languages-sql-pyspark-kql-cheatsheet.html" style="font-weight: 600;">
+              📑 Abrir Folha de Referência 04 (Linguagens & Orquestração)
+            </a>
+            <a href="0008-incremental-loading-watermark-scd.html" class="audio-btn" style="color: #fff !important;">
+              Próxima Lição: 0008 (Carga Incremental e SCD Tipo 2) →
+            </a>
+          </div>
+        </section>
+
+      <footer style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+        <a href="../lessons/0006-shortcuts-and-mirroring-zero-copy-integration.html?v=totc6" class="btn-secondary">
+          ← Lição Anterior: 0006
+        </a>
+        <a href="../simulados/index.html?v=totc6" class="btn-primary">
+          Ir para o Centro de Simulados DP-700 →
+        </a>
+      </footer>
+
+    </main>
+  </div>
+
+  
+</body>
+</html>
+

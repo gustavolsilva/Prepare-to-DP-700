@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lição 0013: CI/CD, Git Integration, Deployment Pipelines & Projetos SQL</title>
+  <link rel="stylesheet" href="../assets/tufte.css?v=totc6">
+  <link rel="stylesheet" href="../assets/vark.css?v=totc6">
+  <script src="../assets/lens.js?v=totc6"></script>
+  <script src="../assets/quiz.js?v=totc6" defer></script>
+  <script src="../assets/vark.js?v=totc6" defer></script>
+</head>
+<body>
+
+  <div class="course-app-shell">
+
+    <!-- SIDEBAR DE CURRÍCULO E NAVEGAÇÃO -->
+    <aside class="course-sidebar">
+      <div class="sidebar-top-nav">
+        <a href="../index.html?v=totc6" class="back-square-btn" title="Voltar ao Portal do Curso">←</a>
+        <div style="font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--text-primary);">
+          FABRIC <span style="color: var(--brand-teal);">DP-700</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="sidebar-section-title">Módulo 3: Governança, CI/CD & Otimização</div>
+        <div class="sidebar-pill-list">
+          <a href="#bloco-contexto" class="curriculum-pill active">
+            <span class="pill-left">📖 Lição 13: CI/CD & Pipelines</span>
+            <span class="pill-duration">30 mins</span>
+          </a>
+          <a href="#bloco-audio" class="curriculum-pill pill-orange">
+            <span class="pill-left">🎧 Narração Neural da Aula</span>
+            <span class="pill-duration">02:45</span>
+          </a>
+          <a href="#bloco-teoria" class="curriculum-pill pill-blue">
+            <span class="pill-left">👁️ Ciclo Git vs Deployment</span>
+            <span class="pill-duration">Visual</span>
+          </a>
+          <a href="../simulados/index.html?v=totc6" class="curriculum-pill pill-coral">
+            <span class="pill-left">🎯 Centro de Simulados</span>
+            <span class="pill-duration">Exam</span>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <div class="sidebar-section-title">PRACTICE QUIZ & LABS</div>
+        <div class="sidebar-pill-list">
+          <a href="#bloco-pratica" class="curriculum-pill pill-teal">
+            <span class="pill-left">⚡ Lab: Simulação CI/CD & Rules</span>
+            <span class="pill-duration">Python</span>
+          </a>
+          <a href="#bloco-quiz" class="curriculum-pill pill-orange">
+            <span class="pill-left">🎯 Desafio Exame DP-700</span>
+            <span class="pill-duration">Quiz</span>
+          </a>
+        </div>
+      </div>
+
+      <div style="margin-top: auto; padding: 1rem; background: var(--bg-surface-alt); border: 1px solid var(--border-color); border-radius: 14px; font-size: 0.82rem; color: var(--text-secondary);">
+        <strong style="color: var(--text-primary); display: block; margin-bottom: 0.25rem;">💡 Dica de Ouro DP-700</strong>
+        Para alterar parâmetros de conexão automaticamente entre DEV, TEST e PROD sem alterar o código-fonte, use sempre <strong>Deployment Rules</strong> no Deployment Pipeline!
+      </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="course-main-content">
+
+      <header class="course-header-banner">
+        <div>
+          <div class="course-badge">Módulo 3 • Domínio 1 do Exame DP-700 (Lifecycle Management)</div>
+          <h1 class="course-title">Lição 0013: CI/CD, Git Integration, Deployment Pipelines & SQL Database Projects (.sqlproj)</h1>
+          <p class="course-meta">
+            Duração estimada: 30 minutos • Domínio 1 (Gerenciamento do Ciclo de Vida da Solução) • Áudio Neural & Lab Interativo
+          </p>
+        </div>
+        <div class="theme-toggle-container">
+          <button class="theme-toggle-btn" onclick="window.toggleAppTheme()" title="Alternar entre Modo Claro e Escuro">
+            <span class="theme-toggle-icon">🌙</span> Alternar Tema
+          </button>
+        </div>
+      </header>
+
+      <nav class="lens-selector-bar" aria-label="Seletor de Nível Pedagógico">
+        <div class="lens-tab-group">
+          <button class="lens-tab" data-lens="unificado">📚 Unificado (Geral)</button>
+          <button class="lens-tab" data-lens="junior">🌱 Júnior / Fundamentos</button>
+          <button class="lens-tab" data-lens="pleno">🌿 Pleno / Implementador</button>
+          <button class="lens-tab" data-lens="senior">🛠️ Sênior / DP-700</button>
+          <button class="lens-tab" data-lens="staff">⚙️ Staff / Under the Hood</button>
+          <button class="lens-tab" data-lens="clevel">🏛️ C-Level / FinOps & TCO</button>
+        </div>
+        <div style="margin-left: auto;">
+          <button class="theme-toggle-btn" onclick="window.toggleAppTheme()" title="Alternar Modo Dark / Light">
+            <span class="theme-toggle-icon">🌙</span> Modo Dark
+          </button>
+        </div>
+      </nav>
+
+      <nav class="vark-nav-bar" aria-label="Atalhos das Modalidades VARK">
+        <a href="#bloco-audio" class="vark-btn"><span class="vark-badge badge-a">A</span> 🎧 Áudio Neural (Auditivo)</a>
+        <a href="#bloco-teoria" class="vark-btn"><span class="vark-badge badge-v">V</span> 👁️ Git vs Deployment Pipelines (Visual)</a>
+        <a href="#bloco-contexto" class="vark-btn"><span class="vark-badge badge-r">R</span> 📖 Texto Técnico (Leitura)</a>
+        <a href="#bloco-pratica" class="vark-btn"><span class="vark-badge badge-k">K</span> ⚡ Lab Simulação CI/CD (Cinestésico)</a>
+      </nav>
+
+      <!-- REPRODUTOR DE ÁUDIO NEURAL -->
+      <div id="bloco-audio" class="audio-player-card">
+        <div class="audio-card-header">
+          <div class="audio-avatar">🎙️</div>
+          <div>
+            <div class="audio-title">Narração Técnica Neural da Lição 0013</div>
+            <div class="audio-subtitle">Voz: Microsoft pt-BR-AntonioNeural • Git Integration, Branches, Deployment Pipelines e Deployment Rules</div>
+          </div>
+        </div>
+        <div class="audio-controls-row">
+          <button id="audio-play-btn" class="audio-play-button" aria-label="Reproduzir áudio da lição">▶ Reproduzir Aula</button>
+          <div class="audio-scrubber-track">
+            <div id="audio-progress-bar" class="audio-scrubber-fill" style="width: 0%;"></div>
+          </div>
+          <div id="audio-time-label" class="audio-time-display">00:00 / 02:45</div>
+          <audio id="vark-audio-element" preload="metadata">
+            <source src="../assets/audio/lesson-0013-pt.mp3?v=totc6" type="audio/mpeg">
+            Seu navegador não suporta o elemento de áudio HTML5.
+          </audio>
+        </div>
+      </div>
+
+      <!-- CONTEÚDO MULTI-LENS -->
+      <article id="bloco-contexto" class="lens-panel" data-lens-content="unificado">
+        <h2>Ciclo de Vida de Engenharia de Dados em Escala Corporativa</h2>
+        <p>
+          O Microsoft Fabric integra capacidades nativas de <strong>Application Lifecycle Management (ALM)</strong> que eliminam a necessidade de exportações manuais de arquivos ou modificações manuais em produção. O ciclo de vida corporativo assenta-se em dois pilares complementares: <strong>Git Integration</strong> (para controle de versão, colaboração e branches de desenvolvimento) e <strong>Deployment Pipelines</strong> (para orquestração de promoção entre ambientes DEV, TEST e PROD com substituição automática de regras).
+        </p>
+
+        <div class="diagram-container" id="bloco-teoria">
+          <h3>Topologia de CI/CD: Git Integration vs. Deployment Pipelines</h3>
+          <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+            Como as duas abordagens se combinam no dia a dia da engenharia de dados do Fabric.
+          </p>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+            <div style="background: var(--bg-surface-alt); padding: 1.25rem; border-radius: 12px; border: 1px solid var(--border-color);">
+              <h4 style="margin: 0 0 0.5rem 0; color: var(--brand-teal); display: flex; align-items: center; gap: 0.5rem;">
+                <span>🐙</span> 1. Git Integration (Controle de Versão Granular)
+              </h4>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+                Conecta diretamente um Workspace do Fabric a um repositório no <strong>Azure DevOps</strong> ou <strong>GitHub</strong>.
+              </p>
+              <ul style="font-size: 0.85rem; color: var(--text-primary); padding-left: 1.25rem; line-height: 1.6;">
+                <li><strong>Serialização Declarativa:</strong> Notebooks, Pipelines, Semantic Models (PBIP) e Warehouses viram arquivos legíveis (JSON/PY/SQL).</li>
+                <li><strong>Branching Strategy:</strong> Desenvolvedores criam branches individuais de feature (`feature/etl-orders`), realizam commits e abrem Pull Requests.</li>
+                <li><strong>Sincronização Bidirecional:</strong> Detecta discrepâncias com status <em>Committed</em>, <em>Uncommitted</em> ou <em>Conflict</em> (resolvido via Commit to Git ou Update from Git).</li>
+              </ul>
+            </div>
+
+            <div style="background: var(--bg-surface-alt); padding: 1.25rem; border-radius: 12px; border: 1px solid var(--border-color);">
+              <h4 style="margin: 0 0 0.5rem 0; color: var(--brand-orange); display: flex; align-items: center; gap: 0.5rem;">
+                <span>🚀</span> 2. Deployment Pipelines (Promoção Entre Estágios)
+              </h4>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+                Gerencia formalmente o fluxo de governança corporativa entre os estágios <strong>Development</strong>, <strong>Test</strong> e <strong>Production</strong>.
+              </p>
+              <ul style="font-size: 0.85rem; color: var(--text-primary); padding-left: 1.25rem; line-height: 1.6;">
+                <li><strong>Comparação Visual de Estágios:</strong> Identifica quais artefatos foram adicionados, modificados ou excluídos entre ambientes.</li>
+                <li><strong>Deployment Rules (Regras de Implantação):</strong> Substitui automaticamente strings de conexão, servidores SQL, nomes de Lakehouses e parâmetros sem alterar o código.</li>
+                <li><strong>Automação via REST API / DevOps:</strong> Pipelines de implantação podem ser disparados via Azure DevOps Extension ou Fabric REST APIs.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="note-box note-important" style="margin-top: 1.5rem;">
+          <strong>🎯 Foco Máximo DP-700: Deployment Rules (Regras de Implantação)</strong><br>
+          Se a questão do exame perguntar como garantir que relatórios e pipelines leiam automaticamente do banco de testes em QA e do banco produtivo em Produção sem intervenção manual, a resposta correta é: <strong>Configurar Deployment Rules no Deployment Pipeline</strong>.
+        </div>
+
+        <h3 style="margin-top: 2rem;">Itens Suportados no Git do Fabric e Database Projects (.sqlproj)</h3>
+        <p>
+          O Fabric serializa os metadados dos itens em pastas declarativas. Para o <strong>Data Warehouse</strong>, o Fabric suporta projetos de banco de dados SQL (<strong>.sqlproj</strong>) integrados ao Visual Studio Code / Azure Data Studio. Isso permite:
+        </p>
+        <ul>
+          <li>Tratar esquemas, tabelas e views como código (Schema as Code).</li>
+          <li>Compilar arquivos DDL para gerar pacotes <strong>DACPAC</strong>.</li>
+          <li>Realizar migrações incrementais determinísticas com validação prévia de sintaxe e integridade referencial antes da aplicação em produção.</li>
+        </ul>
+      </article>
+
+      <article class="lens-panel" data-lens-content="junior" style="display: none;">
+        <h2>Fundamentos Simples de CI/CD e Git no Microsoft Fabric</h2>
+        <p>
+          Se você está começando em engenharia de dados, pense no <strong>Git</strong> como uma máquina do tempo e um livro de registros para todo o seu trabalho analítico.
+        </p>
+        <div style="background: var(--bg-surface-alt); padding: 1.25rem; border-radius: 12px; margin: 1rem 0;">
+          <h4>Os Conceitos Básicos:</h4>
+          <ul>
+            <li><strong>Repositório Git:</strong> A pasta central na nuvem (GitHub ou Azure DevOps) onde todas as versões dos seus notebooks e pipelines ficam guardadas.</li>
+            <li><strong>Commit:</strong> Salvar um ponto no tempo com uma mensagem clara do que foi feito (ex: <em>"Adiciona tratamento de nulos na tabela de clientes"</em>).</li>
+            <li><strong>Branches:</strong> Cópias isoladas onde você pode testar novidades sem estragar o que já está funcionando para os outros.</li>
+            <li><strong>Deployment Pipeline:</strong> A esteira que empurra com segurança o que foi testado em desenvolvimento para o ambiente de testes e depois para a produção.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="lens-panel" data-lens-content="pleno" style="display: none;">
+        <h2>Implementação Prática de Git e Pipelines de Implantação</h2>
+        <p>
+          Para o engenheiro de dados Pleno, a gestão de branches e as regras de implantação evitam erros humanos graves em produção:
+        </p>
+        <h3>Configurando Git Integration no Workspace</h3>
+        <ol>
+          <li>Acesse <strong>Workspace Settings > Git Integration</strong>.</li>
+          <li>Selecione o provedor (Azure DevOps ou GitHub) e aponte para a Organização, Projeto, Repositório e Branch desejado (ex: <code>dev</code>).</li>
+          <li>Ao realizar alterações em notebooks ou pipelines, o botão de Git na barra de ferramentas exibe o status de alterações pendentes para commit.</li>
+        </ol>
+
+        <h3>Configurando Deployment Rules no Deployment Pipeline</h3>
+        <p>
+          Ao criar os 3 estágios (Dev -> Test -> Prod) no Deployment Pipeline:
+        </p>
+        <ul>
+          <li>No estágio de <strong>Test</strong> ou <strong>Prod</strong>, clique no ícone de engrenagem <strong>Deployment rules</strong>.</li>
+          <li>Selecione a fonte de dados (ex: SQL Database ou Fabric Lakehouse).</li>
+          <li>Defina a substituição: <code>srv-dev.database.windows.net</code> -> <code>srv-prod.database.windows.net</code>.</li>
+          <li>Defina regras de parâmetros: <code>p_env = 'DEV'</code> -> <code>p_env = 'PROD'</code>.</li>
+        </ul>
+      </article>
+
+      <article class="lens-panel" data-lens-content="senior" style="display: none;">
+        <h2>Arquitetura Corporativa de CI/CD & Checklist do Exame DP-700</h2>
+        <p>
+          No Exame DP-700, questões sobre ALM testam se você conhece as limitações técnicas e as melhores práticas arquiteturais:
+        </p>
+        <div class="note-box note-warning">
+          <strong>⚠️ Itens com Suporte a Git vs. Deployment Pipelines no Fabric:</strong><br>
+          Nem todos os itens do Fabric são suportados identicamente no Git e nos Deployment Pipelines. Itens centrais suportados incluem:
+          <strong>Notebooks, Data Pipelines, Semantic Models (PBIP), Reports, Data Warehouses, Lakehouse schemas e KQL Databases</strong>. Sempre valide o suporte a itens experimentais antes de desenhar a topologia corporativa.
+        </div>
+        <h3>Resolução de Conflitos no Workspace</h3>
+        <p>
+          Quando um desenvolvedor altera um item no workspace enquanto outro desenvolvedor fez commit no mesmo arquivo no Git, o Fabric marca o item como <strong>Conflict</strong>. O usuário tem duas opções nativas:
+        </p>
+        <ul>
+          <li><strong>Commit to Git:</strong> Força as alterações locais do workspace para o Git (sobrescrevendo o repositório).</li>
+          <li><strong>Update from Git:</strong> Descarta as alterações locais do workspace e puxa a versão oficial do Git.</li>
+        </ul>
+      </article>
+
+      <article class="lens-panel" data-lens-content="staff" style="display: none;">
+        <h2>Internals: Serialização Declarativa & Projetos SQL (.sqlproj)</h2>
+        <p>
+          Por baixo dos panos, o Fabric serializa artefatos em pastas de metadados padronizados:
+        </p>
+        <pre><code style="font-family: var(--font-mono); font-size: 0.85rem; display: block; background: var(--bg-surface-alt); padding: 1rem; border-radius: 8px;">Workspace-Root/
+├── Notebook-Ingestion.Notebook/
+│   ├── .platform
+│   ├── item.metadata.json
+│   └── notebook-content.py
+├── Pipeline-Orders.DataPipeline/
+│   ├── .platform
+│   └── pipeline-content.json
+└── Warehouse-Gold.Warehouse/
+    └── .platform</code></pre>
+        <p>
+          Para <strong>SQL Database Projects</strong>, os arquivos DDL de tabelas e views são organizados em estruturas clássicas de <code>.sqlproj</code>. A pipeline do Azure DevOps executa <code>SqlPackage.exe</code> para gerar o arquivo de diferenças (DACPAC deploy) que aplica apenas as modificações estruturais nas tabelas do Data Warehouse, preservando os dados históricos existentes.
+        </p>
+      </article>
+
+      <article class="lens-panel" data-lens-content="clevel" style="display: none;">
+        <h2>Visão Executiva, Governança & Eficiência Operacional (FinOps)</h2>
+        <p>
+          Implementar CI/CD e Deployment Pipelines reduz drasticamente o Mean Time to Recovery (MTTR) e evita incidentes caros causados por edições manuais em ambientes analíticos de missão crítica:
+        </p>
+        <ul>
+          <li><strong>Eliminação do "Trabalho em Produção":</strong> Desenvolvedores e analistas não possuem permissões de escrita direta nos workspaces de Produção. O único caminho de publicação é a aprovação formal do Deployment Pipeline.</li>
+          <li><strong>Auditoria e Conformidade Total (SOX / GDPR):</strong> Cada alteração analítica é rastreável a um Pull Request assinado, com autor, revisores e data no repositório corporativo.</li>
+          <li><strong>Otimização de Custos de Capacidade:</strong> Ambientes de teste e desenvolvimento podem utilizar capacidades menores (ex: F2/F4) ou ser pausados fora do horário comercial, reservando capacidades de alta performance (F64+) para a produção.</li>
+        </ul>
+      </article>
+
+      <!-- SEÇÃO DO LABORATÓRIO HANDS-ON -->
+            <!-- SEÇÃO KINESTHETIC: LAB PRÁTICO ESTILO MICROSOFT LEARN -->
+      <section id="bloco-pratica" style="margin-top: 3.5rem;">
+        <div class="mslearn-lab-box">
+          
+          <!-- Cabeçalho do Exercício -->
+          <div class="mslearn-header">
+            <div class="mslearn-badge-row">
+              <span class="mslearn-badge mslearn-badge-portal">🛠️ Microsoft Fabric Hands-on Lab</span>
+              <span class="mslearn-badge mslearn-badge-duration">⏱️ ~30 minutos</span>
+              <span class="mslearn-badge mslearn-badge-role">👤 Engenheiro de Dados • Domínio 3</span>
+              <span class="vark-badge badge-k" style="margin-left: auto;">K - Prática Guiada</span>
+            </div>
+            <h2 style="margin: 0.25rem 0 0.5rem 0; font-family: var(--font-display); color: var(--text-primary); font-size: 1.6rem;">
+              Exercício Prático: CI/CD com Integração Git e Deployment Pipelines
+            </h2>
+            <p style="margin: 0; color: var(--text-secondary); font-size: 0.95rem;">
+              Guia passo a passo para executar diretamente na plataforma em nuvem do <strong>Microsoft Fabric</strong> (ou em simulação local).
+            </p>
+          </div>
+
+          <!-- Cenário de Negócio Oficial -->
+          <div class="mslearn-scenario-card">
+            <h4 style="margin: 0 0 0.5rem 0; color: var(--brand-blue); font-family: var(--font-display);">
+              📋 Cenário do Laboratório
+            </h4>
+            <p style="margin: 0; font-size: 0.92rem; color: var(--text-primary); line-height: 1.55;">
+              Configurar o ciclo de vida de desenvolvimento de software (DevOps) no Fabric, conectando workspaces ao Git e utilizando Deployment Pipelines de 3 estágios (Dev &gt; Test &gt; Prod) com regras de parâmetros de conexão.
+            </p>
+          </div>
+
+          <!-- Pré-requisitos -->
+          <div class="mslearn-prereqs-card">
+            <h4 style="margin: 0 0 0.4rem 0; color: #0078d4; font-family: var(--font-display);">
+              🔑 Pré-requisitos para Execução no Portal
+            </h4>
+            <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; color: var(--text-primary); line-height: 1.5;">
+              <li>Navegador web moderno (Edge, Chrome ou Firefox).</li>
+              <li>Acesso ao portal <a href="https://app.fabric.microsoft.com/" target="_blank" rel="noopener noreferrer" style="color: #0078d4; font-weight: 600; text-decoration: underline;">Microsoft Fabric (app.fabric.microsoft.com)</a>.</li>
+              <li>Capacidade ativa do Fabric (licença <strong>Fabric Trial</strong> gratuita ou capacidade corporativa).</li>
+              <li>Um Workspace configurado no modo de capacidade Fabric.</li>
+            </ul>
+          </div>
+
+          <!-- Tarefa 1 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">1</div>
+              <h3 class="mslearn-task-title">Vincular o Workspace ao Repositório Git</h3>
+            </div>
+            <ol class="mslearn-step-list">
+              <li>Nas configurações do Workspace, clique em <strong>Integração com Git (Git integration)</strong>.</li>
+              <li>Conecte à sua conta do Azure DevOps ou GitHub, selecione o repositório e a branch <code>dev</code>.</li>
+              <li>Observe a barra de status de sincronização indicando alterações pendentes de commit.</li>
+            </ol>
+          </div>
+
+          <!-- Tarefa 2 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">2</div>
+              <h3 class="mslearn-task-title">Configurar o Pipeline de Implantação de 3 Estágios</h3>
+            </div>
+            <ol class="mslearn-step-list">
+              <li>Crie um novo <strong>Deployment Pipeline</strong>.</li>
+              <li>Atribua o workspace de Desenvolvimento ao estágio 1 (Dev), Teste ao estágio 2 (Test) e Produção ao estágio 3 (Prod).</li>
+              <li>Configure <strong>Deployment Rules</strong> para substituir conexões de banco de dados e nomes de Lakehouses entre os estágios.</li>
+              <li>Execute a promoção de artefatos de Dev para Test com validação automática.</li>
+            </ol>
+
+            <!-- Captura de Tela da Tarefa 2 -->
+            <div class="portal-screenshot-frame">
+              <div class="portal-window-bar">
+                <div class="portal-window-dots">
+                  <span class="portal-window-dot dot-red"></span>
+                  <span class="portal-window-dot dot-yellow"></span>
+                  <span class="portal-window-dot dot-green"></span>
+                </div>
+                <div class="portal-address-bar">
+                  🔒 https://app.fabric.microsoft.com/groups/deployment-pipelines/cicd
+                </div>
+              </div>
+              <img src="../assets/images/fabric-ui-10-git-deployment-pipeline.svg" alt="Configurar o Pipeline de Implantação de 3 Estágios" loading="lazy" />
+              <div class="portal-screenshot-caption">
+                📸 <strong>Captura do Portal:</strong> Pipeline de implantação com 3 estágios (Desenvolvimento, Teste e Produção) e integração com Git.
+              </div>
+            </div>
+          </div>
+
+          <!-- Alerta de Exame DP-700 -->
+          <div class="mslearn-exam-note" style="margin-top: 1.5rem;">
+            <strong>⚠️ Atenção para o Exame DP-700:</strong><br>
+            Atenção para o exame: Deployment Pipelines facilitam a transição entre ambientes; as Regras de Parâmetros garantem que o código em Produção aponte automaticamente para o Lakehouse de Produção sem necessidade de editar manualmente os scripts.
+          </div>
+
+          <!-- Fallback: Simulação Local Offline -->
+          <div class="mslearn-local-box">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem;">
+              <h4 style="margin: 0; color: var(--brand-teal); font-family: var(--font-display);">
+                💻 Opção Alternativa: Executar Simulação Local Offline no seu Terminal
+              </h4>
+              <span style="font-size: 0.8rem; background: var(--bg-surface-alt); padding: 3px 8px; border-radius: 6px; color: var(--text-secondary);">Sem necessidade de conta Fabric</span>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+              Se você não possui uma assinatura ativa do Fabric no momento, criamos um simulador completo em Python no seu repositório local que reproduz a execução deste laboratório:
+            </p>
+            <pre><code style="font-family: var(--font-mono); font-size: 0.88rem; display: block; background: var(--bg-surface-alt); padding: 0.85rem 1rem; border-radius: 8px; border: 1px solid var(--border-color); overflow-x: auto;"># Execute este comando no terminal para reproduzir o lab:
+./.venv/bin/python labs/0013-cicd-git-deployment-pipelines/lab_simulation.py</code></pre>
+            <div style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-secondary);">
+              📁 Diretório do laboratório prático local: <code>labs/0013-cicd-git-deployment-pipelines/</code>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SEÇÃO DE QUIZ DP-700 -->
+              <section id="bloco-quiz" class="totc-card">
+          <h2 style="margin-top: 0;">Pontos Críticos para a Prática e para o Exame DP-700</h2>
+
+          <div class="summary-card">
+            <h3 style="margin-top: 0; color: var(--brand-teal);">📝 Síntese dos Pontos Críticos Aprendidos:</h3>
+            <ol style="margin-bottom: 0;">
+              <li><strong>Integração Nativa com Git:</strong> Permite sincronizar workspaces do Fabric com branches do Azure DevOps ou GitHub, rastreando alterações de código como código-fonte.</li>
+              <li><strong>Deployment Pipelines (3 Estágios):</strong> Automatiza a promoção controlada de artefatos entre os ambientes de Desenvolvimento (Dev), Teste (Test) e Produção (Prod).</li>
+              <li><strong>Deployment Rules (Regras de Parâmetros):</strong> Substitui automaticamente variáveis de conexão e nomes de Lakehouses para que o ambiente de teste aponte para dados de teste.</li>
+              <li><strong>Projetos SQL (SQL Projects):</strong> Permitem versionamento declarativo de esquemas do Data Warehouse com compilação e deploy via arquivos .sqlproj e dacpacs.</li>
+            </ol>
+          </div>
+
+          <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+            <h3>🎯 Desafio de Exame DP-700</h3>
+            <p>Questão elaborada no padrão da Microsoft com alternativas isomórficas:</p>
+
+            <div class="quiz-card" data-explanation="No Microsoft Fabric, as <strong>Deployment Rules (Regras de Implantação)</strong> configuradas nos estágios do Deployment Pipeline permitem remapear automaticamente parâmetros e fontes de dados (como instâncias de SQL Database) no momento da publicação, eliminando qualquer alteração manual.">
+              <p><strong style="color: var(--text-primary);">Cenário de Exame DP-700:</strong> Sua organização utiliza um Deployment Pipeline no Microsoft Fabric com três estágios: Development, Test e Production. Você possui um Data Pipeline que lê dados de um banco de dados SQL do Azure. Ao promover o pipeline de Test para Production, você precisa garantir que a cadeia de conexão aponte automaticamente para o servidor de banco de dados produtivo, sem que nenhum desenvolvedor precise editar manualmente o pipeline em produção. O que você deve configurar?</p>
+              
+              <ul class="quiz-options">
+                <li>
+                  <button class="quiz-option-btn" data-correct="true">
+                    A) Configurar Deployment Rules no estágio de Produção do Deployment Pipeline.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    B) Modificar manualmente a string de conexão no arquivo JSON do branch de produção.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    C) Criar um atalho (Shortcut) do OneLake apontando para o servidor SQL de testes.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    D) Executar o comando VACUUM com retenção zero na tabela Delta do Lakehouse.
+                  </button>
+                </li>
+              </ul>
+              <div class="quiz-feedback"></div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--border-color); flex-wrap: wrap; gap: 1rem;">
+            <a href="../reference/05-security-governance-purview-fallback-guide.html" style="font-weight: 600;">
+              📑 Abrir Folha de Referência 05 (Governança e DevOps)
+            </a>
+            <a href="0014-performance-vorder-liquid-clustering-tuning.html" class="audio-btn" style="color: #fff !important;">
+              Próxima Lição: 0014 (Performance, V-Order e Liquid Clustering) →
+            </a>
+          </div>
+        </section>
+
+      <footer style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+        <a href="../lessons/0012-security-governance-rls-cls-direct-lake-fallback.html?v=totc6" class="btn-secondary">
+          ← Lição Anterior: 0012
+        </a>
+        <a href="../lessons/0014-performance-vorder-liquid-clustering-tuning.html?v=totc6" class="btn-primary">
+          Próxima Lição: 0014 →
+        </a>
+      </footer>
+
+    </main>
+  </div>
+
+  
+</body>
+</html>

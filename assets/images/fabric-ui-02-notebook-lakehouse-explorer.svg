@@ -1,0 +1,144 @@
+<svg viewBox="0 0 920 540" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;">
+  <defs>
+    <filter id="shadow2" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Fundo do Portal -->
+  <rect width="920" height="540" fill="#0b1120"/>
+
+  <!-- Top Bar do Fabric -->
+  <rect x="0" y="0" width="920" height="42" fill="#002447"/>
+  <circle cx="24" cy="21" r="10" fill="#0078d4"/>
+  <text x="24" y="25" text-anchor="middle" font-size="11" font-weight="900" fill="#ffffff">F</text>
+  <text x="44" y="26" font-size="13" font-weight="700" fill="#ffffff">Microsoft Fabric</text>
+  <text x="175" y="25" font-size="12" fill="#64748b">/</text>
+  <text x="190" y="25" font-size="12" fill="#cbd5e1">DP-700-Workspace</text>
+  <text x="320" y="25" font-size="12" fill="#64748b">/</text>
+  <text x="335" y="25" font-size="12" font-weight="700" fill="#38bdf8">02_Delta_Medallion_HandsOn</text>
+
+  <!-- Status do Spark Pool -->
+  <rect x="670" y="10" width="160" height="22" rx="11" fill="#064e3b" stroke="#10b981"/>
+  <circle cx="682" cy="21" r="4" fill="#34d399"/>
+  <text x="694" y="26" font-size="11" font-weight="600" fill="#a7f3d0">Starter Pool: Ativo (Spark 3.5)</text>
+
+  <!-- Barra de Ferramentas do Notebook -->
+  <rect x="0" y="42" width="920" height="40" fill="#111f38" stroke-bottom="#1e293b"/>
+  
+  <rect x="15" y="48" width="85" height="28" rx="5" fill="#0284c7"/>
+  <text x="57" y="66" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">▶ Executar tudo</text>
+
+  <rect x="110" y="48" width="70" height="28" rx="5" fill="#1e293b" stroke="#334155"/>
+  <text x="145" y="66" text-anchor="middle" font-size="12" fill="#cbd5e1">+ Código</text>
+
+  <rect x="188" y="48" width="85" height="28" rx="5" fill="#1e293b" stroke="#334155"/>
+  <text x="230" y="66" text-anchor="middle" font-size="12" fill="#cbd5e1">Linguagem: PySpark ▾</text>
+
+  <!-- Painel Esquerdo: LAKEHOUSE EXPLORER -->
+  <rect x="0" y="82" width="240" height="458" fill="#0f172a" stroke-right="#1e293b"/>
+  <rect x="0" y="82" width="240" height="34" fill="#162238"/>
+  <text x="15" y="104" font-size="12" font-weight="700" fill="#38bdf8">EXPLORADOR DO LAKEHOUSE</text>
+  <text x="215" y="104" font-size="13" fill="#94a3b8">🔄</text>
+
+  <!-- Item Lakehouse Anexado -->
+  <g transform="translate(10, 125)">
+    <text x="0" y="14" font-size="13">🌊</text>
+    <text x="22" y="14" font-size="12" font-weight="700" fill="#f8fafc">lh_sales_medallion</text>
+    <text x="150" y="14" font-size="10" fill="#34d399">(Padrão)</text>
+
+    <!-- Pasta Tables (Expandida) -->
+    <g transform="translate(15, 26)">
+      <text x="0" y="14" font-size="12">📂</text>
+      <text x="18" y="14" font-size="11.5" font-weight="600" fill="#cbd5e1">Tables (Tabelas Delta)</text>
+
+      <!-- Tabela silver_vendas com Destaque -->
+      <g transform="translate(15, 25)">
+        <rect x="-6" y="-3" width="180" height="28" rx="6" fill="#0c4a6e" stroke="#38bdf8" stroke-width="1.5"/>
+        <text x="4" y="16" font-size="12">📐</text>
+        <text x="22" y="16" font-size="11.5" font-weight="700" fill="#38bdf8">silver_vendas</text>
+        <circle cx="155" cy="11" r="4" fill="#10b981"/>
+      </g>
+    </g>
+
+    <!-- Pasta Files -->
+    <g transform="translate(15, 95)">
+      <text x="0" y="14" font-size="12">📁</text>
+      <text x="18" y="14" font-size="11.5" fill="#94a3b8">Files (Arquivos Brutos)</text>
+    </g>
+  </g>
+
+  <!-- Chamada Visual 3: Apontando para silver_vendas no Explorer -->
+  <g>
+    <rect x="250" y="170" width="220" height="38" rx="8" fill="#0284c7" filter="url(#shadow2)"/>
+    <polygon points="250,189 238,189 250,183" fill="#0284c7"/>
+    <text x="260" y="187" font-size="11" font-weight="800" fill="#ffffff">PASSO 3: TABELA DELTA</text>
+    <text x="260" y="201" font-size="10.5" fill="#e0f2fe">Criada e indexada no OneLake</text>
+  </g>
+
+  <!-- Área do Notebook (Células de Código e Saídas) -->
+  <rect x="240" y="82" width="680" height="458" fill="#070d19"/>
+
+  <!-- Célula 1 do Notebook: Ingestão -->
+  <g transform="translate(260, 95)">
+    <rect x="0" y="0" width="640" height="150" rx="8" fill="#0f172a" stroke="#1e293b"/>
+    <rect x="0" y="0" width="35" height="150" rx="8" fill="#162238"/>
+    <text x="18" y="22" text-anchor="middle" font-size="11" font-family="monospace" fill="#38bdf8">[1]</text>
+    <text x="18" y="45" text-anchor="middle" font-size="13" fill="#34d399">▶</text>
+
+    <!-- Código PySpark na Célula 1 -->
+    <text x="45" y="22" font-family="Courier, monospace" font-size="11" fill="#94a3b8"># Gravação Delta gerenciada com V-Order</text>
+    <text x="45" y="40" font-family="Courier, monospace" font-size="11.5" fill="#f8fafc">df_vendas_v0.write \</text>
+    <text x="65" y="58" font-family="Courier, monospace" font-size="11.5" fill="#38bdf8">.format("delta") \</text>
+    <text x="65" y="76" font-family="Courier, monospace" font-size="11.5" fill="#f8fafc">.mode("overwrite") \</text>
+    <text x="65" y="94" font-family="Courier, monospace" font-size="11.5" fill="#f59e0b">.saveAsTable("silver_vendas")</text>
+
+    <!-- Saída da Célula 1 -->
+    <rect x="45" y="110" width="575" height="28" rx="4" fill="#064e3b" stroke="#059669"/>
+    <text x="58" y="128" font-family="Courier, monospace" font-size="11" font-weight="600" fill="#a7f3d0">✅ Tabela silver_vendas criada com sucesso (Versão 0) no OneLake!</text>
+  </g>
+
+  <!-- Célula 2 do Notebook: Inspeção do _delta_log (DESCRIBE HISTORY) -->
+  <g transform="translate(260, 260)">
+    <rect x="0" y="0" width="640" height="255" rx="8" fill="#0f172a" stroke="#0284c7" stroke-width="1.5"/>
+    <rect x="0" y="0" width="35" height="255" rx="8" fill="#162238"/>
+    <text x="18" y="22" text-anchor="middle" font-size="11" font-family="monospace" fill="#38bdf8">[2]</text>
+    <text x="18" y="45" text-anchor="middle" font-size="13" fill="#34d399">▶</text>
+
+    <!-- Código PySpark Célula 2 -->
+    <text x="45" y="22" font-family="Courier, monospace" font-size="11.5" fill="#f8fafc">historico_df = spark.sql(<tspan fill="#38bdf8">"DESCRIBE HISTORY silver_vendas"</tspan>)</text>
+    <text x="45" y="40" font-family="Courier, monospace" font-size="11.5" fill="#f8fafc">display(historico_df.select(<tspan fill="#f59e0b">"version"</tspan>, <tspan fill="#f59e0b">"operation"</tspan>, <tspan fill="#f59e0b">"numOutputRows"</tspan>))</text>
+
+    <!-- Tabela de Saída do DESCRIBE HISTORY (Grid Visual) -->
+    <g transform="translate(45, 60)">
+      <!-- Cabeçalho da Tabela -->
+      <rect x="0" y="0" width="580" height="28" rx="4" fill="#1e293b"/>
+      <text x="15" y="18" font-size="11" font-weight="700" fill="#38bdf8">version</text>
+      <text x="110" y="18" font-size="11" font-weight="700" fill="#38bdf8">operation</text>
+      <text x="320" y="18" font-size="11" font-weight="700" fill="#38bdf8">numOutputRows</text>
+      <text x="470" y="18" font-size="11" font-weight="700" fill="#38bdf8">engine</text>
+
+      <!-- Linha 1 (Commit V1 - Append) -->
+      <rect x="0" y="32" width="580" height="32" rx="4" fill="#0f172a" stroke="#334155"/>
+      <text x="15" y="52" font-family="Courier, monospace" font-size="12" font-weight="700" fill="#34d399">1</text>
+      <text x="110" y="52" font-size="11.5" fill="#f8fafc">WRITE (APPEND)</text>
+      <text x="320" y="52" font-family="Courier, monospace" font-size="12" fill="#cbd5e1">2</text>
+      <text x="470" y="52" font-size="11" fill="#94a3b8">Fabric Spark</text>
+
+      <!-- Linha 2 (Commit V0 - Create) -->
+      <rect x="0" y="68" width="580" height="32" rx="4" fill="#0f172a" stroke="#334155"/>
+      <text x="15" y="88" font-family="Courier, monospace" font-size="12" font-weight="700" fill="#38bdf8">0</text>
+      <text x="110" y="88" font-size="11.5" fill="#f8fafc">CREATE TABLE AS SELECT</text>
+      <text x="320" y="88" font-family="Courier, monospace" font-size="12" fill="#cbd5e1">3</text>
+      <text x="470" y="88" font-size="11" fill="#94a3b8">Fabric Spark</text>
+    </g>
+
+    <!-- Chamada Visual 4: Apontando para as versões no _delta_log -->
+    <g>
+      <rect x="220" y="185" width="260" height="36" rx="8" fill="#10b981" filter="url(#shadow2)"/>
+      <polygon points="210,203 220,197 220,209" fill="#10b981"/>
+      <text x="230" y="201" font-size="11" font-weight="800" fill="#ffffff">PASSO 4: TRILHA _delta_log AUDITADA</text>
+      <text x="230" y="214" font-size="10" fill="#ecfdf5">Cada versão possui seu commit JSON atômico</text>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lição 0003: Modelagem Dimensional & As 3 Linguagens do DP-700 (T-SQL, PySpark, KQL)</title>
+  <link rel="stylesheet" href="../assets/tufte.css?v=totc5">
+  <link rel="stylesheet" href="../assets/vark.css?v=totc5">
+  <script src="../assets/lens.js?v=totc5"></script>
+  <script src="../assets/quiz.js?v=totc5" defer></script>
+  <script src="../assets/vark.js?v=totc5" defer></script>
+</head>
+<body>
+
+  <div class="course-app-shell">
+
+    <!-- COLUNA ESQUERDA: SIDEBAR DE CURRÍCULO E NAVEGAÇÃO -->
+    <aside class="course-sidebar">
+      <div class="sidebar-top-nav">
+        <a href="../index.html?v=totc5" class="back-square-btn" title="Voltar ao Portal do Curso">←</a>
+        <div style="font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--text-primary);">
+          FABRIC <span style="color: var(--brand-teal);">DP-700</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="sidebar-section-title">Módulo 0: Fundação</div>
+        <div class="sidebar-pill-list">
+          <a href="../lessons/0001-data-engineering-foundations-oltp-olap-fabric.html?v=totc5" class="curriculum-pill">
+            <span class="pill-left">📖 Lição 01: Ecossistema Fabric</span>
+            <span class="pill-duration">20 mins</span>
+          </a>
+          <a href="../lessons/0002-storage-fundamentals-parquet-delta-medallion.html?v=totc5" class="curriculum-pill">
+            <span class="pill-left">📖 Lição 02: Parquet & Delta</span>
+            <span class="pill-duration">25 mins</span>
+          </a>
+          <a href="#bloco-contexto" class="curriculum-pill active">
+            <span class="pill-left">📖 Lição 03: Star Schema & 3 Linguagens</span>
+            <span class="pill-duration">25 mins</span>
+          </a>
+          <a href="#bloco-audio" class="curriculum-pill pill-orange">
+            <span class="pill-left">🎧 Narração Neural da Aula</span>
+            <span class="pill-duration">02:15</span>
+          </a>
+          <a href="../simulados/index.html?v=totc5" class="curriculum-pill pill-coral">
+            <span class="pill-left">🎯 Centro de Simulados</span>
+            <span class="pill-duration">Exam</span>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <div class="sidebar-section-title">PRACTICE QUIZ & LABS</div>
+        <div class="sidebar-pill-list">
+          <a href="#bloco-pratica" class="curriculum-pill pill-teal">
+            <span class="pill-left">⚡ Lab: SQL vs Spark vs KQL</span>
+            <span class="pill-duration">Python</span>
+          </a>
+          <a href="#bloco-quiz" class="curriculum-pill pill-orange">
+            <span class="pill-left">🎯 Desafio Exame DP-700</span>
+            <span class="pill-duration">Quiz</span>
+          </a>
+        </div>
+      </div>
+
+      <div style="margin-top: auto; padding: 1rem; background: var(--bg-surface-alt); border: 1px solid var(--border-color); border-radius: 14px; font-size: 0.82rem; color: var(--text-secondary);">
+        <strong style="color: var(--text-primary); display: block; margin-bottom: 0.25rem;">💡 Dica de Estudo VARK</strong>
+        O DP-700 cobra a decisão cirúrgica de quando usar T-SQL, PySpark e KQL em cenários corporativos reais.
+      </div>
+    </aside>
+
+    <!-- COLUNA DIREITA: CONTEÚDO PRINCIPAL -->
+    <main class="course-main-content">
+
+      <header class="course-header-banner">
+        <div>
+          <div class="course-badge">Módulo 0 • Fundamentos & Linguagens</div>
+          <h1 class="course-title">Lição 0003: Modelagem Dimensional & As 3 Linguagens do DP-700 (T-SQL, PySpark, KQL)</h1>
+          <p class="course-meta">
+            Duração estimada: 25 minutos • Domínio 2 do Exame DP-700 • Áudio Neural & Lab de Comparação
+          </p>
+        </div>
+        <div class="theme-toggle-container">
+          <button class="theme-toggle-btn" onclick="window.toggleAppTheme()" title="Alternar entre Modo Claro e Escuro">
+            <span class="theme-toggle-icon">🌙</span> Alternar Tema
+          </button>
+        </div>
+      </header>
+
+      <nav class="lens-selector-bar" aria-label="Seletor de Nível Pedagógico">
+        <div class="lens-tab-group">
+          <button class="lens-tab" data-lens="unificado">📚 Unificado (Geral)</button>
+          <button class="lens-tab" data-lens="junior">🌱 Júnior / Fundamentos</button>
+          <button class="lens-tab" data-lens="pleno">🌿 Pleno / Implementador</button>
+          <button class="lens-tab" data-lens="senior">🛠️ Sênior / DP-700</button>
+          <button class="lens-tab" data-lens="staff">⚙️ Staff / Under the Hood</button>
+          <button class="lens-tab" data-lens="clevel">🏛️ C-Level / FinOps & TCO</button>
+        </div>
+        <div style="margin-left: auto;">
+          <button class="theme-toggle-btn" onclick="window.toggleAppTheme()" title="Alternar Modo Dark / Light">
+            <span class="theme-toggle-icon">🌙</span> Modo Dark
+          </button>
+        </div>
+      </nav>
+
+      <nav class="vark-nav-bar" aria-label="Atalhos das Modalidades VARK">
+        <a href="#bloco-audio" class="vark-btn"><span class="vark-badge badge-a">A</span> 🎧 Áudio Neural (Auditivo)</a>
+        <a href="#bloco-teoria" class="vark-btn"><span class="vark-badge badge-v">V</span> 👁️ Matriz das 3 Linguagens (Visual)</a>
+        <a href="#bloco-contexto" class="vark-btn"><span class="vark-badge badge-r">R</span> 📖 Texto Técnico (Leitura)</a>
+        <a href="#bloco-pratica" class="vark-btn"><span class="vark-badge badge-k">K</span> ⚡ Lab Multi-Linguagem (Cinestésico)</a>
+      </nav>
+
+      <!-- REPRODUTOR DE ÁUDIO NEURAL -->
+      <div id="bloco-audio" class="audio-player-card">
+        <div class="audio-card-header">
+          <div class="audio-avatar">🎙️</div>
+          <div>
+            <div class="audio-title">Narração Técnica Neural da Lição 0003</div>
+            <div class="audio-subtitle">Voz: Microsoft pt-BR-AntonioNeural • Fonética técnica de T-SQL, PySpark e KQL</div>
+          </div>
+        </div>
+        <div class="audio-controls-row">
+          <button id="audio-play-btn" class="audio-play-button" aria-label="Reproduzir áudio da lição">▶ Reproduzir Aula</button>
+          <div class="audio-scrubber-track">
+            <div id="audio-progress-bar" class="audio-scrubber-fill" style="width: 0%;"></div>
+          </div>
+          <div id="audio-time-label" class="audio-time-display">00:00 / 02:15</div>
+          <audio id="vark-audio-element" preload="metadata">
+            <source src="../assets/audio/lesson-0003-pt.mp3?v=totc5" type="audio/mpeg">
+            Seu navegador não suporta o elemento de áudio HTML5.
+          </audio>
+        </div>
+      </div>
+
+      <!-- CONTEÚDO MULTI-LENS -->
+      <article id="bloco-contexto" class="lens-panel" data-lens-content="unificado">
+        <h2>O Desafio Poliglota do Microsoft Fabric: T-SQL, PySpark e KQL</h2>
+        <p>
+          Diferente das plataformas legadas onde um único motor tentava resolver todas as demandas (e falhava em escala ou custo), o <strong>Microsoft Fabric</strong> adota uma abordagem poliglota sobre o mesmo armazenamento compartilhado no <strong>OneLake</strong>.
+        </p>
+        <p>
+          O Exame DP-700 não avalia apenas se você sabe escrever código, mas principalmente se você sabe <strong>qual motor escolher</strong> para cada requisito de negócio:
+        </p>
+
+        <div class="diagram-container" id="bloco-teoria">
+          <h3>Matriz Arquitetural: Onde Cada Linguagem Brilha no Fabric</h3>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.95rem;">
+            <thead>
+              <tr style="background: var(--bg-surface-alt); border-bottom: 2px solid var(--border-color); text-align: left;">
+                <th style="padding: 10px;">Linguagem</th>
+                <th style="padding: 10px;">Item do Fabric</th>
+                <th style="padding: 10px;">Ponto Forte Principal</th>
+                <th style="padding: 10px;">Cenário de Prova DP-700</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--border-color);">
+                <td style="padding: 10px; font-weight: bold; color: var(--brand-blue);">T-SQL</td>
+                <td style="padding: 10px;">Fabric Data Warehouse & SQL Endpoint</td>
+                <td style="padding: 10px;">Transações ACID relacionais, DML nativo, Joins em Star Schema e governança com RLS/CLS.</td>
+                <td style="padding: 10px;">Camada Gold servida, comandos MERGE atômicos e relatórios corporativos.</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border-color);">
+                <td style="padding: 10px; font-weight: bold; color: var(--brand-teal);">PySpark</td>
+                <td style="padding: 10px;">Fabric Lakehouse Notebooks</td>
+                <td style="padding: 10px;">Processamento distribuído de petabytes, manipulação de JSON/XML, Machine Learning e Spark Streaming.</td>
+                <td style="padding: 10px;">Carga Bronze para Silver, tratamento de dados corrompidos e janelas complexas.</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; font-weight: bold; color: var(--brand-coral);">KQL</td>
+                <td style="padding: 10px;">Fabric Eventhouse & Real-Time Intelligence</td>
+                <td style="padding: 10px;">Indexação automática de texto completo, análise de séries temporais e baixa latência (subsegundo).</td>
+                <td style="padding: 10px;">Ingestão contínua de telemetria IoT, logs de infraestrutura e Update Policies.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Fundamentos de Modelagem Dimensional: O Padrão Star Schema</h3>
+        <p>
+          O <strong>Star Schema</strong> é o padrão canônico para analytics. Ele organiza os dados em:
+        </p>
+        <ul>
+          <li><strong>Tabelas de Fatos (Fact Tables):</strong> Registram eventos quantitativos do negócio (vendas, cliques, medições). Possuem alta granularidade, milhões de linhas e chaves estrangeiras.</li>
+          <li><strong>Tabelas de Dimensões (Dimension Tables):</strong> Contêm o contexto descritivo (quem, quando, onde, o que). Exemplos: <code>DimCustomer</code>, <code>DimProduct</code>, <code>DimDate</code>.</li>
+          <li><strong>Surrogate Keys (Chaves Artificiais):</strong> Chaves numéricas inteiras (ex: <code>INTEGER IDENTITY(1,1)</code>) criadas para identificar uma linha na dimensão, dissociadas da chave de negócio original (ex: CNPJ ou UUID). Isso reduz o tamanho dos índices e acelera brutalmente os joins colunares.</li>
+        </ul>
+      </article>
+
+      <!-- 2. LENTE JÚNIOR -->
+      <article class="lens-panel" data-lens-content="junior">
+        <h2>🌱 O que é Star Schema e Por Que Chaves Artificiais (Surrogate Keys) Ajudam?</h2>
+        <p>
+          Imagine que a sua empresa vende produtos para milhares de clientes. Se em cada linha de venda você repetisse o nome completo do cliente, o endereço, a cidade e o telefone, o arquivo ficaria gigantesco e pesado.
+        </p>
+        <p>
+          No <strong>Star Schema</strong>, criamos uma tabela de <strong>Clientes</strong> onde cada cliente ganha um número simples (1, 2, 3...). Na tabela de <strong>Vendas</strong>, guardamos apenas o número do cliente e o valor da compra. Esse número simples é a chamada <strong>Surrogate Key</strong>: ele economiza memória e permite que o computador cruze milhões de vendas em fração de segundos.
+        </p>
+      </article>
+
+      <!-- 3. LENTE PLENO -->
+      <article class="lens-panel" data-lens-content="pleno">
+        <h2>🌿 Sintaxe Comparada: Resolvendo a Mesma Agregação nas 3 Linguagens</h2>
+        <p>
+          Para agregar vendas por região e calcular ticket médio:
+        </p>
+        <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+          <div style="background: var(--bg-surface-alt); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+            <strong style="color: var(--brand-blue);">1. Em T-SQL (Data Warehouse):</strong>
+            <pre style="margin: 0.5rem 0 0 0; font-family: var(--font-mono); font-size: 0.85rem;"><code>SELECT c.Region, COUNT(f.SalesKey) AS Total, SUM(f.SalesAmount) AS Revenue
+FROM FactSales f
+INNER JOIN DimCustomer c ON f.CustomerKey = c.CustomerKey
+GROUP BY c.Region;</code></pre>
+          </div>
+
+          <div style="background: var(--bg-surface-alt); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+            <strong style="color: var(--brand-teal);">2. Em PySpark (Lakehouse):</strong>
+            <pre style="margin: 0.5rem 0 0 0; font-family: var(--font-mono); font-size: 0.85rem;"><code>df_fact.join(df_cust, "CustomerKey") \
+  .groupBy("Region") \
+  .agg(count("SalesKey").alias("Total"), sum("SalesAmount").alias("Revenue"))</code></pre>
+          </div>
+
+          <div style="background: var(--bg-surface-alt); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+            <strong style="color: var(--brand-coral);">3. Em KQL (Eventhouse):</strong>
+            <pre style="margin: 0.5rem 0 0 0; font-family: var(--font-mono); font-size: 0.85rem;"><code>FactSales
+| lookup DimCustomer on CustomerKey
+| summarize Total = count(), Revenue = sum(SalesAmount) by Region</code></pre>
+          </div>
+        </div>
+      </article>
+
+      <!-- 4. LENTE SÊNIOR / DP-700 -->
+      <article class="lens-panel" data-lens-content="senior">
+        <h2>🛠️ Armadilhas do DP-700: Star Schema vs. Snowflake Schema & KQL Operators</h2>
+        <div style="border-left: 4px solid var(--brand-orange); background: var(--bg-surface-alt); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+          <strong style="color: var(--brand-orange); display: block; margin-bottom: 0.25rem;">⚠️ Dica de Ouro para a Prova:</strong>
+          A Microsoft desfavorece o Snowflake Schema (onde dimensões são normalizadas em sub-dimensões adicionais) para relatórios Power BI Direct Lake. O modelo estrela desnormalizado (Star Schema) simples e direto é a resposta correta em 100% dos cenários de modelagem analítica.
+        </div>
+        <h3>Operadores KQL Mais Cobrados na Prova:</h3>
+        <ul>
+          <li><code>summarize arg_max(Timestamp, Value) by SensorId</code>: Recupera a leitura mais recente de cada dispositivo IoT.</li>
+          <li><code>make-series</code>: Cria séries temporais preenchendo lacunas de tempo com valores padrão.</li>
+          <li><code>has</code> vs <code>contains</code>: O operador <code>has</code> busca termos inteiros indexados (alta velocidade), enquanto <code>contains</code> faz varredura de substrings (lento). Na prova, sempre escolha <code>has</code> para strings indexadas.</li>
+        </ul>
+      </article>
+
+      <!-- 5. LENTE STAFF -->
+      <article class="lens-panel" data-lens-content="staff">
+        <h2>⚙️ Arquitetura Interna: Otimização VertiPaq e Surrogate Keys Inteiras</h2>
+        <p>
+          O motor analítico em memória <strong>VertiPaq</strong> (compartilhado entre Power BI Direct Lake e Analysis Services) utiliza compressão de dicionário e <em>Bit-Packing</em>.
+        </p>
+        <p>
+          Quando uma chave de junção é um inteiro sequencial de 32 bits em vez de uma string alfanumérica GUID de 36 caracteres:
+        </p>
+        <ul>
+          <li>A estrutura de hash em memória é reduzida em até <strong>75%</strong>.</li>
+          <li>As instruções SIMD dos processadores modernos conseguem avaliar blocos de chaves em paralelo diretamente nos registradores da CPU.</li>
+        </ul>
+      </article>
+
+      <!-- 6. LENTE C-LEVEL -->
+      <article class="lens-panel" data-lens-content="clevel">
+        <h2>🏛️ Visão Estratégica & FinOps: O Custo de Não Escolher o Motor Correto</h2>
+        <p>
+          Um erro comum em empresas que adotam o Fabric é tentar usar clusters de Spark para consultas analíticas pontuais de relatórios ou usar o Data Warehouse relacional para ingerir milhões de linhas de logs por segundo.
+        </p>
+        <p>
+          <strong>Impacto Financeiro direto em Capacity Units (CUs):</strong>
+        </p>
+        <ul>
+          <li>Ingerir telemetria em tempo real no Eventhouse consome até <strong>80% menos CUs</strong> do que manter um pipeline de Spark Streaming ligado 24/7.</li>
+          <li>Servir relatórios diretamente do Star Schema no Fabric Warehouse ou Lakehouse via Direct Lake elimina a necessidade de pagar por licenças dedicadas de bancos analíticos terceiros.</li>
+        </ul>
+      </article>
+
+      <!-- SEÇÃO KINESTHETIC: LAB PRÁTICO -->
+            <!-- SEÇÃO KINESTHETIC: LAB PRÁTICO ESTILO MICROSOFT LEARN -->
+      <section id="bloco-pratica" style="margin-top: 3.5rem;">
+        <div class="mslearn-lab-box">
+          
+          <!-- Cabeçalho do Exercício -->
+          <div class="mslearn-header">
+            <div class="mslearn-badge-row">
+              <span class="mslearn-badge mslearn-badge-portal">🛠️ Microsoft Fabric Hands-on Lab</span>
+              <span class="mslearn-badge mslearn-badge-duration">⏱️ ~30 minutos</span>
+              <span class="mslearn-badge mslearn-badge-role">👤 Engenheiro de Dados • Domínio 1 & 2</span>
+              <span class="vark-badge badge-k" style="margin-left: auto;">K - Prática Guiada</span>
+            </div>
+            <h2 style="margin: 0.25rem 0 0.5rem 0; font-family: var(--font-display); color: var(--text-primary); font-size: 1.6rem;">
+              Exercício Prático: Modelagem Dimensional em Star Schema com T-SQL, PySpark e KQL
+            </h2>
+            <p style="margin: 0; color: var(--text-secondary); font-size: 0.95rem;">
+              Guia passo a passo para executar diretamente na plataforma em nuvem do <strong>Microsoft Fabric</strong> (ou em simulação local).
+            </p>
+          </div>
+
+          <!-- Cenário de Negócio Oficial -->
+          <div class="mslearn-scenario-card">
+            <h4 style="margin: 0 0 0.5rem 0; color: var(--brand-blue); font-family: var(--font-display);">
+              📋 Cenário do Laboratório
+            </h4>
+            <p style="margin: 0; font-size: 0.92rem; color: var(--text-primary); line-height: 1.55;">
+              A Fabrikam precisa estruturar um modelo dimensional em Star Schema (Tabela Fato e Dimensões) e comparar a performance e custo de consulta analítica entre as três linguagens fundamentais do Fabric: T-SQL, PySpark e KQL.
+            </p>
+          </div>
+
+          <!-- Pré-requisitos -->
+          <div class="mslearn-prereqs-card">
+            <h4 style="margin: 0 0 0.4rem 0; color: #0078d4; font-family: var(--font-display);">
+              🔑 Pré-requisitos para Execução no Portal
+            </h4>
+            <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; color: var(--text-primary); line-height: 1.5;">
+              <li>Navegador web moderno (Edge, Chrome ou Firefox).</li>
+              <li>Acesso ao portal <a href="https://app.fabric.microsoft.com/" target="_blank" rel="noopener noreferrer" style="color: #0078d4; font-weight: 600; text-decoration: underline;">Microsoft Fabric (app.fabric.microsoft.com)</a>.</li>
+              <li>Capacidade ativa do Fabric (licença <strong>Fabric Trial</strong> gratuita ou capacidade corporativa).</li>
+              <li>Um Workspace configurado no modo de capacidade Fabric.</li>
+            </ul>
+          </div>
+
+          <!-- Tarefa 1 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">1</div>
+              <h3 class="mslearn-task-title">Modelar o Star Schema no Fabric Warehouse via T-SQL</h3>
+            </div>
+            <ol class="mslearn-step-list">
+              <li>No Fabric Data Warehouse <code>dw_sales_enterprise</code>, clique em <strong>Nova consulta SQL</strong>.</li>
+              <li>Execute o script de criação da Fato e Dimensões com chaves substitutas (Surrogate Keys):</li>
+            </ol>
+
+            <div class="mslearn-code-header">
+              <span>T-SQL — STAR SCHEMA</span>
+              <span>MICROSOFT FABRIC CODE EDITOR</span>
+            </div>
+            <pre class="mslearn-code-box"><code>-- 1. Criação das Dimensões
+CREATE TABLE dbo.DimCliente (
+    ClienteSK INT IDENTITY(1,1) NOT NULL,
+    ClienteBK VARCHAR(50) NOT NULL,
+    NomeCliente VARCHAR(100) NOT NULL,
+    Regiao VARCHAR(50) NOT NULL
+);
+
+-- 2. Tabela Fato
+CREATE TABLE dbo.FactVendas (
+    VendaID BIGINT NOT NULL,
+    ClienteSK INT NOT NULL,
+    DataKey INT NOT NULL,
+    ValorTotal DECIMAL(12,2) NOT NULL,
+    Quantidade INT NOT NULL
+);</code></pre>
+
+            <!-- Captura de Tela da Tarefa 1 -->
+            <div class="portal-screenshot-frame">
+              <div class="portal-window-bar">
+                <div class="portal-window-dots">
+                  <span class="portal-window-dot dot-red"></span>
+                  <span class="portal-window-dot dot-yellow"></span>
+                  <span class="portal-window-dot dot-green"></span>
+                </div>
+                <div class="portal-address-bar">
+                  🔒 https://app.fabric.microsoft.com/groups/dw_sales_enterprise/star-schema
+                </div>
+              </div>
+              <img src="../assets/images/fabric-ui-04-data-warehouse-editor.svg" alt="Modelar o Star Schema no Fabric Warehouse via T-SQL" loading="lazy" />
+              <div class="portal-screenshot-caption">
+                📸 <strong>Captura do Portal:</strong> Editor T-SQL do Warehouse com o modelo dimensional em Star Schema e integridade de chaves.
+              </div>
+            </div>
+          </div>
+
+          <!-- Tarefa 2 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">2</div>
+              <h3 class="mslearn-task-title">Transformar Dados e Gerar Chaves no PySpark</h3>
+            </div>
+            <ol class="mslearn-step-list">
+              <li>Abra o Notebook Spark vinculado ao Lakehouse.</li>
+              <li>Execute a célula PySpark gerando Surrogate Keys usando funções analíticas de janela (Window Functions):</li>
+            </ol>
+
+            <div class="mslearn-code-header">
+              <span>PYTHON (PYSPARK) — NOTEBOOK</span>
+              <span>MICROSOFT FABRIC CODE EDITOR</span>
+            </div>
+            <pre class="mslearn-code-box"><code>from pyspark.sql.functions import monotonically_increasing_id, row_number
+from pyspark.sql.window import Window
+
+df_raw = spark.table("raw_clientes")
+windowSpec = Window.orderBy("ClienteBK")
+df_dim_cliente = df_raw.withColumn("ClienteSK", row_number().over(windowSpec))
+
+df_dim_cliente.write.format("delta").mode("overwrite").saveAsTable("dim_cliente_gold")
+print("✅ Dimensão com Surrogate Key gerada com sucesso!")</code></pre>
+          </div>
+
+          <!-- Tarefa 3 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">3</div>
+              <h3 class="mslearn-task-title">Consultar Telemetria com KQL no Eventhouse</h3>
+            </div>
+            <ol class="mslearn-step-list">
+              <li>Acesse o Eventhouse <code>evh_iot_telemetry</code>.</li>
+              <li>Abra o KQL Queryset e execute uma consulta analítica de série temporal de alta frequência:</li>
+            </ol>
+
+            <div class="mslearn-code-header">
+              <span>KQL — EVENTHOUSE QUERYSET</span>
+              <span>MICROSOFT FABRIC CODE EDITOR</span>
+            </div>
+            <pre class="mslearn-code-box"><code>RawTelemetry
+| where Timestamp > ago(24h)
+| summarize MediaTemperatura = avg(Temperature), Pico = max(Temperature) by bin(Timestamp, 15m), DeviceId
+| top 5 by Pico desc</code></pre>
+
+            <!-- Captura de Tela da Tarefa 3 -->
+            <div class="portal-screenshot-frame">
+              <div class="portal-window-bar">
+                <div class="portal-window-dots">
+                  <span class="portal-window-dot dot-red"></span>
+                  <span class="portal-window-dot dot-yellow"></span>
+                  <span class="portal-window-dot dot-green"></span>
+                </div>
+                <div class="portal-address-bar">
+                  🔒 https://app.fabric.microsoft.com/groups/evh_iot_telemetry/queryset
+                </div>
+              </div>
+              <img src="../assets/images/fabric-ui-08-eventhouse-kql-query.svg" alt="Consultar Telemetria com KQL no Eventhouse" loading="lazy" />
+              <div class="portal-screenshot-caption">
+                📸 <strong>Captura do Portal:</strong> KQL Queryset executando agregações de subsegundo sobre telemetria e séries temporais no Eventhouse.
+              </div>
+            </div>
+          </div>
+
+          <!-- Alerta de Exame DP-700 -->
+          <div class="mslearn-exam-note" style="margin-top: 1.5rem;">
+            <strong>⚠️ Atenção para o Exame DP-700:</strong><br>
+            Lembre-se para a prova: T-SQL é o motor padrão para Star Schema e joins relacionais; PySpark é ideal para transformações de dados semiestruturados e geração distribuída de chaves; KQL é o motor imbatível para séries temporais e telemetria de alta frequência.
+          </div>
+
+          <!-- Fallback: Simulação Local Offline -->
+          <div class="mslearn-local-box">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem;">
+              <h4 style="margin: 0; color: var(--brand-teal); font-family: var(--font-display);">
+                💻 Opção Alternativa: Executar Simulação Local Offline no seu Terminal
+              </h4>
+              <span style="font-size: 0.8rem; background: var(--bg-surface-alt); padding: 3px 8px; border-radius: 6px; color: var(--text-secondary);">Sem necessidade de conta Fabric</span>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+              Se você não possui uma assinatura ativa do Fabric no momento, criamos um simulador completo em Python no seu repositório local que reproduz a execução deste laboratório:
+            </p>
+            <pre><code style="font-family: var(--font-mono); font-size: 0.88rem; display: block; background: var(--bg-surface-alt); padding: 0.85rem 1rem; border-radius: 8px; border: 1px solid var(--border-color); overflow-x: auto;"># Execute este comando no terminal para reproduzir o lab:
+./.venv/bin/python labs/0003-dimensional-modeling-three-languages/lab_simulation.py</code></pre>
+            <div style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-secondary);">
+              📁 Diretório do laboratório prático local: <code>labs/0003-dimensional-modeling-three-languages/</code>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SEÇÃO DE QUIZ DP-700 -->
+              <section id="bloco-quiz" class="totc-card">
+          <h2 style="margin-top: 0;">Pontos Críticos para a Prática e para o Exame DP-700</h2>
+
+          <div class="summary-card">
+            <h3 style="margin-top: 0; color: var(--brand-teal);">📝 Síntese dos Pontos Críticos Aprendidos:</h3>
+            <ol style="margin-bottom: 0;">
+              <li><strong>Modelagem Star Schema:</strong> Fatos registram métricas numéricas acumuladas; Dimensões fornecem contexto filtrável com Chaves Substitutas (Surrogate Keys) geradas de forma sequencial ou hash.</li>
+              <li><strong>T-SQL no Warehouse:</strong> Linguagem obrigatória para transações ACID completas, integridade relacional, comandos MERGE atômicos e governança com RLS/CLS.</li>
+              <li><strong>PySpark no Lakehouse:</strong> Motor ideal para transformação distribuída de grandes volumes, processamento de dados semiestruturados (JSON) e engenharia de dados em lote.</li>
+              <li><strong>KQL no Eventhouse:</strong> Linguagem analítica imbatível para telemetria de IoT, logs e séries temporais com indexação total e consultas em milissegundos.</li>
+            </ol>
+          </div>
+
+          <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+            <h3>🎯 Desafio de Exame DP-700</h3>
+            <p>Questão elaborada no padrão da Microsoft com alternativas isomórficas:</p>
+
+            <div class="quiz-card" data-explanation="O operador <code>arg_max(Timestamp, *)</code> em KQL encontra o valor máximo da coluna de ordenação (ex: data/hora mais recente) e retorna todas as outras colunas da linha correspondente, sendo o padrão ouro para consultas de último estado em telemetria.">
+              <p><strong style="color: var(--text-primary);">Cenário de Exame DP-700:</strong> Você precisa criar uma consulta analítica em um Eventhouse no Microsoft Fabric para obter o registro mais recente de telemetria de temperatura de cada dispositivo IoT a partir de uma tabela com 500 milhões de eventos. Qual operador KQL deve ser utilizado dentro da cláusula <code>summarize</code> para obter esse resultado com a máxima performance?</p>
+              
+              <ul class="quiz-options">
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    A) Utilizar o operador max para capturar o maior valor.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    B) Utilizar o operador top para ordenar o índice de forma estática.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    C) Utilizar o operador take para limitar a cinco registros.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="true">
+                    D) Utilizar o operador arg_max para capturar a linha mais recente.
+                  </button>
+                </li>
+              </ul>
+              <div class="quiz-feedback"></div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--border-color); flex-wrap: wrap; gap: 1rem;">
+            <a href="../reference/04-three-languages-sql-pyspark-kql-cheatsheet.html" style="font-weight: 600;">
+              📑 Abrir Folha de Referência 04 (T-SQL, PySpark & KQL Cheatsheet)
+            </a>
+            <a href="0004-onelake-capacities-smoothing-domains-spark-pools.html" class="audio-btn" style="color: #fff !important;">
+              Próxima Lição: 0004 (Capacidades, Smoothing e Spark Pools) →
+            </a>
+          </div>
+        </section>
+
+      <footer style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+        <a href="../lessons/0002-storage-fundamentals-parquet-delta-medallion.html?v=totc5" class="btn-secondary">
+          ← Lição Anterior: 0002
+        </a>
+        <a href="../simulados/index.html?v=totc5" class="btn-primary">
+          Fazer o Simulado do Exame DP-700 →
+        </a>
+      </footer>
+
+    </main>
+  </div>
+
+  
+</body>
+</html>
+

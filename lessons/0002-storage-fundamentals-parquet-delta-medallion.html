@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lição 0002: Armazenamento, Parquet, Delta Lake & Arquitetura Medallion</title>
+  <link rel="stylesheet" href="../assets/tufte.css?v=totc5">
+  <link rel="stylesheet" href="../assets/vark.css?v=totc5">
+  <script src="../assets/lens.js?v=totc5"></script>
+  <script src="../assets/quiz.js?v=totc5" defer></script>
+  <script src="../assets/vark.js?v=totc5" defer></script>
+</head>
+<body>
+
+  <!-- LAYOUT 2 COLUNAS DO FIGMA (COURSE FULL VIEW NODE 77:247) -->
+  <div class="course-app-shell">
+
+    <!-- COLUNA ESQUERDA: SIDEBAR DE CURRÍCULO E NAVEGAÇÃO -->
+    <aside class="course-sidebar">
+      <div class="sidebar-top-nav">
+        <a href="../index.html?v=totc5" class="back-square-btn" title="Voltar ao Portal do Curso">←</a>
+        <div style="font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--text-primary);">
+          FABRIC <span style="color: var(--brand-teal);">DP-700</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="sidebar-section-title">Módulo 0: Fundação</div>
+        <div class="sidebar-pill-list">
+          <a href="../lessons/0001-data-engineering-foundations-oltp-olap-fabric.html?v=totc5" class="curriculum-pill">
+            <span class="pill-left">📖 Lição 01: Ecossistema Fabric</span>
+            <span class="pill-duration">20 mins</span>
+          </a>
+          <a href="#bloco-contexto" class="curriculum-pill active">
+            <span class="pill-left">📖 Lição 02: Parquet & Delta</span>
+            <span class="pill-duration">25 mins</span>
+          </a>
+          <a href="#bloco-audio" class="curriculum-pill pill-orange">
+            <span class="pill-left">🎧 Narração Neural da Aula</span>
+            <span class="pill-duration">02:10</span>
+          </a>
+          <a href="#bloco-teoria" class="curriculum-pill pill-blue">
+            <span class="pill-left">👁️ Anatomia do _delta_log</span>
+            <span class="pill-duration">Visual</span>
+          </a>
+          <a href="../reference/01-glossary-and-fundamentals-visual-guide.html?v=totc5" class="curriculum-pill pill-coral">
+            <span class="pill-left">📑 Ref 01: Glossário Visual</span>
+            <span class="pill-duration">PDF</span>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <div class="sidebar-section-title">PRACTICE QUIZ & LABS</div>
+        <div class="sidebar-pill-list">
+          <a href="#bloco-pratica" class="curriculum-pill pill-teal">
+            <span class="pill-left">⚡ Lab Delta Time Travel</span>
+            <span class="pill-duration">Python</span>
+          </a>
+          <a href="#bloco-quiz" class="curriculum-pill pill-orange">
+            <span class="pill-left">🎯 Desafio Exame DP-700</span>
+            <span class="pill-duration">Quiz</span>
+          </a>
+        </div>
+      </div>
+
+      <div style="margin-top: auto; padding: 1rem; background: var(--bg-surface-alt); border: 1px solid var(--border-color); border-radius: 14px; font-size: 0.82rem; color: var(--text-secondary);">
+        <strong style="color: var(--text-primary); display: block; margin-bottom: 0.25rem;">💡 Dica de Estudo VARK</strong>
+        Alterne entre o seu nível de senioridade na barra superior e execute o script em Python local dentro do <code>.venv/</code>.
+      </div>
+    </aside>
+
+    <!-- COLUNA DIREITA: CONTEÚDO PRINCIPAL DA AULA -->
+    <main class="course-main-content">
+
+      <!-- BANNER DE CABEÇALHO DO CURSO -->
+      <header class="course-header-banner">
+        <div>
+          <div class="course-badge">Módulo 0 • Fundamentos de Armazenamento</div>
+          <h1 class="course-title">Lição 0002: Anatomia de Parquet, Delta Lake (_delta_log) & Arquitetura Medallion</h1>
+          <p class="course-meta">
+            Duração estimada: 25 minutos • Domínio 1 & 2 do Exame DP-700 • Áudio Neural & Lab Local
+          </p>
+        </div>
+        <div class="theme-toggle-container">
+          <button class="theme-toggle-btn" onclick="window.toggleAppTheme()" title="Alternar entre Modo Claro e Escuro">
+            <span class="theme-toggle-icon">🌙</span> Alternar Tema
+          </button>
+        </div>
+      </header>
+
+      <!-- BARRA DE SELEÇÃO DE LENTES (PROGRESSIVE DISCLOSURE) -->
+      <nav class="lens-selector-bar" aria-label="Seletor de Nível Pedagógico">
+        <div class="lens-tab-group">
+          <button class="lens-tab" data-lens="unificado">📚 Unificado (Geral)</button>
+          <button class="lens-tab" data-lens="junior">🌱 Júnior / Fundamentos</button>
+          <button class="lens-tab" data-lens="pleno">🌿 Pleno / Implementador</button>
+          <button class="lens-tab" data-lens="senior">🛠️ Sênior / DP-700</button>
+          <button class="lens-tab" data-lens="staff">⚙️ Staff / Under the Hood</button>
+          <button class="lens-tab" data-lens="clevel">🏛️ C-Level / FinOps & TCO</button>
+        </div>
+        <div style="margin-left: auto;">
+          <button class="theme-toggle-btn" onclick="window.toggleAppTheme()" title="Alternar Modo Dark / Light">
+            <span class="theme-toggle-icon">🌙</span> Modo Dark
+          </button>
+        </div>
+      </nav>
+
+      <!-- BARRA DE MODALIDADES VARK -->
+      <nav class="vark-nav-bar" aria-label="Atalhos das Modalidades VARK">
+        <a href="#bloco-audio" class="vark-btn"><span class="vark-badge badge-a">A</span> 🎧 Áudio Neural (Auditivo)</a>
+        <a href="#bloco-teoria" class="vark-btn"><span class="vark-badge badge-v">V</span> 👁️ Diagrama do _delta_log (Visual)</a>
+        <a href="#bloco-contexto" class="vark-btn"><span class="vark-badge badge-r">R</span> 📖 Texto Técnico (Leitura)</a>
+        <a href="#bloco-pratica" class="vark-btn"><span class="vark-badge badge-k">K</span> ⚡ Lab Python Delta (Cinestésico)</a>
+      </nav>
+
+      <!-- REPRODUTOR DE ÁUDIO NEURAL (VARK: AURAL) -->
+      <div id="bloco-audio" class="audio-player-card">
+        <div class="audio-card-header">
+          <div class="audio-avatar">🎙️</div>
+          <div>
+            <div class="audio-title">Narração Técnica Neural da Lição 0002</div>
+            <div class="audio-subtitle">Voz: Microsoft pt-BR-AntonioNeural • Pronúncia fonética de termos em inglês</div>
+          </div>
+        </div>
+        <div class="audio-controls-row">
+          <button id="audio-play-btn" class="audio-play-button" aria-label="Reproduzir áudio da lição">▶ Reproduzir Aula</button>
+          <div class="audio-scrubber-track">
+            <div id="audio-progress-bar" class="audio-scrubber-fill" style="width: 0%;"></div>
+          </div>
+          <div id="audio-time-label" class="audio-time-display">00:00 / 02:10</div>
+          <audio id="vark-audio-element" preload="metadata">
+            <source src="../assets/audio/lesson-0002-pt.mp3?v=totc5" type="audio/mpeg">
+            Seu navegador não suporta o elemento de áudio HTML5.
+          </audio>
+        </div>
+      </div>
+
+      <!-- ==================================================================== -->
+      <!-- CONTEÚDO MULTI-LENS (TEXTOS ESPECÍFICOS E CONTÍNUOS)                 -->
+      <!-- ==================================================================== -->
+
+      <!-- 1. LENTE UNIFICADA -->
+      <article id="bloco-contexto" class="lens-panel" data-lens-content="unificado">
+        <h2>A Revolução dos Dados Colunares: De CSV para Parquet e Delta Lake</h2>
+        <p>
+          Por décadas, a engenharia de dados enfrentou um gargalo inevitável de I/O em disco. Formatos tradicionais como <code>CSV</code> e <code>JSON</code> organizam registros em linhas contínuas. Em uma consulta analítica que calcula o total de vendas por região em uma base de 500 milhões de linhas com 60 colunas, o sistema de arquivos era obrigado a ler todas as 59 colunas descartadas, gerando desperdício massivo de rede e CPU.
+        </p>
+        <p>
+          O <strong>Apache Parquet</strong> resolveu isso com a organização colunar e blocos de compressão compactados com estatísticas embutidas (<em>Row Groups</em> com Min/Max). O motor de consulta pode consultar apenas a coluna <code>venda_valor</code> e pular blocos inteiros sem abrir o conteúdo (<em>Column Pruning</em> e <em>Predicate Pushdown</em>).
+        </p>
+        <p>
+          Entretanto, o formato Parquet puro é apenas um arquivo imutável: ele não possui mecanismo nativo de transação atômica, não permite <code>UPDATE</code> ou <code>DELETE</code> pontual, e não gerencia concorrência de múltiplos escritores. É exatamente essa lacuna que o <strong>Delta Lake</strong> preenche no <strong>Microsoft Fabric</strong>.
+        </p>
+
+        <div class="diagram-container" id="bloco-teoria">
+          <h3>Estrutura Interna de uma Tabela Delta no OneLake</h3>
+          <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">
+            A pasta <code>_delta_log</code> contém commits sequenciais em JSON e checkpoints em Parquet que determinam o estado oficial da tabela. Clique nos blocos abaixo para inspecionar os detalhes:
+          </p>
+          <svg viewBox="0 0 850 320" xmlns="http://www.w3.org/2000/svg" class="interactive-diagram" aria-label="Diagrama da pasta _delta_log e arquivos Parquet" style="max-width: 100%; height: auto; display: block; margin: 0 auto; font-family: 'Poppins', system-ui, sans-serif;">
+            <!-- Fundo da Tela -->
+            <rect class="svg-canvas-bg" x="10" y="10" width="830" height="300" rx="16" fill="#f8fafc" stroke="#49BBBD" stroke-width="2"/>
+            <text class="svg-heading-text" x="30" y="38" font-size="13" font-weight="700" fill="#2F327D">ESTRUTURA INTERNA DELTA LAKE NO ONELAKE — CLIQUE PARA INSPECIONAR</text>
+            
+            <!-- Coluna 1: Diretório _delta_log -->
+            <rect class="svg-delta-log-box" x="30" y="55" width="380" height="235" rx="12" fill="#f0f9ff" stroke="#0284c7" stroke-width="2"/>
+            <text class="svg-file-text-title" x="220" y="80" text-anchor="middle" font-size="13" font-weight="700" fill="#0369a1">📁 Diretório _delta_log/ (Fonte da Verdade ACID)</text>
+            
+            <!-- Item 1: Commit V0 -->
+            <g class="interactive-hotspot" data-title="00000000000000000000.json (Commit V0 - Criar Tabela)" data-desc="Primeiro arquivo de log Delta (JSON). Registra o esquema inicial, colunas, tipos de dados e adiciona o primeiro arquivo Parquet (part-00000) ao estado da tabela." style="cursor: pointer;">
+              <rect class="svg-file-box" x="45" y="95" width="350" height="50" rx="8" fill="#ffffff" stroke="#0284c7" stroke-width="1.5" />
+              <text class="svg-file-text-title" x="58" y="117" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="#0f172a">00000000000000000000.json</text>
+              <text class="svg-file-text-meta" x="58" y="134" font-size="10.5" fill="#64748b">Commit V0 • Criação de esquema e metadados</text>
+            </g>
+            
+            <!-- Item 2: Commit V1 -->
+            <g class="interactive-hotspot" data-title="00000000000000000001.json (Commit V1 - Inserir Lote)" data-desc="Transação ACID atômica de escrita. Registra a adição do arquivo part-00001 e armazena estatísticas Min/Max das novas linhas para Data Skipping." style="cursor: pointer;">
+              <rect class="svg-file-box" x="45" y="155" width="350" height="50" rx="8" fill="#ffffff" stroke="#0284c7" stroke-width="1.5" />
+              <text class="svg-file-text-title" x="58" y="177" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="#0f172a">00000000000000000001.json</text>
+              <text class="svg-file-text-meta" x="58" y="194" font-size="10.5" fill="#64748b">Commit V1 • Inserção atômica e métricas min/max</text>
+            </g>
+            
+            <!-- Item 3: Checkpoint Parquet -->
+            <g class="interactive-hotspot" data-title="00000000000000000010.checkpoint.parquet (Checkpoint V10)" data-desc="Checkpoint gerado automaticamente a cada 10 commits. Consolida todo o histórico anterior em um único arquivo Parquet ultrarrápido, evitando ler dezenas de arquivos JSON na inicialização." style="cursor: pointer;">
+              <rect class="svg-file-box-checkpoint" x="45" y="215" width="350" height="55" rx="8" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.5" />
+              <text class="svg-file-text-title" x="58" y="237" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="#581c87">00000000000000000010.checkpoint.parquet</text>
+              <text class="svg-file-text-meta" x="58" y="254" font-size="10.5" fill="#7e22ce">Checkpoint V10 • Consolidação do histórico acumulado</text>
+            </g>
+
+            <!-- Coluna 2: Arquivos Parquet -->
+            <rect class="svg-parquet-box" x="440" y="55" width="380" height="235" rx="12" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+            <text class="svg-file-text-title" x="630" y="80" text-anchor="middle" font-size="13" font-weight="700" fill="#047857">📊 Arquivos Parquet (Dados Colunares Imutáveis)</text>
+            
+            <!-- Item 1: Part 0 -->
+            <g class="interactive-hotspot" data-title="part-00000-c000.snappy.parquet (Ativo)" data-desc="Arquivo de dados colunar Parquet comprimido com Snappy. Contém registros ativos da versão V0. Leitura vetorizada com V-Order e estatísticas por Row Group." style="cursor: pointer;">
+              <rect class="svg-file-box-active" x="455" y="95" width="350" height="50" rx="8" fill="#ffffff" stroke="#10b981" stroke-width="1.5" />
+              <text class="svg-file-text-title" x="468" y="117" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="#065f46">part-00000-c000.snappy.parquet</text>
+              <text class="svg-file-text-meta" x="468" y="134" font-size="10.5" fill="#059669">● Ativo • 2 registros (V0) • V-Order ativado</text>
+            </g>
+
+            <!-- Item 2: Part 1 -->
+            <g class="interactive-hotspot" data-title="part-00001-c000.snappy.parquet (Ativo)" data-desc="Arquivo de dados gerado pela transação V1. Contém as novas linhas inseridas. Consumido instantaneamente pelo Power BI em modo Direct Lake." style="cursor: pointer;">
+              <rect class="svg-file-box-active" x="455" y="155" width="350" height="50" rx="8" fill="#ffffff" stroke="#10b981" stroke-width="1.5" />
+              <text class="svg-file-text-title" x="468" y="177" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="#065f46">part-00001-c000.snappy.parquet</text>
+              <text class="svg-file-text-meta" x="468" y="194" font-size="10.5" fill="#059669">● Ativo • 2 registros (V1) • V-Order ativado</text>
+            </g>
+
+            <!-- Item 3: Part 2 (Tombstone) -->
+            <g class="interactive-hotspot" data-title="part-00002-c000.snappy.parquet (Obsoleto / Tombstoned)" data-desc="Arquivo marcado como removido (tombstoned) após uma operação de UPDATE ou DELETE. Permanece legível para Time Travel até expirar o retention period e ser expurgado pelo VACUUM." style="cursor: pointer;">
+              <rect class="svg-file-box-tombstone" x="455" y="215" width="350" height="55" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="1.5" />
+              <text class="svg-file-text-title" x="468" y="237" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="#9a3412">part-00002-c000.snappy.parquet</text>
+              <text class="svg-file-text-meta" x="468" y="254" font-size="10.5" fill="#ea580c">⚠️ Obsoleto (Tombstone) • Marcado para VACUUM</text>
+            </g>
+          </svg>
+
+          <!-- Painel Interativo de Detalhes dos Hotspots -->
+          <div id="hotspot-details-box" style="display: none; background: var(--callout-teal-bg); border: 1px solid var(--brand-teal); border-radius: 12px; padding: 1rem 1.25rem; margin-top: 1.25rem; text-align: left; color: var(--text-primary);">
+          </div>
+        </div>
+
+        <h3>A Arquitetura Medallion: Bronze, Silver e Gold no Fabric</h3>
+        <p>
+          O padrão da indústria adotado integralmente pelo Microsoft Fabric organiza o lago de dados em três refinamentos progressivos:
+        </p>
+        <ul>
+          <li><strong>Camada Bronze (Raw Ingestion):</strong> Armazena os dados brutos exatamente como chegam dos sistemas de origem (APIs, logs, bancos relacionais via CDC). Mantém histórico fiel e imutável. No Fabric, é persistida no Lakehouse como arquivos brutos ou tabelas Delta append-only.</li>
+          <li><strong>Camada Silver (Cleansed & Conformed):</strong> Dados limpos, enriquecidos e tipados. Remove duplicatas, valida nulos, padroniza formatos de data e aplica chaves substitutas. É a espinha dorsal corporativa.</li>
+          <li><strong>Camada Gold (Curated & Dimensional):</strong> Modelos analíticos otimizados em Star Schema (Fatos e Dimensões). Totalmente pronta para consumo pelo Power BI em modo Direct Lake com performance de subsegundo.</li>
+        </ul>
+      </article>
+
+      <!-- 2. LENTE JÚNIOR -->
+      <article class="lens-panel" data-lens-content="junior">
+        <h2>🌱 Guia Passo a Passo: Por Que Usamos Parquet e Delta Lake?</h2>
+        <p>
+          Imagine que você tem uma lista telefônica impressa. Se você precisa descobrir apenas o número de telefone de uma pessoa, você não precisa ler o endereço, a profissão ou a idade dela. Um arquivo <strong>Parquet</strong> funciona assim: ele guarda todos os números de telefone juntos, todos os nomes juntos e todos os endereços juntos (em colunas).
+        </p>
+        <p>
+          Isso faz com que o computador seja até <strong>10 vezes mais rápido</strong> para responder relatórios e use muito menos espaço em disco do que um arquivo de texto comum (como CSV).
+        </p>
+        <div style="background: var(--bg-surface-alt); border-left: 4px solid var(--brand-teal); padding: 1rem; border-radius: 8px; margin: 1.5rem 0;">
+          <h4 style="margin: 0 0 0.5rem 0; color: var(--text-primary);">O que é a pasta <code>_delta_log</code>?</h4>
+          <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">
+            Pense na pasta <code>_delta_log</code> como o livro-caixa de um cartório. Toda vez que alguém adiciona uma nova venda, o cartório registra uma folha numerada (ex: folha 0, folha 1, folha 2). Se alguém apagar ou mudar algo por engano, você pode voltar no tempo (Time Travel) simplesmente consultando a folha antiga do livro!
+          </p>
+        </div>
+      </article>
+
+      <!-- 3. LENTE PLENO -->
+      <article class="lens-panel" data-lens-content="pleno">
+        <h2>🌿 Implementação Prática: Manipulando Tabelas Delta no Lakehouse</h2>
+        <p>
+          Como Engenheiro de Dados, você interagirá com o Delta Lake via <strong>PySpark Notebooks</strong> e <strong>T-SQL</strong> no Microsoft Fabric. 
+        </p>
+        <p>
+          Ao gravar um DataFrame do Spark como tabela Delta no Fabric:
+        </p>
+        <pre><code style="font-family: var(--font-mono); font-size: 0.88rem; display: block; background: var(--bg-surface-alt); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color); overflow-x: auto;"># Gravação padrão em Delta no OneLake
+df_clean.write \
+  .format("delta") \
+  .mode("overwrite") \
+  .option("overwriteSchema", "true") \
+  .saveAsTable("silver_vendas")
+
+# Consulta com Time Travel via PySpark
+df_v0 = spark.read \
+  .format("delta") \
+  .option("versionAsOf", 0) \
+  .table("silver_vendas")</code></pre>
+        <p>
+          No Microsoft Fabric, todas as tabelas criadas na pasta <code>Tables/</code> do Lakehouse são registradas automaticamente no catálogo unificado e expostas imediatamente para o <strong>SQL Analytics Endpoint</strong> para consultas T-SQL somente leitura.
+        </p>
+      </article>
+
+      <!-- 4. LENTE SÊNIOR / DP-700 -->
+      <article class="lens-panel" data-lens-content="senior">
+        <h2>🛠️ Pegadinhas do Exame DP-700: Protocolo Delta, VACUUM e V-Order</h2>
+        <div style="border-left: 4px solid var(--brand-orange); background: var(--bg-surface-alt); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+          <strong style="color: var(--brand-orange); display: block; margin-bottom: 0.25rem;">⚠️ Alerta Crítico para a Prova DP-700:</strong>
+          A Microsoft testa exaustivamente o ciclo de vida dos arquivos Parquet e o impacto de comandos de manutenção na concorrência de leitura e no Time Travel.
+        </div>
+        <h3>1. O Comando VACUUM e a Perda do Time Travel</h3>
+        <p>
+          O comando <code>VACUUM</code> exclui fisicamente do disco arquivos Parquet que foram marcados como excluídos (tombstoned) em commits anteriores do Delta Log. O parâmetro padrão de retenção é de 7 dias (<code>spark.databricks.delta.vacuum.parallelDelete.enabled</code> ou configuração do Fabric).
+        </p>
+        <p>
+          <strong>Pegadinha de Prova:</strong> Se uma questão relatar que analistas estão recebendo erro <code>FileNotFoundException</code> ao rodar consultas históricas de Time Travel de 15 dias atrás, a causa raiz foi a execução de um <code>VACUUM</code> com retenção inferior a 15 dias.
+        </p>
+        <h3>2. Otimização V-Order no Microsoft Fabric</h3>
+        <p>
+          O Fabric introduziu a tecnologia proprietária da Microsoft chamada <strong>V-Order</strong>. Trata-se de uma ordenação colunar em nível de grupo de linhas (<em>row group</em>) que reordena e codifica dicionários dos arquivos Parquet para que os motores <strong>VertiPaq</strong> (Power BI Direct Lake) e <strong>SQL Analytics Endpoint</strong> consigam realizar varreduras em memória de subsegundo.
+        </p>
+      </article>
+
+      <!-- 5. LENTE STAFF -->
+      <article class="lens-panel" data-lens-content="staff">
+        <h2>⚙️ Arquitetura Interna: Concorrência Otimista (OCC) e Protocolo Delta</h2>
+        <p>
+          O Delta Lake implementa <strong>Optimistic Concurrency Control (OCC)</strong>. Quando duas transações concorrentes tentam gravar na mesma tabela:
+        </p>
+        <ol>
+          <li>Ambas leem a versão atual $N$ da tabela a partir do último arquivo <code>_delta_log</code>.</li>
+          <li>Cada escritor executa a computação isoladamente em memória/workers.</li>
+          <li>Ao comitar, a primeira transação grava com sucesso o arquivo <code>00000(N+1).json</code> com garantia de criação atômica no OneLake.</li>
+          <li>A segunda transação tenta gravar o mesmo arquivo <code>00000(N+1).json</code> e recebe um conflito. O motor verifica se a alteração toca nos mesmos arquivos ou partições lidos; se houver sobreposição, uma exceção <code>ConcurrentAppendException</code> ou <code>ConcurrentTransactionException</code> é lançada.</li>
+        </ol>
+      </article>
+
+      <!-- 6. LENTE C-LEVEL -->
+      <article class="lens-panel" data-lens-content="clevel">
+        <h2>🏛️ Visão Executiva & FinOps: TCO e Governança do OneLake</h2>
+        <p>
+          Em arquiteturas legadas, manter dados duplicados em Data Lakes, Snowflake e Analysis Services multiplicava os custos de armazenamento por 3x a 5x e gerava pesadas multas de conformidade por falta de controle do ciclo de vida (GDPR/LGPD).
+        </p>
+        <p>
+          Com o padrão Medallion unificado sobre Delta Parquet no OneLake:
+        </p>
+        <ul>
+          <li><strong>Redução de Armazenamento:</strong> Armazena-se apenas uma única cópia física comprimida.</li>
+          <li><strong>Eliminação de Custos de Carga:</strong> O Power BI lê diretamente em memória via Direct Lake sem cobrar Capacity Units adicionais para jobs diários de importação matinal.</li>
+          <li><strong>Auditoria Nativa:</strong> O <code>_delta_log</code> funciona como uma trilha de auditoria atômica e irreversível de quem alterou o que e quando.</li>
+        </ul>
+      </article>
+
+      <!-- SEÇÃO KINESTHETIC: LAB PRÁTICO ESTILO MICROSOFT LEARN -->
+      <section id="bloco-pratica" style="margin-top: 3.5rem;">
+        <div class="mslearn-lab-box">
+          
+          <!-- Cabeçalho do Exercício -->
+          <div class="mslearn-header">
+            <div class="mslearn-badge-row">
+              <span class="mslearn-badge mslearn-badge-portal">🛠️ Microsoft Fabric Hands-on Lab</span>
+              <span class="mslearn-badge mslearn-badge-duration">⏱️ ~25 minutos</span>
+              <span class="mslearn-badge mslearn-badge-role">👤 Engenheiro de Dados • DP-700</span>
+              <span class="vark-badge badge-k" style="margin-left: auto;">K - Prática Guiada</span>
+            </div>
+            <h2 style="margin: 0.25rem 0 0.5rem 0; font-family: var(--font-display); color: var(--text-primary); font-size: 1.6rem;">
+              Exercício Prático: Trabalhar com Tabelas Delta Lake e Time Travel no Microsoft Fabric
+            </h2>
+            <p style="margin: 0; color: var(--text-secondary); font-size: 0.95rem;">
+              Guia passo a passo para executar diretamente na plataforma em nuvem do <strong>Microsoft Fabric</strong> (ou em simulação local).
+            </p>
+          </div>
+
+          <!-- Cenário de Negócio Oficial -->
+          <div class="mslearn-scenario-card">
+            <h4 style="margin: 0 0 0.5rem 0; color: var(--brand-blue); font-family: var(--font-display);">
+              📋 Cenário do Laboratório
+            </h4>
+            <p style="margin: 0; font-size: 0.92rem; color: var(--text-primary); line-height: 1.55;">
+              Você é o Engenheiro de Dados sênior da <em>Wide World Importers</em>. A diretoria solicitou a modernização do pipeline de vendas corporativo para o Microsoft Fabric. Seu objetivo é provisionar um <strong>Lakehouse</strong>, ingerir dados transacionais brutos em formato <strong>Delta Lake</strong> com <strong>V-Order</strong> habilitado, atualizar registros via transações ACID, consultar versões anteriores com <strong>Time Travel</strong>, inspecionar os commits no <code>_delta_log</code> e aplicar manutenção de arquivos com <strong>OPTIMIZE</strong> e <strong>VACUUM</strong>.
+            </p>
+          </div>
+
+          <!-- Pré-requisitos -->
+          <div class="mslearn-prereqs-card">
+            <h4 style="margin: 0 0 0.4rem 0; color: #0078d4; font-family: var(--font-display);">
+              🔑 Pré-requisitos para Execução no Portal
+            </h4>
+            <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; color: var(--text-primary); line-height: 1.5;">
+              <li>Navegador web moderno (Edge, Chrome ou Firefox).</li>
+              <li>Acesso ao portal <a href="https://app.fabric.microsoft.com/" target="_blank" rel="noopener noreferrer" style="color: #0078d4; font-weight: 600; text-decoration: underline;">Microsoft Fabric (app.fabric.microsoft.com)</a>.</li>
+              <li>Uma capacidade ativa do Fabric (licença <strong>Fabric Trial</strong> gratuita de 60 dias ou capacidade <strong>F-SKU</strong> corporativa).</li>
+              <li>Um Workspace configurado no modo de capacidade Fabric.</li>
+            </ul>
+          </div>
+
+          <!-- Tarefa 1 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">1</div>
+              <h3 class="mslearn-task-title">Criar o Lakehouse no Microsoft Fabric</h3>
+            </div>
+            <ol class="mslearn-step-list">
+              <li>Acesse o portal do <a href="https://app.fabric.microsoft.com/" target="_blank" rel="noopener noreferrer">Microsoft Fabric</a> e efetue login com sua conta organizacional ou de desenvolvedor.</li>
+              <li>No canto inferior esquerdo da tela, localize o seletor de experiência e clique no ícone de <strong>Engenharia de Dados (Data Engineering)</strong>.</li>
+              <li>No menu de navegação à esquerda, clique em <strong>Workspaces</strong> e selecione o workspace habilitado para sua capacidade.</li>
+              <li>Na barra de comandos superior, clique em <strong>+ Novo item</strong> (<em>+ New item</em>) e selecione o cartão <strong>Lakehouse</strong>.</li>
+              <li>No campo Nome, digite <code>lh_sales_medallion</code> e clique no botão <strong>Criar</strong>.</li>
+              <li>Aguarde alguns segundos até que o Lakehouse Explorer seja carregado com as pastas <code>Tables</code> e <code>Files</code>.</li>
+            </ol>
+
+            <!-- Captura de Tela 1: Navegação e Criação do Lakehouse -->
+            <div class="portal-screenshot-frame">
+              <div class="portal-window-bar">
+                <div class="portal-window-dots">
+                  <span class="portal-window-dot dot-red"></span>
+                  <span class="portal-window-dot dot-yellow"></span>
+                  <span class="portal-window-dot dot-green"></span>
+                </div>
+                <div class="portal-address-bar">
+                  🔒 https://app.fabric.microsoft.com/groups/dp700-workspace/lakehouses/new
+                </div>
+              </div>
+              <img src="../assets/images/fabric-ui-01-create-lakehouse.svg" alt="Tela de criação do Lakehouse no Microsoft Fabric" loading="lazy" />
+              <div class="portal-screenshot-caption">
+                📸 <strong>Captura do Portal 1:</strong> Selecionando a experiência de Engenharia de Dados (canto inferior esquerdo) e criando o Lakehouse <code>lh_sales_medallion</code>.
+              </div>
+            </div>
+          </div>
+
+          <!-- Tarefa 2 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">2</div>
+              <h3 class="mslearn-task-title">Criar e Anexar um Notebook PySpark</h3>
+            </div>
+            <ol class="mslearn-step-list">
+              <li>Na barra de ferramentas superior do Lakehouse, clique em <strong>Abrir notebook</strong> (<em>Open notebook</em>) &gt; <strong>Novo notebook</strong> (<em>New notebook</em>).</li>
+              <li>No painel esquerdo do Notebook, confirme que o lakehouse <code>lh_sales_medallion</code> está selecionado como o Lakehouse padrão ativo.</li>
+              <li>No canto superior esquerdo da tela do Notebook, clique sobre o nome padrão (ex: <em>Notebook 1</em>) e renomeie para: <code>02_Delta_Medallion_HandsOn</code>.</li>
+              <li>Observe que o ambiente Spark do Fabric inicializa instantaneamente via <strong>Starter Pools</strong> com alocação automática de núcleos.</li>
+            </ol>
+          </div>
+
+          <!-- Tarefa 3 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">3</div>
+              <h3 class="mslearn-task-title">Ingerir Dados e Gravar a Primeira Tabela Delta (Commit V0)</h3>
+            </div>
+            <p style="font-size: 0.92rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+              Cole o código PySpark abaixo na primeira célula do seu notebook para simular a ingestão da camada Bronze e gravá-la como tabela gerenciada Delta Lake com ordenação <strong>V-Order</strong>:
+            </p>
+            
+            <div class="mslearn-code-header">
+              <span>PYTHON (PYSPARK) — CÉLULA 1</span>
+              <span>LAKEHOUSE NOTEBOOK</span>
+            </div>
+            <pre class="mslearn-code-box"><code>from pyspark.sql.types import StructType, StructField, StringType, IntegerType, DoubleType
+
+# 1. Definição do esquema estrito dos pedidos
+schema_vendas = StructType([
+    StructField("PedidoID", IntegerType(), False),
+    StructField("Cliente", StringType(), False),
+    StructField("Produto", StringType(), False),
+    StructField("Quantidade", IntegerType(), False),
+    StructField("ValorUnitario", DoubleType(), False),
+    StructField("DataPedido", StringType(), False)
+])
+
+# 2. Carga inicial de dados simulados (Commit V0)
+dados_lote_1 = [
+    (101, "Contoso", "Surface Laptop Studio", 2, 1999.00, "2026-01-10"),
+    (102, "Fabrikam", "Licença Fabric F64", 1, 8400.00, "2026-01-11"),
+    (103, "Litware", "Xbox Series X Console", 4, 499.00, "2026-01-12")
+]
+
+df_vendas_v0 = spark.createDataFrame(dados_lote_1, schema_vendas)
+
+# 3. Gravação da tabela Delta gerenciada com V-Order habilitado no OneLake
+df_vendas_v0.write \
+    .format("delta") \
+    .mode("overwrite") \
+    .option("overwriteSchema", "true") \
+    .saveAsTable("silver_vendas")
+
+print("✅ Tabela silver_vendas criada com sucesso (Versão 0) no OneLake!")</code></pre>
+
+            <ol class="mslearn-step-list">
+              <li>Pressione <kbd>Shift + Enter</kbd> (ou clique no botão de Play da célula) para executar o código.</li>
+              <li>Após a conclusão da célula, vá até o painel esquerdo <strong>Lakehouse Explorer</strong>, passe o mouse sobre a pasta <strong>Tables</strong> e clique no botão de atualizar (🔄).</li>
+              <li>Verifique que a tabela <code>silver_vendas</code> agora aparece com o símbolo triangular oficial do Delta Lake.</li>
+            </ol>
+          </div>
+
+          <!-- Tarefa 4 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">4</div>
+              <h3 class="mslearn-task-title">Inserir Novos Dados e Auditar o Log de Transações (_delta_log)</h3>
+            </div>
+            <p style="font-size: 0.92rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+              Em uma nova célula de código, vamos inserir novos pedidos (operação de Append, gerando o <strong>Commit V1</strong>) e em seguida inspecionar os metadados ACID com o comando <code>DESCRIBE HISTORY</code>:
+            </p>
+
+            <div class="mslearn-code-header">
+              <span>PYTHON (PYSPARK) — CÉLULA 2</span>
+              <span>LAKEHOUSE NOTEBOOK</span>
+            </div>
+            <pre class="mslearn-code-box"><code># 1. Novos registros para o segundo lote de ingestão
+dados_lote_2 = [
+    (104, "AdventureWorks", "Headset Microsoft Teams", 10, 89.90, "2026-01-15"),
+    (105, "Northwind", "Monitor 4K 32 polegadas", 3, 650.00, "2026-01-16")
+]
+
+df_novos_pedidos = spark.createDataFrame(dados_lote_2, schema_vendas)
+
+# 2. Append atômico garantido pelo protocolo Delta
+df_novos_pedidos.write.format("delta").mode("append").saveAsTable("silver_vendas")
+print("✅ Lote 2 gravado com sucesso (Commit V1)!")
+
+# 3. Inspeção dos metadados e histórico atômico do _delta_log
+historico_df = spark.sql("DESCRIBE HISTORY silver_vendas")
+display(historico_df.select("version", "timestamp", "operation", "operationMetrics.numOutputRows", "userName"))</code></pre>
+
+            <ol class="mslearn-step-list">
+              <li>Execute a célula e analise o grid de resultados gerado pelo comando <code>display()</code>.</li>
+              <li>Observe as duas versões registradas:
+                <ul>
+                  <li><strong>Versão 0:</strong> Operação <code>CREATE OR REPLACE TABLE AS SELECT</code> (3 linhas adicionadas).</li>
+                  <li><strong>Versão 1:</strong> Operação <code>WRITE</code> (2 linhas adicionadas).</li>
+                </ul>
+              </li>
+              <li>Isso comprova que cada transação gera um arquivo <code>.json</code> imutável e sequencial na pasta oculta <code>_delta_log/</code> do OneLake.</li>
+            </ol>
+
+            <!-- Captura de Tela 2: Lakehouse Explorer e Notebook com DESCRIBE HISTORY -->
+            <div class="portal-screenshot-frame">
+              <div class="portal-window-bar">
+                <div class="portal-window-dots">
+                  <span class="portal-window-dot dot-red"></span>
+                  <span class="portal-window-dot dot-yellow"></span>
+                  <span class="portal-window-dot dot-green"></span>
+                </div>
+                <div class="portal-address-bar">
+                  🔒 https://app.fabric.microsoft.com/groups/dp700-workspace/synapsenotebooks/02_Delta_Medallion_HandsOn
+                </div>
+              </div>
+              <img src="../assets/images/fabric-ui-02-notebook-lakehouse-explorer.svg" alt="Tela do Notebook PySpark e Lakehouse Explorer no Microsoft Fabric" loading="lazy" />
+              <div class="portal-screenshot-caption">
+                📸 <strong>Captura do Portal 2:</strong> Lakehouse Explorer com a tabela <code>silver_vendas</code> (painel esquerdo) e saída tabular do <code>DESCRIBE HISTORY</code> com auditoria dos commits V0 e V1.
+              </div>
+            </div>
+          </div>
+
+          <!-- Tarefa 5 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">5</div>
+              <h3 class="mslearn-task-title">Praticar Time Travel (Viagem no Tempo nos Dados)</h3>
+            </div>
+            <p style="font-size: 0.92rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+              Uma das capacidades mais exigidas no exame DP-700 é consultar o estado exato de uma tabela em um ponto específico do passado sem restaurar backups. Crie uma nova célula:
+            </p>
+
+            <div class="mslearn-code-header">
+              <span>PYTHON & SQL — CÉLULA 3</span>
+              <span>LAKEHOUSE NOTEBOOK</span>
+            </div>
+            <pre class="mslearn-code-box"><code># Consulta 1: Consultando a Versão 0 original (antes do Lote 2)
+print("=== ESTADO NA VERSÃO 0 (3 REGISTROS ESPERADOS) ===")
+df_v0 = spark.read.format("delta").option("versionAsOf", 0).table("silver_vendas")
+display(df_v0)
+
+# Consulta 2: Consultando a Versão Atual (HEAD)
+print("=== ESTADO ATUAL / HEAD (5 REGISTROS ESPERADOS) ===")
+df_atual = spark.table("silver_vendas")
+display(df_atual)
+
+# Consulta 3: Sintaxe alternativa nativa via SQL Spark
+spark.sql("SELECT COUNT(*) AS Total_V0 FROM silver_vendas VERSION AS OF 0").show()
+spark.sql("SELECT COUNT(*) AS Total_Atual FROM silver_vendas").show()</code></pre>
+
+            <ol class="mslearn-step-list">
+              <li>Execute a célula e confira que a consulta com <code>versionAsOf = 0</code> isola exatamente o snapshot original da tabela, enquanto a leitura padrão reflete todas as transações comitadas.</li>
+            </ol>
+          </div>
+
+          <!-- Tarefa 6 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">6</div>
+              <h3 class="mslearn-task-title">Manutenção da Tabela: OPTIMIZE e VACUUM</h3>
+            </div>
+            <p style="font-size: 0.92rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+              Em ambientes de produção com ingestão contínua, múltiplos arquivos pequenos de poucos kilobytes degradam a velocidade das consultas. Execute a manutenção:
+            </p>
+
+            <div class="mslearn-code-header">
+              <span>SQL SPARK — CÉLULA 4</span>
+              <span>LAKEHOUSE NOTEBOOK</span>
+            </div>
+            <pre class="mslearn-code-box"><code>%%sql
+-- 1. Compactação de arquivos pequenos via Bin-Packing (1GB alvo)
+OPTIMIZE silver_vendas;
+
+-- 2. Limpeza de arquivos antigos marcados para expurgo (Retenção recomendada de 7 dias = 168h)
+VACUUM silver_vendas RETAIN 168 HOURS;</code></pre>
+
+            <div class="mslearn-exam-note">
+              <strong>⚠️ Pegadinha Crítica para o Exame DP-700:</strong><br>
+              O comando <code>OPTIMIZE</code> apenas agrupa e compacta arquivos pequenos; ele <em>não</em> apaga o histórico do <code>_delta_log</code>. Por outro lado, o comando <code>VACUUM</code> <strong>remove fisicamente</strong> do OneLake os arquivos de dados Parquet que foram desativados (<em>tombstoned</em>) há mais tempo do que a janela de retenção especificada. Se um analista tentar rodar um Time Travel em uma versão cujos arquivos foram purgados pelo <code>VACUUM</code>, a consulta falhará com erro <code>FileNotFoundException</code>.
+            </div>
+          </div>
+
+          <!-- Tarefa 7 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">7</div>
+              <h3 class="mslearn-task-title">Validar a Tabela no SQL Analytics Endpoint (Zero-Copy)</h3>
+            </div>
+            <ol class="mslearn-step-list">
+              <li>No canto superior direito da janela do Microsoft Fabric, clique no botão alternador que exibe <strong>Lakehouse</strong> e selecione <strong>Ponto de extremidade de análise SQL (SQL analytics endpoint)</strong>.</li>
+              <li>Aguarde a inicialização do motor relacional T-SQL.</li>
+              <li>No painel de navegação à esquerda, expanda <strong>Esquemas</strong> &gt; <code>dbo</code> &gt; <strong>Tabelas</strong> e selecione <code>silver_vendas</code>.</li>
+              <li>Clique no botão <strong>Nova consulta SQL</strong> na barra superior e cole o comando T-SQL abaixo:</li>
+            </ol>
+
+            <div class="mslearn-code-header">
+              <span>T-SQL — CONSULTA RELACIONAL</span>
+              <span>SQL ANALYTICS ENDPOINT</span>
+            </div>
+            <pre class="mslearn-code-box"><code>-- Consulta analítica T-SQL sobre os mesmos arquivos Delta do OneLake
+SELECT 
+    Cliente,
+    COUNT(PedidoID) AS TotalPedidos,
+    SUM(Quantidade * ValorUnitario) AS ReceitaTotal,
+    AVG(ValorUnitario) AS TicketMedio
+FROM silver_vendas
+GROUP BY Cliente
+ORDER BY ReceitaTotal DESC;</code></pre>
+
+            <ol class="mslearn-step-list">
+              <li>Clique em <strong>Executar (Run)</strong>. Observe que a consulta relacional é executada em milissegundos sem que nenhum dado tenha sido copiado ou importado do Lakehouse!</li>
+            </ol>
+
+            <!-- Captura de Tela 3: SQL Analytics Endpoint e Consulta T-SQL -->
+            <div class="portal-screenshot-frame">
+              <div class="portal-window-bar">
+                <div class="portal-window-dots">
+                  <span class="portal-window-dot dot-red"></span>
+                  <span class="portal-window-dot dot-yellow"></span>
+                  <span class="portal-window-dot dot-green"></span>
+                </div>
+                <div class="portal-address-bar">
+                  🔒 https://app.fabric.microsoft.com/groups/dp700-workspace/datawarehouses/lh_sales_medallion_sql
+                </div>
+              </div>
+              <img src="../assets/images/fabric-ui-03-sql-analytics-endpoint.svg" alt="Tela do Ponto de Extremidade de Análise SQL no Microsoft Fabric" loading="lazy" />
+              <div class="portal-screenshot-caption">
+                📸 <strong>Captura do Portal 3:</strong> Alternador no canto superior direito apontando para o <code>SQL analytics endpoint</code> e consulta T-SQL sobre os arquivos Delta com resultado Zero-Copy.
+              </div>
+            </div>
+          </div>
+
+          <!-- Fallback: Simulação Local Offline -->
+          <div class="mslearn-local-box">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem;">
+              <h4 style="margin: 0; color: var(--brand-teal); font-family: var(--font-display);">
+                💻 Opção Alternativa: Executar Simulação Local Offline no seu Terminal
+              </h4>
+              <span style="font-size: 0.8rem; background: var(--bg-surface-alt); padding: 3px 8px; border-radius: 6px; color: var(--text-secondary);">Sem necessidade de conta Fabric</span>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+              Se você não possui uma assinatura ativa do Fabric no momento, criamos um simulador completo em Python no seu repositório local que reproduz a criação dos commits JSON e arquivos Parquet na pasta <code>_delta_log</code>:
+            </p>
+            <pre><code style="font-family: var(--font-mono); font-size: 0.88rem; display: block; background: var(--bg-surface-alt); padding: 0.85rem 1rem; border-radius: 8px; border: 1px solid var(--border-color); overflow-x: auto;"># Execute este comando no terminal para reproduzir o lab:
+./.venv/bin/python labs/0002-parquet-delta-medallion/lab_simulation.py</code></pre>
+            <div style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-secondary);">
+              📁 Estrutura gerada para auditoria local: <code>labs/0002-parquet-delta-medallion/silver_delta/_delta_log/</code>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SEÇÃO DE QUIZ DP-700 (ISOMORFISMO ESTRITO) -->
+              <section id="bloco-quiz" class="totc-card">
+          <h2 style="margin-top: 0;">Pontos Críticos para a Prática e para o Exame DP-700</h2>
+
+          <div class="summary-card">
+            <h3 style="margin-top: 0; color: var(--brand-teal);">📝 Síntese dos Pontos Críticos Aprendidos:</h3>
+            <ol style="margin-bottom: 0;">
+              <li><strong>Apache Parquet vs Delta Lake:</strong> Parquet oferece compressão colunar e estatísticas de row group (Predicate Pushdown), enquanto o Delta Lake adiciona transações ACID atômicas através da pasta <code>_delta_log</code>.</li>
+              <li><strong>Arquitetura Medallion:</strong> Bronze preserva dados brutos imutáveis; Silver limpa, deduplica e conforma; Gold expõe modelos dimensionais prontos para Direct Lake de subsegundo no Power BI.</li>
+              <li><strong>Time Travel & VACUUM:</strong> Consultas históricas utilizam <code>VERSION AS OF</code>. Executar <code>VACUUM</code> com retenção inferior ao intervalo desejado apaga os arquivos Parquet físicos antigos, causando <code>FileNotFoundException</code>.</li>
+              <li><strong>Otimização V-Order:</strong> Tecnologia exclusiva do Fabric que reordena dicionários colunares para aceleração instantânea em memória pelos motores VertiPaq e SQL Endpoint.</li>
+            </ol>
+          </div>
+
+          <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+            <h3>🎯 Desafio de Exame DP-700</h3>
+            <p>Questão elaborada no padrão da Microsoft com alternativas isomórficas:</p>
+
+            <div class="quiz-card" data-explanation="O comando <code>VACUUM</code> limpa fisicamente os arquivos Parquet antigos que foram marcados como tombstoned em versões anteriores. Se a retenção aplicada no VACUUM for inferior ao intervalo da consulta histórica, os arquivos necessários para reconstruir a versão solicitada são apagados, resultando em <code>FileNotFoundException</code>.">
+              <p><strong style="color: var(--text-primary);">Cenário de Exame DP-700:</strong> Você está gerenciando uma tabela Delta na camada Silver de um Lakehouse no Microsoft Fabric. Os usuários de negócios reportam que uma consulta analítica que acessa o histórico da tabela usando a sintaxe de Time Travel (<code>VERSION AS OF 5</code>) falha subitamente com o erro <code>FileNotFoundException</code>. Outras consultas na versão atual (HEAD) funcionam perfeitamente. Qual foi a causa provável?</p>
+              
+              <ul class="quiz-options">
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    A) O comando OPTIMIZE foi executado e apagou todo o log.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    B) O mecanismo V-Order foi aplicado corrompendo a partição.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="true">
+                    C) O comando VACUUM foi executado e removeu os arquivos.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    D) O endpoint SQL do Lakehouse entrou em modo de bloqueio.
+                  </button>
+                </li>
+              </ul>
+              <div class="quiz-feedback"></div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--border-color); flex-wrap: wrap; gap: 1rem;">
+            <a href="../reference/02-storage-delta-medallion-shortcuts-guide.html" style="font-weight: 600;">
+              📑 Abrir Folha de Referência 02 (Storage, Delta & Medallion)
+            </a>
+            <a href="0003-dimensional-modeling-and-three-languages-sql-spark-kql.html" class="audio-btn" style="color: #fff !important;">
+              Próxima Lição: 0003 (Modelagem Dimensional e Três Linguagens) →
+            </a>
+          </div>
+        </section>
+
+      
+
+    </main>
+  </div>
+
+  
+</body>
+</html>
+

@@ -1,0 +1,93 @@
+<svg viewBox="0 0 920 540" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;">
+  <defs>
+    <filter id="shadow9" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <rect width="920" height="540" fill="#0b1120"/>
+  <!-- Top Bar -->
+  <rect x="0" y="0" width="920" height="42" fill="#002447"/>
+  <circle cx="24" cy="21" r="10" fill="#0078d4"/>
+  <text x="24" y="25" text-anchor="middle" font-size="11" font-weight="900" fill="#ffffff">F</text>
+  <text x="44" y="26" font-size="13" font-weight="700" fill="#ffffff">Microsoft Fabric</text>
+  <text x="175" y="25" font-size="12" fill="#64748b">/</text>
+  <text x="190" y="25" font-size="12" fill="#cbd5e1">Segurança &amp; Governança de Dados</text>
+  <text x="440" y="25" font-size="12" font-weight="700" fill="#f59e0b">RLS / CLS / Direct Lake Fallback</text>
+
+  <!-- Left Sidebar: Security Policies -->
+  <rect x="0" y="42" width="230" height="498" fill="#0f172a" stroke-right="#1e293b"/>
+  <rect x="0" y="42" width="230" height="34" fill="#162238"/>
+  <text x="15" y="64" font-size="12" font-weight="700" fill="#38bdf8">CONTROLE DE ACESSO</text>
+  
+  <g transform="translate(15, 90)">
+    <rect x="0" y="0" width="200" height="44" rx="6" fill="#0c4a6e" stroke="#38bdf8"/>
+    <text x="12" y="26" font-size="14">🛡️</text>
+    <text x="36" y="22" font-size="12" font-weight="700" fill="#ffffff">Row-Level Security (RLS)</text>
+    <text x="36" y="36" font-size="10" fill="#7dd3fc">Filtro por Região de Vendas</text>
+  </g>
+  <g transform="translate(15, 145)">
+    <rect x="0" y="0" width="200" height="44" rx="6" fill="#1e293b" stroke="#334155"/>
+    <text x="12" y="26" font-size="14">🔒</text>
+    <text x="36" y="22" font-size="12" font-weight="700" fill="#cbd5e1">Column-Level Security (CLS)</text>
+    <text x="36" y="36" font-size="10" fill="#94a3b8">Mascaramento Salário / PII</text>
+  </g>
+  <g transform="translate(15, 200)">
+    <rect x="0" y="0" width="200" height="44" rx="6" fill="#1e293b" stroke="#334155"/>
+    <text x="12" y="26" font-size="14">🏷️</text>
+    <text x="36" y="22" font-size="12" font-weight="700" fill="#cbd5e1">Sensitivity Labels (Purview)</text>
+    <text x="36" y="36" font-size="10" fill="#94a3b8">Confidencial / Corporativo</text>
+  </g>
+
+  <!-- Main Content: T-SQL Security Definition & Fallback Alert -->
+  <rect x="230" y="42" width="690" height="498" fill="#070d19"/>
+
+  <!-- T-SQL Security Predicate Editor -->
+  <g transform="translate(250, 60)">
+    <rect x="0" y="0" width="650" height="210" rx="8" fill="#0f172a" stroke="#0284c7" stroke-width="1.5"/>
+    <rect x="0" y="0" width="650" height="30" rx="8" fill="#162238"/>
+    <text x="15" y="20" font-size="12" font-weight="700" fill="#38bdf8">DEFINIÇÃO DA SECURITY POLICY EM T-SQL NO WAREHOUSE</text>
+
+    <!-- Code Area -->
+    <g transform="translate(20, 45)">
+      <text x="0" y="20" font-family="Courier, monospace" font-size="11.5" fill="#0284c7" font-weight="bold">CREATE FUNCTION <tspan fill="#34d399">Security.fn_VendasSecurityPredicate</tspan>(@Regiao AS varchar(50))</text>
+      <text x="0" y="40" font-family="Courier, monospace" font-size="11.5" fill="#0284c7" font-weight="bold">RETURNS TABLE WITH SCHEMABINDING AS RETURN</text>
+      <text x="20" y="60" font-family="Courier, monospace" font-size="11.5" fill="#f8fafc">SELECT 1 AS fn_AccessResult WHERE @Regiao = <tspan fill="#f59e0b">USER_NAME()</tspan></text>
+      <text x="35" y="78" font-family="Courier, monospace" font-size="11.5" fill="#f8fafc">OR <tspan fill="#f59e0b">IS_MEMBER('Gerentes_Globais') = 1</tspan>;</text>
+      <text x="0" y="104" font-family="Courier, monospace" font-size="11.5" fill="#0284c7" font-weight="bold">CREATE SECURITY POLICY <tspan fill="#34d399">Security.VendasFilterPolicy</tspan></text>
+      <text x="20" y="124" font-family="Courier, monospace" font-size="11.5" fill="#0284c7" font-weight="bold">ADD FILTER PREDICATE <tspan fill="#f8fafc">Security.fn_VendasSecurityPredicate(RegiaoVenda)</tspan></text>
+      <text x="20" y="144" font-family="Courier, monospace" font-size="11.5" fill="#0284c7" font-weight="bold">ON <tspan fill="#34d399">dbo.FactVendas</tspan> WITH (STATE = ON);</text>
+    </g>
+  </g>
+
+  <!-- ATENÇÃO DP-700: DIRECT LAKE FALLBACK CALLOUT BOX -->
+  <g transform="translate(250, 290)" filter="url(#shadow9)">
+    <rect x="0" y="0" width="650" height="230" rx="10" fill="#1e1808" stroke="#f59e0b" stroke-width="2"/>
+    <rect x="0" y="0" width="650" height="34" rx="10" fill="#451a03"/>
+    <text x="15" y="22" font-size="12.5" font-weight="800" fill="#fef08a">⚠️ COMPORTAMENTO CRÍTICO DE DIRECT LAKE FALLBACK (PROVA DP-700)</text>
+
+    <g transform="translate(20, 50)">
+      <text x="0" y="18" font-size="12" font-weight="700" fill="#f8fafc">O que acontece quando RLS / CLS é aplicado na tabela do Lakehouse ou Warehouse?</text>
+      <text x="0" y="42" font-size="11" fill="#fed7aa">
+        O Power BI em modo <tspan font-weight="bold" fill="#ffffff">Direct Lake</tspan> não pode aplicar RLS direto sobre o Parquet nativo em memória.
+      </text>
+      <text x="0" y="64" font-size="11" fill="#fed7aa">
+        Quando uma política de RLS/CLS no Fabric SQL Endpoint está ativa, o relatório sofre <tspan font-weight="bold" fill="#f59e0b">Fallback Silencioso</tspan>
+      </text>
+      <text x="0" y="86" font-size="11" fill="#fed7aa">
+        para o modo <tspan font-weight="bold" fill="#ffffff">DirectQuery</tspan>, gerando consultas T-SQL que consom computação da capacidade (CU).
+      </text>
+
+      <!-- Diagrama de Comparação Visual -->
+      <g transform="translate(0, 110)">
+        <rect x="0" y="0" width="280" height="46" rx="6" fill="#064e3b" stroke="#10b981"/>
+        <text x="12" y="20" font-size="11" font-weight="700" fill="#a7f3d0">Sem RLS no SQL Endpoint:</text>
+        <text x="12" y="36" font-size="10.5" fill="#ffffff">Direct Lake PURO (In-Memory VertiPaq)</text>
+
+        <rect x="320" y="0" width="290" height="46" rx="6" fill="#7f1d1d" stroke="#ef4444"/>
+        <text x="332" y="20" font-size="11" font-weight="700" fill="#fca5a5">Com RLS no SQL Endpoint:</text>
+        <text x="332" y="36" font-size="10.5" fill="#ffffff">Fallback Automático para DirectQuery T-SQL</text>
+      </g>
+    </g>
+  </g>
+</svg>

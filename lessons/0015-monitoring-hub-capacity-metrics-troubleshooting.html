@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lição 0015: Monitoramento, Capacity Metrics App, DMVs & Troubleshooting</title>
+  <link rel="stylesheet" href="../assets/tufte.css?v=totc6">
+  <link rel="stylesheet" href="../assets/vark.css?v=totc6">
+  <script src="../assets/lens.js?v=totc6"></script>
+  <script src="../assets/quiz.js?v=totc6" defer></script>
+  <script src="../assets/vark.js?v=totc6" defer></script>
+</head>
+<body>
+
+  <div class="course-app-shell">
+
+    <!-- SIDEBAR DE CURRÍCULO E NAVEGAÇÃO -->
+    <aside class="course-sidebar">
+      <div class="sidebar-top-nav">
+        <a href="../index.html?v=totc6" class="back-square-btn" title="Voltar ao Portal do Curso">←</a>
+        <div style="font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--text-primary);">
+          FABRIC <span style="color: var(--brand-teal);">DP-700</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="sidebar-section-title">Módulo 3: Governança, CI/CD & Otimização</div>
+        <div class="sidebar-pill-list">
+          <a href="#bloco-contexto" class="curriculum-pill active">
+            <span class="pill-left">📖 Lição 15: Monitoramento & DMVs</span>
+            <span class="pill-duration">30 mins</span>
+          </a>
+          <a href="#bloco-audio" class="curriculum-pill pill-orange">
+            <span class="pill-left">🎧 Narração Neural da Aula</span>
+            <span class="pill-duration">02:50</span>
+          </a>
+          <a href="#bloco-teoria" class="curriculum-pill pill-blue">
+            <span class="pill-left">👁️ Métricas & Throttling</span>
+            <span class="pill-duration">Visual</span>
+          </a>
+          <a href="../simulados/index.html?v=totc6" class="curriculum-pill pill-coral">
+            <span class="pill-left">🎯 Centro de Simulados</span>
+            <span class="pill-duration">Exam</span>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <div class="sidebar-section-title">PRACTICE QUIZ & LABS</div>
+        <div class="sidebar-pill-list">
+          <a href="#bloco-pratica" class="curriculum-pill pill-teal">
+            <span class="pill-left">⚡ Lab: Capacity App & DMVs</span>
+            <span class="pill-duration">Python</span>
+          </a>
+          <a href="#bloco-quiz" class="curriculum-pill pill-orange">
+            <span class="pill-left">🎯 Desafio Exame DP-700</span>
+            <span class="pill-duration">Quiz</span>
+          </a>
+        </div>
+      </div>
+
+      <div style="margin-top: auto; padding: 1rem; background: var(--bg-surface-alt); border: 1px solid var(--border-color); border-radius: 14px; font-size: 0.82rem; color: var(--text-secondary);">
+        <strong style="color: var(--text-primary); display: block; margin-bottom: 0.25rem;">💡 Dica de Ouro DP-700</strong>
+        Operações interativas têm janela de suavização de <strong>5 minutos</strong>; operações em background usam janela de <strong>24 horas</strong>!
+      </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="course-main-content">
+
+      <header class="course-header-banner">
+        <div>
+          <div class="course-badge">Módulo 3 • Domínio 3 do Exame DP-700 (Monitoring & Troubleshooting)</div>
+          <h1 class="course-title">Lição 0015: Monitoramento Contínuo, Capacity Metrics App, DMVs de Consulta & Troubleshooting</h1>
+          <p class="course-meta">
+            Duração estimada: 30 minutos • Domínio 3 (Monitorar Cargas de Engenharia de Dados) • Áudio Neural & Lab de DMVs
+          </p>
+        </div>
+        <div class="theme-toggle-container">
+          <button class="theme-toggle-btn" onclick="window.toggleAppTheme()" title="Alternar entre Modo Claro e Escuro">
+            <span class="theme-toggle-icon">🌙</span> Alternar Tema
+          </button>
+        </div>
+      </header>
+
+      <nav class="lens-selector-bar" aria-label="Seletor de Nível Pedagógico">
+        <div class="lens-tab-group">
+          <button class="lens-tab" data-lens="unificado">📚 Unificado (Geral)</button>
+          <button class="lens-tab" data-lens="junior">🌱 Júnior / Fundamentos</button>
+          <button class="lens-tab" data-lens="pleno">🌿 Pleno / Implementador</button>
+          <button class="lens-tab" data-lens="senior">🛠️ Sênior / DP-700</button>
+          <button class="lens-tab" data-lens="staff">⚙️ Staff / Under the Hood</button>
+          <button class="lens-tab" data-lens="clevel">🏛️ C-Level / FinOps & TCO</button>
+        </div>
+        <div style="margin-left: auto;">
+          <button class="theme-toggle-btn" onclick="window.toggleAppTheme()" title="Alternar Modo Dark / Light">
+            <span class="theme-toggle-icon">🌙</span> Modo Dark
+          </button>
+        </div>
+      </nav>
+
+      <nav class="vark-nav-bar" aria-label="Atalhos das Modalidades VARK">
+        <a href="#bloco-audio" class="vark-btn"><span class="vark-badge badge-a">A</span> 🎧 Áudio Neural (Auditivo)</a>
+        <a href="#bloco-teoria" class="vark-btn"><span class="vark-badge badge-v">V</span> 👁️ Janelas & Throttling (Visual)</a>
+        <a href="#bloco-contexto" class="vark-btn"><span class="vark-badge badge-r">R</span> 📖 Texto Técnico (Leitura)</a>
+        <a href="#bloco-pratica" class="vark-btn"><span class="vark-badge badge-k">K</span> ⚡ Lab DMVs & Capacity (Cinestésico)</a>
+      </nav>
+
+      <!-- REPRODUTOR DE ÁUDIO NEURAL -->
+      <div id="bloco-audio" class="audio-player-card">
+        <div class="audio-card-header">
+          <div class="audio-avatar">🎙️</div>
+          <div>
+            <div class="audio-title">Narração Técnica Neural da Lição 0015</div>
+            <div class="audio-subtitle">Voz: Microsoft pt-BR-AntonioNeural • Monitoring Hub, Capacity Metrics App, Throttling e Query Insights</div>
+          </div>
+        </div>
+        <div class="audio-controls-row">
+          <button id="audio-play-btn" class="audio-play-button" aria-label="Reproduzir áudio da lição">▶ Reproduzir Aula</button>
+          <div class="audio-scrubber-track">
+            <div id="audio-progress-bar" class="audio-scrubber-fill" style="width: 0%;"></div>
+          </div>
+          <div id="audio-time-label" class="audio-time-display">00:00 / 02:50</div>
+          <audio id="vark-audio-element" preload="metadata">
+            <source src="../assets/audio/lesson-0015-pt.mp3?v=totc6" type="audio/mpeg">
+            Seu navegador não suporta o elemento de áudio HTML5.
+          </audio>
+        </div>
+      </div>
+
+      <!-- CONTEÚDO MULTI-LENS -->
+      <article id="bloco-contexto" class="lens-panel" data-lens-content="unificado">
+        <h2>Observabilidade e Diagnóstico na Plataforma Fabric</h2>
+        <p>
+          Em uma plataforma unificada como o Microsoft Fabric, falhas ou gargalos de desempenho podem ocorrer em três camadas distintas: no pipeline de orquestração (Data Factory), na execução dos nós do cluster computacional (Apache Spark) ou na saturação da capacidade corporativa (F-SKU). Para o engenheiro de dados, saber exatamente qual ferramenta de diagnóstico abrir é a chave para o sucesso operacional e para o <strong>Exame DP-700</strong>.
+        </p>
+
+        <div class="diagram-container" id="bloco-teoria">
+          <h3>As Três Ferramentas Fundamentais de Monitoramento no Fabric</h3>
+          <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+            Entenda o papel de cada painel para resolver incidentes em produção.
+          </p>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+            <div style="background: var(--bg-surface-alt); padding: 1.25rem; border-radius: 12px; border: 1px solid var(--border-color);">
+              <h4 style="margin: 0 0 0.5rem 0; color: var(--brand-teal); font-size: 0.95rem;">
+                🎯 1. Monitoring Hub
+              </h4>
+              <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                Visão central de atividades recentes em todos os workspaces.
+              </p>
+              <ul style="font-size: 0.8rem; color: var(--text-primary); padding-left: 1rem; line-height: 1.5;">
+                <li>Status em tempo real de Pipelines, Notebooks e Dataflows Gen2.</li>
+                <li>Filtros por usuário, workspace, tipo de item e status de erro.</li>
+                <li>Link direto para o <strong>Spark History Server</strong> e logs de execução.</li>
+              </ul>
+            </div>
+
+            <div style="background: var(--bg-surface-alt); padding: 1.25rem; border-radius: 12px; border: 1px solid var(--border-color);">
+              <h4 style="margin: 0 0 0.5rem 0; color: var(--brand-orange); font-size: 0.95rem;">
+                📊 2. Capacity Metrics App
+              </h4>
+              <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                Painel analítico do Power BI para governança de Capacity Units.
+              </p>
+              <ul style="font-size: 0.8rem; color: var(--text-primary); padding-left: 1rem; line-height: 1.5;">
+                <li>Distingue <strong>Interativo (5 min)</strong> vs. <strong>Background (24h)</strong>.</li>
+                <li>Rastreia consumo cumulativo de CUs e histórico de <strong>Smoothing</strong>.</li>
+                <li>Diagnostica momentos de <strong>Throttling</strong> (Delay e Rejeição).</li>
+              </ul>
+            </div>
+
+            <div style="background: var(--bg-surface-alt); padding: 1.25rem; border-radius: 12px; border: 1px solid var(--border-color);">
+              <h4 style="margin: 0 0 0.5rem 0; color: var(--brand-blue); font-size: 0.95rem;">
+                🔍 3. T-SQL Query Insights
+              </h4>
+              <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                Esquema nativo do Fabric Data Warehouse para auditoria de SQL.
+              </p>
+              <ul style="font-size: 0.8rem; color: var(--text-primary); padding-left: 1rem; line-height: 1.5;">
+                <li><code>queryinsights.exec_requests_history</code>: CUs e duração.</li>
+                <li><code>queryinsights.long_running_queries</code>: queries acima da média.</li>
+                <li><code>sys.dm_exec_requests</code>: transações ativas e waits.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <h3 style="margin-top: 2rem;">Os Três Estágios Progressivos de Throttling</h3>
+        <p>
+          Quando as cargas de trabalho somadas consom mais Capacity Units do que o teto da capacidade permite acumular na janela de suavização (Smoothing), o Fabric aciona defesas em etapas progressivas:
+        </p>
+        <ol>
+          <li>
+            <strong>Interactive Delay (Atraso Interativo):</strong> Ocorre quando o consumo futuro projetado ultrapassa 100%. O Fabric aplica um atraso deliberado de aproximadamente 60 segundos em consultas visuais para desestimular a carga simultânea sem cancelar operações.
+          </li>
+          <li>
+            <strong>Interactive Rejection (Rejeição Interativa):</strong> Se a sobrecarga persistir e atingir o limiar crítico, todas as novas consultas interativas do Power BI e do SQL Analytics Endpoint são recusadas imediatamente com erro de capacidade indisponível.
+          </li>
+          <li>
+            <strong>Background Rejection (Rejeição de Background):</strong> No nível mais severo de exaustão em 24 horas, novos disparos de pipelines de dados agendados e notebooks de segundo plano são bloqueados na largada até que a capacidade retorne aos níveis saudáveis.
+          </li>
+        </ol>
+      </article>
+
+      <article class="lens-panel" data-lens-content="junior" style="display: none;">
+        <h2>Monitoramento para Iniciantes</h2>
+        <p>
+          Pense no monitoramento do Fabric como o painel de instrumentos do seu carro:
+        </p>
+        <ul>
+          <li><strong>Monitoring Hub:</strong> É a luz de alerta que avisa se uma viagem (pipeline) chegou ao destino com sucesso ou se quebrou no meio da estrada.</li>
+          <li><strong>Capacity Metrics App:</strong> É o medidor de combustível e o velocímetro. Ele avisa se você está acelerando demais e gastando toda a energia da sua cota contratada.</li>
+          <li><strong>Throttling:</strong> Se você pisar fundo por muito tempo e o motor esquentar, o carro primeiro diminui a velocidade sozinho (Interactive Delay) e, se você continuar forçando, ele desliga o motor para não queimar (Rejection)!</li>
+        </ul>
+      </article>
+
+      <article class="lens-panel" data-lens-content="pleno" style="display: none;">
+        <h2>T-SQL DMVs na Prática para Diagnóstico de Gargalos</h2>
+        <p>
+          Como engenheiro de dados, quando um relatório ou consulta SQL no Warehouse estiver travando a capacidade, utilize as visões de sistema do schema <code>queryinsights</code>:
+        </p>
+        <pre><code style="font-family: var(--font-mono); font-size: 0.88rem; display: block; background: var(--bg-surface-alt); padding: 1rem; border-radius: 8px;">-- Identificar as 10 consultas que mais consumiram CPU nas últimas 24 horas
+SELECT TOP 10
+    distributed_statement_id,
+    session_id,
+    batch_sql_string,
+    total_elapsed_time_ms,
+    allocated_cpu_time_ms,
+    row_count,
+    status
+FROM queryinsights.exec_requests_history
+WHERE status = 'Completed'
+ORDER BY allocated_cpu_time_ms DESC;</code></pre>
+        <p>
+          Para inspecionar queries em execução no momento exato de um incidente:
+        </p>
+        <pre><code style="font-family: var(--font-mono); font-size: 0.88rem; display: block; background: var(--bg-surface-alt); padding: 1rem; border-radius: 8px;">-- Inspecionar requisições ativas e identificar bloqueios
+SELECT 
+    r.session_id,
+    r.status,
+    r.command,
+    r.start_time,
+    r.total_elapsed_time,
+    s.login_name
+FROM sys.dm_exec_requests r
+JOIN sys.dm_exec_sessions s ON r.session_id = s.session_id
+WHERE r.status = 'running';</code></pre>
+      </article>
+
+      <article class="lens-panel" data-lens-content="senior" style="display: none;">
+        <h2>Checklist Arquitetural do Exame DP-700</h2>
+        <p>
+          Pontos de pegadinha e detalhes determinantes na prova oficial:
+        </p>
+        <ul>
+          <li><strong>Janela de Smoothing:</strong> Interativo = 5 minutos. Background = 24 horas. O exame colocará um cenário onde um pipeline pesado roda às 02:00 da manhã e perguntará por que a capacidade ainda apresenta consumo às 14:00 da tarde (resposta: smoothing de 24h distribuindo as CUs).</li>
+          <li><strong>Spark History Server:</strong> Para investigar problemas de memória como <em>OutOfMemoryError</em> (OOM), garbage collection demorado ou skew de partições em jobs Spark, a ferramenta correta é o <strong>Spark History Server</strong>, acessível a partir do Monitoring Hub.</li>
+          <li><strong>Identificação de Causa Raiz de Throttling:</strong> Ao analisar o Capacity Metrics App, utilize a matriz de <em>Timepoint Detail</em> para identificar o usuário específico, item e operação que gerou o pico de CUs.</li>
+        </ul>
+      </article>
+
+      <article class="lens-panel" data-lens-content="staff" style="display: none;">
+        <h2>Internals: Arquitetura de Telemetria e Mecanismo de Smoothing</h2>
+        <p>
+          Como o Microsoft Fabric calcula o débito de Capacity Units em segundo plano:
+        </p>
+        <p>
+          Cada nó de computação (seja um cluster Spark temporário, um motor de consulta Polaris no SQL Endpoint ou o serviço Kusto no Eventhouse) emite eventos de telemetria contendo o tempo de CPU e uso de memória normalizados em segundos de Capacity Units (CU seconds).
+        </p>
+        <p>
+          O subsistema de capacidade soma esses débitos e os divide pelo tamanho da janela configurada:
+        </p>
+        <ul>
+          <li>Para operações de background, um job de 240 CU-seconds é suavizado em 86.400 segundos (24h), gerando um impacto contínuo de apenas 0,0027 CUs por segundo.</li>
+          <li>Quando a taxa de chegada de operações supera a taxa de liberação contínua, a conta corrente de CUs entra em <strong>Carryforward</strong> (dívida técnica computacional), culminando nos estados de estrangulamento automatizados pelo Fabric Resource Governor.</li>
+        </ul>
+      </article>
+
+      <article class="lens-panel" data-lens-content="clevel" style="display: none;">
+        <h2>Governança, FinOps e Prevenção de Interrupções de Negócio</h2>
+        <p>
+          A perspectiva executiva de monitoramento no Microsoft Fabric:
+        </p>
+        <ul>
+          <li><strong>Garantia de SLAs para Relatórios Críticos:</strong> Ao compreender que operações interativas sofrem atraso (Interactive Delay) antes de serem rejeitadas, a equipe técnica pode atuar preventivamente redimensionando a capacidade (Scale Up temporário via Azure Portal ou REST API) antes que a diretoria seja impactada.</li>
+          <li><strong>Atribuição Precisa de Custos por Domínio:</strong> Utilizando o Capacity Metrics App em conjunto com o conceito de <strong>Domains</strong> do Fabric, a área financeira pode cobrar o custo da capacidade diretamente das unidades de negócio consumidoras (Showback / Chargeback).</li>
+        </ul>
+      </article>
+
+      <!-- SEÇÃO DO LABORATÓRIO HANDS-ON -->
+            <!-- SEÇÃO KINESTHETIC: LAB PRÁTICO ESTILO MICROSOFT LEARN -->
+      <section id="bloco-pratica" style="margin-top: 3.5rem;">
+        <div class="mslearn-lab-box">
+          
+          <!-- Cabeçalho do Exercício -->
+          <div class="mslearn-header">
+            <div class="mslearn-badge-row">
+              <span class="mslearn-badge mslearn-badge-portal">🛠️ Microsoft Fabric Hands-on Lab</span>
+              <span class="mslearn-badge mslearn-badge-duration">⏱️ ~25 minutos</span>
+              <span class="mslearn-badge mslearn-badge-role">👤 Engenheiro de Dados • Domínio 3</span>
+              <span class="vark-badge badge-k" style="margin-left: auto;">K - Prática Guiada</span>
+            </div>
+            <h2 style="margin: 0.25rem 0 0.5rem 0; font-family: var(--font-display); color: var(--text-primary); font-size: 1.6rem;">
+              Exercício Prático: Monitoramento de Capacidade, Análise de CU e Solução de Gargalos
+            </h2>
+            <p style="margin: 0; color: var(--text-secondary); font-size: 0.95rem;">
+              Guia passo a passo para executar diretamente na plataforma em nuvem do <strong>Microsoft Fabric</strong> (ou em simulação local).
+            </p>
+          </div>
+
+          <!-- Cenário de Negócio Oficial -->
+          <div class="mslearn-scenario-card">
+            <h4 style="margin: 0 0 0.5rem 0; color: var(--brand-blue); font-family: var(--font-display);">
+              📋 Cenário do Laboratório
+            </h4>
+            <p style="margin: 0; font-size: 0.92rem; color: var(--text-primary); line-height: 1.55;">
+              Auditar uma capacidade Fabric corporativa utilizando o Capacity Metrics App e o Monitoring Hub, identificando consultas de Spark e Warehouse que causaram consumo anormal de Capacity Units.
+            </p>
+          </div>
+
+          <!-- Pré-requisitos -->
+          <div class="mslearn-prereqs-card">
+            <h4 style="margin: 0 0 0.4rem 0; color: #0078d4; font-family: var(--font-display);">
+              🔑 Pré-requisitos para Execução no Portal
+            </h4>
+            <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; color: var(--text-primary); line-height: 1.5;">
+              <li>Navegador web moderno (Edge, Chrome ou Firefox).</li>
+              <li>Acesso ao portal <a href="https://app.fabric.microsoft.com/" target="_blank" rel="noopener noreferrer" style="color: #0078d4; font-weight: 600; text-decoration: underline;">Microsoft Fabric (app.fabric.microsoft.com)</a>.</li>
+              <li>Capacidade ativa do Fabric (licença <strong>Fabric Trial</strong> gratuita ou capacidade corporativa).</li>
+              <li>Um Workspace configurado no modo de capacidade Fabric.</li>
+            </ul>
+          </div>
+
+          <!-- Tarefa 1 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">1</div>
+              <h3 class="mslearn-task-title">Inspecionar Jobs Ativos no Monitoring Hub</h3>
+            </div>
+            <ol class="mslearn-step-list">
+              <li>No menu de navegação lateral esquerdo, clique no ícone do <strong>Monitoring Hub</strong>.</li>
+              <li>Filtre os jobs das últimas 24 horas por Status (Falha / Em Andamento / Êxito) e Tipo de Item.</li>
+              <li>Inspecione a duração, usuário solicitante e logs detalhados de diagnóstico da execução.</li>
+            </ol>
+          </div>
+
+          <!-- Tarefa 2 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">2</div>
+              <h3 class="mslearn-task-title">Diagnosticar Queima de CU no Capacity Metrics App</h3>
+            </div>
+            <ol class="mslearn-step-list">
+              <li>Abra o <strong>Microsoft Fabric Capacity Metrics App</strong>.</li>
+              <li>Verifique o gráfico de consumo: analise a proporção entre operações interativas e operações em segundo plano.</li>
+              <li>Identifique se a capacidade entrou em estado de sobrecarga ou se o algoritmo de Smoothing absorveu com segurança o pico de processamento.</li>
+            </ol>
+
+            <!-- Captura de Tela da Tarefa 2 -->
+            <div class="portal-screenshot-frame">
+              <div class="portal-window-bar">
+                <div class="portal-window-dots">
+                  <span class="portal-window-dot dot-red"></span>
+                  <span class="portal-window-dot dot-yellow"></span>
+                  <span class="portal-window-dot dot-green"></span>
+                </div>
+                <div class="portal-address-bar">
+                  🔒 https://app.fabric.microsoft.com/groups/monitoring/capacity-app
+                </div>
+              </div>
+              <img src="../assets/images/fabric-ui-12-capacity-metrics-app.svg" alt="Diagnosticar Queima de CU no Capacity Metrics App" loading="lazy" />
+              <div class="portal-screenshot-caption">
+                📸 <strong>Captura do Portal:</strong> Análise de métricas no Capacity Metrics App identificando jobs ofensores e prevenindo Throttling da capacidade.
+              </div>
+            </div>
+          </div>
+
+          <!-- Alerta de Exame DP-700 -->
+          <div class="mslearn-exam-note" style="margin-top: 1.5rem;">
+            <strong>⚠️ Atenção para o Exame DP-700:</strong><br>
+            Regra Crítica para o Exame: Operações interativas (como consultas de relatórios do Power BI e notebooks executados em tempo real) amortizam em 5 minutos; operações em segundo plano (background jobs como pipelines agendados do Data Factory) amortizam em 24 horas.
+          </div>
+
+          <!-- Fallback: Simulação Local Offline -->
+          <div class="mslearn-local-box">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem;">
+              <h4 style="margin: 0; color: var(--brand-teal); font-family: var(--font-display);">
+                💻 Opção Alternativa: Executar Simulação Local Offline no seu Terminal
+              </h4>
+              <span style="font-size: 0.8rem; background: var(--bg-surface-alt); padding: 3px 8px; border-radius: 6px; color: var(--text-secondary);">Sem necessidade de conta Fabric</span>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+              Se você não possui uma assinatura ativa do Fabric no momento, criamos um simulador completo em Python no seu repositório local que reproduz a execução deste laboratório:
+            </p>
+            <pre><code style="font-family: var(--font-mono); font-size: 0.88rem; display: block; background: var(--bg-surface-alt); padding: 0.85rem 1rem; border-radius: 8px; border: 1px solid var(--border-color); overflow-x: auto;"># Execute este comando no terminal para reproduzir o lab:
+./.venv/bin/python labs/0015-monitoring-capacity-metrics-dmvs/lab_simulation.py</code></pre>
+            <div style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-secondary);">
+              📁 Diretório do laboratório prático local: <code>labs/0015-monitoring-capacity-metrics-dmvs/</code>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SEÇÃO DE QUIZ DP-700 -->
+              <section id="bloco-quiz" class="totc-card">
+          <h2 style="margin-top: 0;">Pontos Críticos para a Prática e para o Exame DP-700</h2>
+
+          <div class="summary-card">
+            <h3 style="margin-top: 0; color: var(--brand-teal);">📝 Síntese dos Pontos Críticos Aprendidos:</h3>
+            <ol style="margin-bottom: 0;">
+              <li><strong>Monitoring Hub do Fabric:</strong> Painel unificado para rastrear o status, tempo de execução e logs de erro de todos os jobs de pipelines, notebooks e dataflows.</li>
+              <li><strong>Fabric Capacity Metrics App:</strong> Ferramenta essencial para inspecionar consumo de CUs, picos instantâneos e comportamento da curva de Smoothing de 24 horas.</li>
+              <li><strong>Prevenção de Throttling:</strong> Identificar proativamente operações que excedem 100% da capacidade e aplicar otimizações antes que o sistema aplique atrasos ou bloqueios.</li>
+              <li><strong>Dynamic Management Views (DMVs):</strong> Permitem consultar via T-SQL no Warehouse as conexões ativas, consultas em execução e estatísticas de consumo de CPU.</li>
+            </ol>
+          </div>
+
+          <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+            <h3>🎯 Desafio de Exame DP-700</h3>
+            <p>Questão elaborada no padrão da Microsoft com alternativas isomórficas:</p>
+
+            <div class="quiz-card" data-explanation="No Fabric Data Warehouse, a view <strong>queryinsights.exec_requests_history</strong> armazena o histórico de consultas executadas, permitindo ordenar por <code>allocated_cpu_time_ms</code> para identificar com precisão as queries que mais consumiram recursos da capacidade.">
+              <p><strong style="color: var(--text-primary);">Cenário de Exame DP-700:</strong> Os usuários da sua organização relatam que as consultas interativas no Microsoft Fabric estão demorando aproximadamente 60 segundos antes de iniciarem a execução, indicando o estágio de Interactive Delay no Capacity Metrics App. Você precisa identificar imediatamente quais consultas T-SQL concluídas no Fabric Data Warehouse consumiram a maior quantidade de tempo de CPU para investigar a causa raiz da sobrecarga. Qual visão de sistema você deve consultar?</p>
+              
+              <ul class="quiz-options">
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    A) Verificar exclusivamente as mensagens de erro nos logs de pipelines do Monitoring Hub.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    B) Executar o comando VACUUM com retenção zero para limpar todas as tabelas temporárias.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    C) Desativar completamente o algoritmo de V-Order nos workspaces do ambiente de produção.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="true">
+                    D) Consultar queryinsights.exec_requests_history ordenando pela métrica allocated_cpu_time_ms.
+                  </button>
+                </li>
+              </ul>
+              <div class="quiz-feedback"></div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--border-color); flex-wrap: wrap; gap: 1rem;">
+            <a href="../reference/06-performance-vorder-clustering-monitoring-cheatsheet.html" style="font-weight: 600;">
+              📑 Abrir Folha de Referência 06 (Monitoramento e Métricas)
+            </a>
+            <a href="../simulados/index.html" class="audio-btn" style="color: #fff !important;">
+              Próxima Lição: Simulador Oficial de Exame Pearson VUE DP-700 →
+            </a>
+          </div>
+        </section>
+
+      <footer style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+        <a href="../lessons/0014-performance-vorder-liquid-clustering-tuning.html?v=totc6" class="btn-secondary">
+          ← Lição Anterior: 0014
+        </a>
+        <a href="../simulados/index.html?v=totc6" class="btn-primary">
+          Ir para o Centro de Simulados DP-700 →
+        </a>
+      </footer>
+
+    </main>
+  </div>
+
+  
+</body>
+</html>
+

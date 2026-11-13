@@ -1,0 +1,207 @@
+/* ==========================================================================
+   VARK Interactive Components (Adapted to Figma TOTC Design System + Dark Mode)
+   ========================================================================== */
+
+.vark-nav-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 1rem 2.75rem 0 2.75rem;
+  padding: 0.75rem 1.25rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  align-items: center;
+  box-shadow: var(--shadow-card);
+}
+
+@media (max-width: 768px) {
+  .vark-nav-bar {
+    margin: 1rem 1.25rem 0 1.25rem;
+  }
+}
+
+.vark-nav-bar span {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  margin-right: 0.4rem;
+}
+
+.vark-pill {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.38rem 0.9rem;
+  border-radius: 50px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface-alt);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.vark-pill:hover {
+  background: var(--pill-teal-bg);
+  border-color: var(--brand-teal);
+  color: var(--brand-teal);
+  transform: translateY(-1px);
+}
+
+/* Caixa de Áudio & Podcasting da Lição (Aural - Figma Video/Media Bar Style) */
+.aural-player-card {
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-color);
+  border-left: 5px solid var(--brand-teal);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  box-shadow: var(--shadow-card);
+}
+
+.aural-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+.audio-btn {
+  background: var(--brand-teal);
+  color: #FFFFFF;
+  border: none;
+  padding: 0.6rem 1.4rem;
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+  font-weight: 600;
+  border-radius: 50px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 6px 18px rgba(73, 187, 189, 0.35);
+  transition: all 0.2s ease;
+}
+
+.audio-btn:hover {
+  background: var(--brand-teal-dark);
+  transform: translateY(-2px);
+}
+
+.audio-btn.speaking {
+  background: var(--brand-coral);
+}
+
+/* Simulador Cinestésico / Interativo (Kinesthetic) */
+.simulator-card {
+  background: var(--bg-surface-alt);
+  border: 2px solid rgba(73, 187, 189, 0.4);
+  border-radius: 20px;
+  padding: 1.75rem;
+  margin: 1.75rem 0;
+  box-shadow: var(--shadow-card);
+}
+
+.sim-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+  margin: 1.25rem 0;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  padding: 1.25rem;
+  border-radius: 16px;
+}
+
+.sim-control-group label {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.45rem;
+}
+
+.sim-slider {
+  width: 100%;
+  accent-color: var(--brand-teal);
+  cursor: pointer;
+}
+
+.sim-select {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface-alt);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
+.sim-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 1rem;
+  margin: 1.25rem 0;
+}
+
+.metric-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.metric-val {
+  font-family: var(--font-mono);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--brand-teal);
+}
+
+.metric-label {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 0.3rem;
+}
+
+.sim-verdict-box {
+  padding: 1rem 1.25rem;
+  border-radius: 14px;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.sim-verdict-box.ok {
+  background: rgba(34, 197, 94, 0.14);
+  color: var(--text-primary);
+  border: 1px solid rgba(34, 197, 94, 0.45);
+}
+
+.sim-verdict-box.warning {
+  background: rgba(244, 140, 6, 0.16);
+  color: var(--text-primary);
+  border: 1px solid rgba(244, 140, 6, 0.45);
+}
+
+.sim-verdict-box.danger {
+  background: rgba(239, 68, 68, 0.16);
+  color: var(--text-primary);
+  border: 1px solid rgba(239, 68, 68, 0.45);
+}

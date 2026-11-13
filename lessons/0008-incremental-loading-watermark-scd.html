@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lição 0008: Carga Incremental, Watermarking, CDC & SCD (Tipos 1, 2 e 3)</title>
+  <link rel="stylesheet" href="../assets/tufte.css?v=totc6">
+  <link rel="stylesheet" href="../assets/vark.css?v=totc6">
+  <script src="../assets/lens.js?v=totc6"></script>
+  <script src="../assets/quiz.js?v=totc6" defer></script>
+  <script src="../assets/vark.js?v=totc6" defer></script>
+</head>
+<body>
+
+  <div class="course-app-shell">
+
+    <!-- SIDEBAR DE CURRÍCULO E NAVEGAÇÃO -->
+    <aside class="course-sidebar">
+      <div class="sidebar-top-nav">
+        <a href="../index.html?v=totc6" class="back-square-btn" title="Voltar ao Portal do Curso">←</a>
+        <div style="font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--text-primary);">
+          FABRIC <span style="color: var(--brand-teal);">DP-700</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="sidebar-section-title">Módulo 2: Ingestão & Transformação</div>
+        <div class="sidebar-pill-list">
+          <a href="../lessons/0007-orchestration-pipelines-dataflows-dag.html?v=totc6" class="curriculum-pill">
+            <span class="pill-left">📖 Lição 07: Orquestração & DAGs</span>
+            <span class="pill-duration">30 mins</span>
+          </a>
+          <a href="#bloco-contexto" class="curriculum-pill active">
+            <span class="pill-left">📖 Lição 08: Carga Incremental & SCD</span>
+            <span class="pill-duration">25 mins</span>
+          </a>
+          <a href="#bloco-audio" class="curriculum-pill pill-orange">
+            <span class="pill-left">🎧 Narração Neural da Aula</span>
+            <span class="pill-duration">02:20</span>
+          </a>
+          <a href="#bloco-teoria" class="curriculum-pill pill-blue">
+            <span class="pill-left">👁️ Topologia de SCD & Watermark</span>
+            <span class="pill-duration">Visual</span>
+          </a>
+          <a href="../simulados/index.html?v=totc6" class="curriculum-pill pill-coral">
+            <span class="pill-left">🎯 Centro de Simulados</span>
+            <span class="pill-duration">Exam</span>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <div class="sidebar-section-title">PRACTICE QUIZ & LABS</div>
+        <div class="sidebar-pill-list">
+          <a href="#bloco-pratica" class="curriculum-pill pill-teal">
+            <span class="pill-left">⚡ Lab: Watermark & SCD 2</span>
+            <span class="pill-duration">Python</span>
+          </a>
+          <a href="#bloco-quiz" class="curriculum-pill pill-orange">
+            <span class="pill-left">🎯 Desafio Exame DP-700</span>
+            <span class="pill-duration">Quiz</span>
+          </a>
+        </div>
+      </div>
+
+      <div style="margin-top: auto; padding: 1rem; background: var(--bg-surface-alt); border: 1px solid var(--border-color); border-radius: 14px; font-size: 0.82rem; color: var(--text-secondary);">
+        <strong style="color: var(--text-primary); display: block; margin-bottom: 0.25rem;">💡 Dica de Estudo VARK</strong>
+        A implementação de SCD Tipo 2 com colunas ValidFrom, ValidTo e IsCurrent é cobrada em estudos de caso do DP-700.
+      </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="course-main-content">
+
+      <header class="course-header-banner">
+        <div>
+          <div class="course-badge">Módulo 2 • Domínio 2 do Exame DP-700</div>
+          <h1 class="course-title">Lição 0008: Padrões de Carga Incremental, Watermarking, Change Data Capture (CDC) & SCD</h1>
+          <p class="course-meta">
+            Duração estimada: 25 minutos • Domínio 2 (Ingestão & Dimensões) • Áudio Neural & Lab de SCD 2
+          </p>
+        </div>
+        <div class="theme-toggle-container">
+          <button class="theme-toggle-btn" onclick="window.toggleAppTheme()" title="Alternar entre Modo Claro e Escuro">
+            <span class="theme-toggle-icon">🌙</span> Alternar Tema
+          </button>
+        </div>
+      </header>
+
+      <nav class="lens-selector-bar" aria-label="Seletor de Nível Pedagógico">
+        <div class="lens-tab-group">
+          <button class="lens-tab" data-lens="unificado">📚 Unificado (Geral)</button>
+          <button class="lens-tab" data-lens="junior">🌱 Júnior / Fundamentos</button>
+          <button class="lens-tab" data-lens="pleno">🌿 Pleno / Implementador</button>
+          <button class="lens-tab" data-lens="senior">🛠️ Sênior / DP-700</button>
+          <button class="lens-tab" data-lens="staff">⚙️ Staff / Under the Hood</button>
+          <button class="lens-tab" data-lens="clevel">🏛️ C-Level / FinOps & TCO</button>
+        </div>
+        <div style="margin-left: auto;">
+          <button class="theme-toggle-btn" onclick="window.toggleAppTheme()" title="Alternar Modo Dark / Light">
+            <span class="theme-toggle-icon">🌙</span> Modo Dark
+          </button>
+        </div>
+      </nav>
+
+      <nav class="vark-nav-bar" aria-label="Atalhos das Modalidades VARK">
+        <a href="#bloco-audio" class="vark-btn"><span class="vark-badge badge-a">A</span> 🎧 Áudio Neural (Auditivo)</a>
+        <a href="#bloco-teoria" class="vark-btn"><span class="vark-badge badge-v">V</span> 👁️ Diagrama de SCD Tipo 1 e 2 (Visual)</a>
+        <a href="#bloco-contexto" class="vark-btn"><span class="vark-badge badge-r">R</span> 📖 Texto Técnico (Leitura)</a>
+        <a href="#bloco-pratica" class="vark-btn"><span class="vark-badge badge-k">K</span> ⚡ Lab Python SCD 2 (Cinestésico)</a>
+      </nav>
+
+      <!-- REPRODUTOR DE ÁUDIO NEURAL -->
+      <div id="bloco-audio" class="audio-player-card">
+        <div class="audio-card-header">
+          <div class="audio-avatar">🎙️</div>
+          <div>
+            <div class="audio-title">Narração Técnica Neural da Lição 0008</div>
+            <div class="audio-subtitle">Voz: Microsoft pt-BR-AntonioNeural • Watermarking, CDC e SCD Tipo 1 e Tipo 2</div>
+          </div>
+        </div>
+        <div class="audio-controls-row">
+          <button id="audio-play-btn" class="audio-play-button" aria-label="Reproduzir áudio da lição">▶ Reproduzir Aula</button>
+          <div class="audio-scrubber-track">
+            <div id="audio-progress-bar" class="audio-scrubber-fill" style="width: 0%;"></div>
+          </div>
+          <div id="audio-time-label" class="audio-time-display">00:00 / 02:20</div>
+          <audio id="vark-audio-element" preload="metadata">
+            <source src="../assets/audio/lesson-0008-pt.mp3?v=totc6" type="audio/mpeg">
+            Seu navegador não suporta o elemento de áudio HTML5.
+          </audio>
+        </div>
+      </div>
+
+      <!-- CONTEÚDO MULTI-LENS -->
+      <article id="bloco-contexto" class="lens-panel" data-lens-content="unificado">
+        <h2>A Eficiência da Carga Incremental e a Evolução Temporal de Dimensões</h2>
+        <p>
+          Em sistemas analíticos de alta escala, recarregar a base histórica completa a cada ciclo de ingestão é uma prática inviável que desperdiça capacidade computacional e satura redes corporativas.
+        </p>
+        <p>
+          A engenharia de dados moderna utiliza dois pilares para garantir escalabilidade e fidelidade temporal: <strong>Padrões de Carga Incremental</strong> na extração e <strong>Slowly Changing Dimensions (SCD)</strong> na modelagem dimensional.
+        </p>
+
+        <div class="diagram-container" id="bloco-teoria">
+          <h3>Comparativo: SCD Tipo 1 (Sobrescrita) vs. SCD Tipo 2 (Histórico Completo)</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 1rem;">
+            <div style="background: var(--bg-surface-alt); padding: 1.25rem; border-radius: 12px; border: 1.5px solid var(--brand-teal);">
+              <h4 style="margin: 0 0 0.5rem 0; color: var(--brand-teal);">SCD Tipo 1: Sobrescrita Direta (In-Place Update)</h4>
+              <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                Atualiza os valores diretamente na linha existente.
+              </p>
+              <ul style="font-size: 0.88rem; padding-left: 1.2rem; color: var(--text-primary); margin: 0;">
+                <li><strong>Vantagem:</strong> Estrutura de tabela simples, tamanho mínimo de armazenamento.</li>
+                <li><strong>Desvantagem:</strong> Perda irreversível do histórico anterior.</li>
+                <li><strong>Caso de Uso:</strong> Correção de erros ortográficos de nomes ou telefones onde o passado não tem valor contábil.</li>
+              </ul>
+            </div>
+
+            <div style="background: var(--bg-surface-alt); padding: 1.25rem; border-radius: 12px; border: 1.5px solid var(--brand-orange);">
+              <h4 style="margin: 0 0 0.5rem 0; color: var(--brand-orange);">SCD Tipo 2: Histórico Temporal (Versionamento)</h4>
+              <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                Mantém múltiplas versões do mesmo registro com metadados temporais.
+              </p>
+              <ul style="font-size: 0.88rem; padding-left: 1.2rem; color: var(--text-primary); margin: 0;">
+                <li><strong>Estrutura:</strong> Nova <code>SurrogateKey</code>, colunas <code>ValidFrom</code>, <code>ValidTo</code> e <code>IsCurrent</code>.</li>
+                <li><strong>Vantagem:</strong> Rastreabilidade contábil 100% fiel de onde o cliente morava em cada venda.</li>
+                <li><strong>Caso de Uso:</strong> Mudança de filial de funcionários, alteração de faixas de desconto de clientes e CEP.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <h3>O Mecanismo de High Watermark e CDC</h3>
+        <p>
+          Para capturar apenas novos registros:
+        </p>
+        <ul>
+          <li><strong>High Watermarking:</strong> Utiliza uma coluna de carimbo de tempo (ex: <code>LastModifiedDateTime</code>) ou número sequencial (ex: <code>RowVersion</code>). O pipeline filtra <code>WHERE LastModifiedDateTime > @LastWatermark</code> e salva o maior valor encontrado na tabela de controle.</li>
+          <li><strong>Change Data Capture (CDC):</strong> O motor de origem registra todas as operações DML no log de transações. No Fabric, o Database Mirroring automatiza o consumo do CDC sem exigir que você crie scripts manuais de marca d'água.</li>
+        </ul>
+      </article>
+
+      <!-- 2. LENTE JÚNIOR -->
+      <article class="lens-panel" data-lens-content="junior">
+        <h2>🌱 O que são Watermark e Dimensões de Mudança Lenta (SCD)?</h2>
+        <p>
+          Imagine que você está lendo um livro de 1.000 páginas. Quando você para a leitura no final do dia, você coloca um <strong>marcador de página</strong> (a nossa <em>Watermark</em>). No dia seguinte, você não precisa reler tudo do início: você continua exatamente de onde o marcador parou!
+        </p>
+        <p>
+          Agora imagine um cliente que mudou de cidade. No <strong>SCD Tipo 1</strong>, você apaga a cidade antiga com uma borracha e escreve a nova por cima. No <strong>SCD Tipo 2</strong>, você guarda a folha antiga dizendo que ela valeu até hoje e adiciona uma nova folha dizendo onde o cliente mora agora.
+        </p>
+      </article>
+
+      <!-- 3. LENTE PLENO -->
+      <article class="lens-panel" data-lens-content="pleno">
+        <h2>🌿 Implementação de SCD Tipo 2 com T-SQL MERGE no Fabric Warehouse</h2>
+        <p>
+          Para aplicar SCD Tipo 2 atomicamente em T-SQL:
+        </p>
+        <pre><code style="font-family: var(--font-mono); font-size: 0.85rem; display: block; background: var(--bg-surface-alt); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color); overflow-x: auto;">-- Exemplo de instrução de atualização de status para fechar registro anterior
+UPDATE DimCustomer
+SET ValidTo = @CurrentDate, IsCurrent = 0
+WHERE CustomerId IN (SELECT CustomerId FROM StagingCustomer)
+  AND IsCurrent = 1;
+
+-- Inserção da nova versão com nova Surrogate Key
+INSERT INTO DimCustomer (CustomerId, CustomerName, City, ValidFrom, ValidTo, IsCurrent)
+SELECT CustomerId, CustomerName, City, @CurrentDate, '9999-12-31', 1
+FROM StagingCustomer;</code></pre>
+      </article>
+
+      <!-- 4. LENTE SÊNIOR / DP-700 -->
+      <article class="lens-panel" data-lens-content="senior">
+        <h2>🛠️ Armadilhas do Exame DP-700: Requisitos de Auditoria e SCD</h2>
+        <div style="border-left: 4px solid var(--brand-orange); background: var(--bg-surface-alt); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+          <strong style="color: var(--brand-orange); display: block; margin-bottom: 0.25rem;">⚠️ Pergunta Clássica de Prova:</strong>
+          <em>"A diretoria financeira exige que os relatórios de vendas históricas de 2024 reflitam a filial regional do cliente no momento em que a compra ocorreu, mesmo que o cliente tenha se mudado para outra região em 2026. Como a dimensão de clientes deve ser modelada?"</em>
+        </div>
+        <p>
+          <strong>Resposta Invariável:</strong> <strong>Slowly Changing Dimension (SCD) Tipo 2</strong>. Se a resposta sugerir SCD Tipo 1, as vendas passadas seriam recalculadas sob a nova região, corrompendo a fidelidade histórica e violando a auditoria contábil.
+        </p>
+        <h3>Fuso Horário em High Watermarks:</h3>
+        <p>
+          Sempre converta e armazene marcas d'água no formato <strong>UTC</strong> (Universal Time Coordinated). Sistemas com servidores em fusos horários locais diferentes ou que sofrem transição para horário de verão podem perder registros ou gerar duplicidades caso o fuso local seja utilizado no predicado <code>WHERE</code>.
+        </p>
+      </article>
+
+      <!-- 5. LENTE STAFF -->
+      <article class="lens-panel" data-lens-content="staff">
+        <h2>⚙️ Arquitetura Interna: Delta Lake merge() e Concorrência ACID</h2>
+        <p>
+          Ao implementar SCD Tipo 2 sobre tabelas Delta no Lakehouse via PySpark:
+        </p>
+        <pre><code style="font-family: var(--font-mono); font-size: 0.85rem; display: block; background: var(--bg-surface-alt); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color); overflow-x: auto;">deltaTable = DeltaTable.forPath(spark, "/Tables/DimCustomer")
+
+# O Delta merge() processa a inserção e atualização em um único commit atômico no _delta_log
+deltaTable.alias("target") \
+  .merge(stagedUpdates.alias("source"), "target.CustomerId = source.CustomerId AND target.IsCurrent = true") \
+  .whenMatchedUpdate(set = { "ValidTo": "source.ChangeDate", "IsCurrent": "false" }) \
+  .whenNotMatchedInsert(values = { ... }) \
+  .execute()</code></pre>
+        <p>
+          Isso garante que se o cluster falhar no meio da execução, o <code>_delta_log</code> não sofrerá inconsistência nem criará duplicidades parciais.
+        </p>
+      </article>
+
+      <!-- 6. LENTE C-LEVEL -->
+      <article class="lens-panel" data-lens-content="clevel">
+        <h2>🏛️ Visão Estratégica & FinOps: Redução Drástica de Consumo de CUs</h2>
+        <p>
+          Uma rotina de carga diária full-refresh de 20 milhões de linhas consome em média <strong>800 CU-minutos</strong> por execução.
+        </p>
+        <p>
+          Ao converter a ingestão para <strong>Carga Incremental com High Watermark ou CDC</strong>:
+        </p>
+        <ul>
+          <li>O volume processado diariamente cai para cerca de 100.000 registros alterados (redução de <strong>99,5% no I/O de rede e disco</strong>).</li>
+          <li>O consumo cai para menos de <strong>15 CU-minutos</strong>, liberando capacidade computacional para relatórios analíticos interativos sem necessidade de upgrade para F-SKUs superiores.</li>
+        </ul>
+      </article>
+
+      <!-- SEÇÃO KINESTHETIC: LAB PRÁTICO -->
+            <!-- SEÇÃO KINESTHETIC: LAB PRÁTICO ESTILO MICROSOFT LEARN -->
+      <section id="bloco-pratica" style="margin-top: 3.5rem;">
+        <div class="mslearn-lab-box">
+          
+          <!-- Cabeçalho do Exercício -->
+          <div class="mslearn-header">
+            <div class="mslearn-badge-row">
+              <span class="mslearn-badge mslearn-badge-portal">🛠️ Microsoft Fabric Hands-on Lab</span>
+              <span class="mslearn-badge mslearn-badge-duration">⏱️ ~30 minutos</span>
+              <span class="mslearn-badge mslearn-badge-role">👤 Engenheiro de Dados • Domínio 2</span>
+              <span class="vark-badge badge-k" style="margin-left: auto;">K - Prática Guiada</span>
+            </div>
+            <h2 style="margin: 0.25rem 0 0.5rem 0; font-family: var(--font-display); color: var(--text-primary); font-size: 1.6rem;">
+              Exercício Prático: Carga Incremental com Coluna Watermark e SCD Tipo 2
+            </h2>
+            <p style="margin: 0; color: var(--text-secondary); font-size: 0.95rem;">
+              Guia passo a passo para executar diretamente na plataforma em nuvem do <strong>Microsoft Fabric</strong> (ou em simulação local).
+            </p>
+          </div>
+
+          <!-- Cenário de Negócio Oficial -->
+          <div class="mslearn-scenario-card">
+            <h4 style="margin: 0 0 0.5rem 0; color: var(--brand-blue); font-family: var(--font-display);">
+              📋 Cenário do Laboratório
+            </h4>
+            <p style="margin: 0; font-size: 0.92rem; color: var(--text-primary); line-height: 1.55;">
+              Implementar um pipeline eficiente de carga delta diária utilizando coluna de corte temporal (Watermark) e processar alterações cadastrais mantendo histórico via Slowly Changing Dimension (SCD Tipo 2).
+            </p>
+          </div>
+
+          <!-- Pré-requisitos -->
+          <div class="mslearn-prereqs-card">
+            <h4 style="margin: 0 0 0.4rem 0; color: #0078d4; font-family: var(--font-display);">
+              🔑 Pré-requisitos para Execução no Portal
+            </h4>
+            <ul style="margin: 0; padding-left: 1.25rem; font-size: 0.9rem; color: var(--text-primary); line-height: 1.5;">
+              <li>Navegador web moderno (Edge, Chrome ou Firefox).</li>
+              <li>Acesso ao portal <a href="https://app.fabric.microsoft.com/" target="_blank" rel="noopener noreferrer" style="color: #0078d4; font-weight: 600; text-decoration: underline;">Microsoft Fabric (app.fabric.microsoft.com)</a>.</li>
+              <li>Capacidade ativa do Fabric (licença <strong>Fabric Trial</strong> gratuita ou capacidade corporativa).</li>
+              <li>Um Workspace configurado no modo de capacidade Fabric.</li>
+            </ul>
+          </div>
+
+          <!-- Tarefa 1 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">1</div>
+              <h3 class="mslearn-task-title">Configurar Tabela de Controle de Watermark</h3>
+            </div>
+            <ol class="mslearn-step-list">
+              <li>No Fabric Warehouse, crie a tabela de controle com o registro da última data processada:</li>
+              <li><code>CREATE TABLE dbo.WatermarkControl (TableName VARCHAR(50), LastWatermark DATETIME2);</code></li>
+              <li>Insira o marco inicial: <code>INSERT INTO dbo.WatermarkControl VALUES ('Clientes', '2026-01-01 00:00:00');</code></li>
+            </ol>
+          </div>
+
+          <!-- Tarefa 2 -->
+          <div class="mslearn-task-card">
+            <div class="mslearn-task-header">
+              <div class="mslearn-task-number">2</div>
+              <h3 class="mslearn-task-title">Executar o MERGE de SCD Tipo 2 no Notebook Spark</h3>
+            </div>
+            <ol class="mslearn-step-list">
+              <li>No Notebook Spark, execute o código de SCD Tipo 2 para fechar os registros antigos e inserir a nova versão ativa:</li>
+              <li>Use o método <code>df.write.format('delta')</code> ou comandos SQL <code>MERGE INTO DimCliente ...</code></li>
+              <li>Atualize a tabela de controle com o novo timestamp de corte.</li>
+            </ol>
+
+            <!-- Captura de Tela da Tarefa 2 -->
+            <div class="portal-screenshot-frame">
+              <div class="portal-window-bar">
+                <div class="portal-window-dots">
+                  <span class="portal-window-dot dot-red"></span>
+                  <span class="portal-window-dot dot-yellow"></span>
+                  <span class="portal-window-dot dot-green"></span>
+                </div>
+                <div class="portal-address-bar">
+                  🔒 https://app.fabric.microsoft.com/groups/dw/scd2-merge
+                </div>
+              </div>
+              <img src="../assets/images/fabric-ui-04-data-warehouse-editor.svg" alt="Executar o MERGE de SCD Tipo 2 no Notebook Spark" loading="lazy" />
+              <div class="portal-screenshot-caption">
+                📸 <strong>Captura do Portal:</strong> Execução de comandos atômicos MERGE para atualização de SCD Tipo 2 mantendo histórico temporal.
+              </div>
+            </div>
+          </div>
+
+          <!-- Alerta de Exame DP-700 -->
+          <div class="mslearn-exam-note" style="margin-top: 1.5rem;">
+            <strong>⚠️ Atenção para o Exame DP-700:</strong><br>
+            Atenção para o exame: O padrão SCD Tipo 1 apenas sobrescreve registros sem salvar histórico; o SCD Tipo 2 cria uma nova linha com campos de vigência (DataInicio, DataFim e FlagAtivo = 1/0) para preservar a rastreabilidade histórica completa.
+          </div>
+
+          <!-- Fallback: Simulação Local Offline -->
+          <div class="mslearn-local-box">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem;">
+              <h4 style="margin: 0; color: var(--brand-teal); font-family: var(--font-display);">
+                💻 Opção Alternativa: Executar Simulação Local Offline no seu Terminal
+              </h4>
+              <span style="font-size: 0.8rem; background: var(--bg-surface-alt); padding: 3px 8px; border-radius: 6px; color: var(--text-secondary);">Sem necessidade de conta Fabric</span>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+              Se você não possui uma assinatura ativa do Fabric no momento, criamos um simulador completo em Python no seu repositório local que reproduz a execução deste laboratório:
+            </p>
+            <pre><code style="font-family: var(--font-mono); font-size: 0.88rem; display: block; background: var(--bg-surface-alt); padding: 0.85rem 1rem; border-radius: 8px; border: 1px solid var(--border-color); overflow-x: auto;"># Execute este comando no terminal para reproduzir o lab:
+./.venv/bin/python labs/0008-incremental-loading-watermark-scd/lab_simulation.py</code></pre>
+            <div style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-secondary);">
+              📁 Diretório do laboratório prático local: <code>labs/0008-incremental-loading-watermark-scd/</code>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SEÇÃO DE QUIZ DP-700 -->
+              <section id="bloco-quiz" class="totc-card">
+          <h2 style="margin-top: 0;">Pontos Críticos para a Prática e para o Exame DP-700</h2>
+
+          <div class="summary-card">
+            <h3 style="margin-top: 0; color: var(--brand-teal);">📝 Síntese dos Pontos Críticos Aprendidos:</h3>
+            <ol style="margin-bottom: 0;">
+              <li><strong>Padrão de Coluna Watermark:</strong> Utiliza carimbos de data/hora (Timestamp) para extrair estritamente registros criados ou modificados desde a última execução.</li>
+              <li><strong>Change Data Capture (CDC):</strong> Captura eventos pontuais de INSERT, UPDATE e DELETE diretamente dos logs transacionais do banco relacional de origem.</li>
+              <li><strong>SCD Tipo 1 vs Tipo 2:</strong> SCD Tipo 1 sobrescreve o valor antigo; SCD Tipo 2 preserva a rastreabilidade histórica completa criando novas linhas ativas com datas de vigência.</li>
+              <li><strong>Operações MERGE no Delta Lake:</strong> O comando MERGE realiza operações atômicas de UPSERT (Update + Insert) em uma única transação ACID no OneLake.</li>
+            </ol>
+          </div>
+
+          <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+            <h3>🎯 Desafio de Exame DP-700</h3>
+            <p>Questão elaborada no padrão da Microsoft com alternativas isomórficas:</p>
+
+            <div class="quiz-card" data-explanation="O padrão <strong>SCD Tipo 2</strong> é a solução recomendada para preservar o histórico completo de alterações ao longo do tempo, gerando uma nova linha com nova Surrogate Key, colunas de vigência (ValidFrom, ValidTo) e sinalizador booleano de registro ativo (IsCurrent).">
+              <p><strong style="color: var(--text-primary);">Cenário de Exame DP-700:</strong> Uma instituição bancária projeta uma tabela de dimensão de agências no Fabric Data Warehouse. Os analistas exigem auditar o volume financeiro transacionado por cada agência no momento exato em que a conta foi aberta, mantendo o histórico de mudanças de gerência e endereço ocorridas ao longo dos anos. Qual padrão de Slowly Changing Dimension (SCD) você deve implementar?</p>
+              
+              <ul class="quiz-options">
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    A) Implementar SCD Tipo 1 com substituição imediata dos dados em memória.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="true">
+                    B) Implementar SCD Tipo 2 criando novas linhas com chaves substitutas.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    C) Implementar truncamento diário completo da tabela de dimensão final.
+                  </button>
+                </li>
+                <li>
+                  <button class="quiz-option-btn" data-correct="false">
+                    D) Implementar uma visão lógica apontando diretamente para o arquivo JSON.
+                  </button>
+                </li>
+              </ul>
+              <div class="quiz-feedback"></div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--border-color); flex-wrap: wrap; gap: 1rem;">
+            <a href="../reference/04-three-languages-sql-pyspark-kql-cheatsheet.html" style="font-weight: 600;">
+              📑 Abrir Folha de Referência 04 (Padrões de Carga Incremental)
+            </a>
+            <a href="0009-batch-transformations-sql-spark-clones.html" class="audio-btn" style="color: #fff !important;">
+              Próxima Lição: 0009 (Transformações em Lote e Table Clones) →
+            </a>
+          </div>
+        </section>
+
+      <footer style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+        <a href="../lessons/0007-orchestration-pipelines-dataflows-dag.html?v=totc6" class="btn-secondary">
+          ← Lição Anterior: 0007
+        </a>
+        <a href="../simulados/index.html?v=totc6" class="btn-primary">
+          Ir para o Centro de Simulados DP-700 →
+        </a>
+      </footer>
+
+    </main>
+  </div>
+
+  
+</body>
+</html>
+

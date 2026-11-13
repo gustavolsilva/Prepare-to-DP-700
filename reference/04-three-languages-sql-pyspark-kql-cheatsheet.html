@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ref 04: As Três Linguagens do Fabric - T-SQL vs. PySpark vs. KQL</title>
+  <link rel="stylesheet" href="../assets/tufte.css?v=totc6">
+  <link rel="stylesheet" href="../assets/vark.css?v=totc6">
+  <script src="../assets/lens.js?v=totc6"></script>
+  <style>
+    .ref-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.25rem 0;
+      font-size: 0.86rem;
+    }
+    .ref-table th, .ref-table td {
+      border: 1px solid var(--border-color);
+      padding: 0.75rem 0.85rem;
+      text-align: left;
+      vertical-align: top;
+      color: var(--text-primary);
+    }
+    .ref-table th {
+      background-color: var(--bg-surface-alt);
+      font-family: var(--font-display);
+      font-weight: 600;
+      color: var(--text-heading);
+    }
+    .ref-table tr:nth-child(even) { background-color: var(--bg-surface-alt); }
+    pre {
+      margin: 0;
+      background: var(--bg-surface-alt);
+      padding: 0.5rem;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="course-header-banner">
+    <div class="landing-container">
+      <div class="banner-top-row">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <a href="../index.html?v=totc6" class="back-square-btn" style="background: rgba(255,255,255,0.2); box-shadow: none;" title="Voltar ao Portal">←</a>
+          <div>
+            <h1 class="banner-title">Folha de Referência 04: As Três Linguagens do Fabric</h1>
+            <p class="banner-subtitle">T-SQL vs. PySpark vs. KQL: Sintaxe Comparada para Engenharia de Dados (Domínio 2)</p>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <button onclick="window.print()" class="banner-time-badge" style="border: none; cursor: pointer;">🖨️ Imprimir / PDF</button>
+          <button type="button" class="theme-toggle-btn" onclick="window.toggleAppTheme()">🌙 Modo Dark</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="landing-container" style="padding-top: 2rem; padding-bottom: 4rem;">
+
+    <section class="totc-card">
+      <h2 style="margin-top: 0;">Sintaxe Comparada dos Padrões Mais Exigidos no DP-700</h2>
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th style="width: 18%;">Operação</th>
+            <th style="width: 27%;">T-SQL (Data Warehouse)</th>
+            <th style="width: 27%;">PySpark (Lakehouse)</th>
+            <th style="width: 28%;">KQL (Eventhouse)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Filtro e Seleção</strong></td>
+            <td><pre><code>SELECT id, total
+FROM Sales
+WHERE status = 'Active';</code></pre></td>
+            <td><pre><code>df.select("id", "total") \
+  .filter(col("status") == "Active")</code></pre></td>
+            <td><pre><code>Sales
+| where status == "Active"
+| project id, total</code></pre></td>
+          </tr>
+          <tr>
+            <td><strong>Agregação por Grupo</strong></td>
+            <td><pre><code>SELECT region, SUM(total)
+FROM Sales
+GROUP BY region;</code></pre></td>
+            <td><pre><code>df.groupBy("region") \
+  .agg(sum("total"))</code></pre></td>
+            <td><pre><code>Sales
+| summarize TotalVendas = sum(total) 
+  by region</code></pre></td>
+          </tr>
+          <tr>
+            <td><strong>Último Registro / Linha Mais Recente</strong></td>
+            <td><pre><code>SELECT * FROM (
+  SELECT *, ROW_NUMBER() OVER(
+    PARTITION BY meter_id 
+    ORDER BY ts DESC) as rn
+  FROM Logs
+) t WHERE rn = 1;</code></pre></td>
+            <td><pre><code>w = Window.partitionBy("meter_id") \
+          .orderBy(col("ts").desc())
+df.withColumn("rn", row_number().over(w)) \
+  .filter(col("rn") == 1)</code></pre></td>
+            <td><pre><code>Logs
+| summarize arg_max(ts, *) by meter_id</code></pre></td>
+          </tr>
+          <tr>
+            <td><strong>Extração de JSON e Expansão</strong></td>
+            <td><pre><code>SELECT 
+  JSON_VALUE(raw_txt, '$.sensor.temp')
+FROM Telemetry;</code></pre></td>
+            <td><pre><code>df.withColumn("parsed", 
+    from_json(col("raw_txt"), schema)) \
+  .select("parsed.sensor.temp")</code></pre></td>
+            <td><pre><code>Telemetry
+| extend obj = parse_json(raw_txt)
+| project temp = obj.sensor.temp</code></pre></td>
+          </tr>
+          <tr>
+            <td><strong>Upsert / Carga Incremental</strong></td>
+            <td><pre><code>MERGE INTO target t
+USING source s ON t.id = s.id
+WHEN MATCHED THEN UPDATE ...
+WHEN NOT MATCHED THEN INSERT ...;</code></pre></td>
+            <td><pre><code>targetTable.alias("t").merge(
+  sourceDF.alias("s"), "t.id = s.id"
+).whenMatchedUpdate(...)
+ .whenNotMatchedInsert(...)
+ .execute()</code></pre></td>
+            <td><pre><code>// Via Update Policy na ingestão
+.alter table Target policy update
+@'[{ "Source": "SourceRaw", 
+     "Query": "TransformFunc()" }]'</code></pre></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+</body>
+</html>
+

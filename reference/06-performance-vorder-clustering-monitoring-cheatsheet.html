@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ref 06: Otimização, V-Order, Clustering & Troubleshooting</title>
+  <link rel="stylesheet" href="../assets/tufte.css?v=totc6">
+  <link rel="stylesheet" href="../assets/vark.css?v=totc6">
+  <script src="../assets/lens.js?v=totc6"></script>
+  <style>
+    .ref-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.25rem 0;
+      font-size: 0.9rem;
+    }
+    .ref-table th, .ref-table td {
+      border: 1px solid var(--border-color);
+      padding: 0.75rem 1rem;
+      text-align: left;
+      vertical-align: top;
+      color: var(--text-primary);
+    }
+    .ref-table th {
+      background-color: var(--bg-surface-alt);
+      font-family: var(--font-display);
+      font-weight: 600;
+      color: var(--text-heading);
+    }
+    .ref-table tr:nth-child(even) { background-color: var(--bg-surface-alt); }
+    .tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      border-radius: 50px;
+      font-family: var(--font-display);
+    }
+    .tag-opt { background: var(--pill-teal-bg); color: var(--brand-teal); }
+    .tag-mon { background: var(--pill-orange-bg); color: var(--text-primary); }
+    .tag-ts  { background: var(--pill-coral-bg); color: var(--text-primary); }
+  </style>
+</head>
+<body>
+
+  <header class="course-header-banner">
+    <div class="landing-container">
+      <div class="banner-top-row">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <a href="../index.html?v=totc6" class="back-square-btn" style="background: rgba(255,255,255,0.2); box-shadow: none;" title="Voltar ao Portal">←</a>
+          <div>
+            <h1 class="banner-title">Folha de Referência 06: Otimização, V-Order & Troubleshooting</h1>
+            <p class="banner-subtitle">Tuning de Tabelas, Liquid Clustering, Smoothing e DMVs (Domínio 3)</p>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <button onclick="window.print()" class="banner-time-badge" style="border: none; cursor: pointer;">🖨️ Imprimir / PDF</button>
+          <button type="button" class="theme-toggle-btn" onclick="window.toggleAppTheme()">🌙 Modo Dark</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="landing-container" style="padding-top: 2rem; padding-bottom: 4rem;">
+
+    <section class="totc-card">
+      <h2 style="margin-top: 0;">1. Técnicas de Otimização de Tabelas & V-Order</h2>
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th style="width: 22%;">Recurso</th>
+            <th style="width: 15%;">Escopo</th>
+            <th>Mecanismo Técnico</th>
+            <th style="width: 25%;">Quando Aplicar no DP-700</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>V-Order</strong></td>
+            <td><span class="tag tag-opt">Escrita Parquet</span></td>
+            <td>Ordenação hierárquica e compressão de dicionário que espelha o VertiPaq do Power BI, gerando 100% de compatibilidade com Parquet aberto.</td>
+            <td>Ativo por padrão em todos os motores; acelera leitura do Direct Lake em até 7x.</td>
+          </tr>
+          <tr>
+            <td><strong>Liquid Clustering</strong></td>
+            <td><span class="tag tag-opt">Delta Lake</span></td>
+            <td>Reorganização física incremental declarativa via <code>CLUSTER BY (col1, col2)</code>, suportando alta cardinalidade sem reescrever partições inteiras.</td>
+            <td>Substitui particionamento rígido por pastas e Z-Order em tabelas grandes com escritas e updates frequentes.</td>
+          </tr>
+          <tr>
+            <td><strong>Adaptive Query Execution (AQE)</strong></td>
+            <td><span class="tag tag-opt">Apache Spark</span></td>
+            <td>Otimizador Catalyst em tempo de execução com <code>skewJoin.enabled = true</code>, dividindo partições infladas automaticamente.</td>
+            <td>Elimina tarefas lentas (stragglers) causadas por distorção de dados (Data Skew).</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="totc-card" style="margin-top: 2rem;">
+      <h2>2. Capacity Metrics App, Smoothing e Estágios de Throttling</h2>
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th style="width: 22%;">Tipo de Operação</th>
+            <th style="width: 20%;">Janela de Smoothing</th>
+            <th>Exemplos de Carga</th>
+            <th style="width: 25%;">Impacto da Sobrecarga</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Interativa</strong></td>
+            <td><strong>5 minutos</strong></td>
+            <td>Consultas visuais do Power BI, notebooks interativos e queries SQL ad-hoc.</td>
+            <td><strong>Interactive Delay</strong> (atraso de 60s) seguido de <strong>Interactive Rejection</strong>.</td>
+          </tr>
+          <tr>
+            <td><strong>Background</strong></td>
+            <td><strong>24 horas</strong></td>
+            <td>Pipelines do Data Factory, notebooks agendados e fluxos do Dataflows Gen2.</td>
+            <td><strong>Background Rejection</strong> (novos disparos agendados são rejeitados).</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="totc-card" style="margin-top: 2rem;">
+      <h2>3. Schema queryinsights no Fabric Data Warehouse</h2>
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th style="width: 32%;">View de Sistema</th>
+            <th>Finalidade Principal de Diagnóstico</th>
+            <th style="width: 25%;">Coluna Chave de Ordenação</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>queryinsights.exec_requests_history</code></td>
+            <td>Histórico de consultas concluídas com métricas de tempo de CPU e duração total.</td>
+            <td><code>allocated_cpu_time_ms DESC</code></td>
+          </tr>
+          <tr>
+            <td><code>queryinsights.frequently_run_queries</code></td>
+            <td>Identifica queries com altíssima frequência de execução que podem indicar loops ou falta de cache.</td>
+            <td><code>execution_count DESC</code></td>
+          </tr>
+          <tr>
+            <td><code>queryinsights.long_running_queries</code></td>
+            <td>Queries que excederam o tempo médio esperado, apontando para falta de estatísticas ou joins ineficientes.</td>
+            <td><code>total_elapsed_time_ms DESC</code></td>
+          </tr>
+          <tr>
+            <td><code>sys.dm_exec_requests</code></td>
+            <td>Visão em tempo real das consultas ativas no instante presente para detectar bloqueios.</td>
+            <td><code>start_time ASC</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+</body>
+</html>
+

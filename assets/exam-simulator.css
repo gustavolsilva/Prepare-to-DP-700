@@ -1,0 +1,558 @@
+/* ==========================================================================
+   ESTILOS DO CENTRO DE SIMULADOS DP-700 (PEARSON VUE / TOTC HYBRID)
+   Suporte completo a Light e Dark Mode sincronizado com fabric_dp700_theme
+   ========================================================================== */
+
+.exam-shell {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.exam-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+}
+
+.exam-timer {
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--brand-coral);
+  background: var(--badge-coral-bg);
+  padding: 0.4rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 107, 107, 0.25);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.exam-mode-badge {
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.35rem 0.85rem;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-study {
+  background: var(--badge-teal-bg);
+  color: var(--brand-teal);
+}
+
+.badge-official {
+  background: var(--badge-orange-bg);
+  color: var(--brand-orange);
+}
+
+/* ==========================================================================
+   LAYOUT SPLIT-SCREEN PARA ESTUDOS DE CASO (CASE STUDIES)
+   ========================================================================== */
+
+.case-study-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+  min-height: 580px;
+}
+
+@media (max-width: 900px) {
+  .case-study-split {
+    grid-template-columns: 1fr;
+  }
+}
+
+.case-scenario-pane {
+  background: var(--bg-surface-alt);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+}
+
+.scenario-tab-bar {
+  display: flex;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+  overflow-x: auto;
+}
+
+.scenario-tab-btn {
+  padding: 0.85rem 1.2rem;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.scenario-tab-btn:hover {
+  color: var(--brand-teal);
+}
+
+.scenario-tab-btn.active {
+  color: var(--brand-teal);
+  border-bottom-color: var(--brand-teal);
+  background: var(--bg-surface-alt);
+}
+
+.scenario-tab-content {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+.scenario-tab-content h4 {
+  margin-top: 0;
+  font-family: var(--font-display);
+  color: var(--brand-blue);
+  font-size: 1.1rem;
+}
+
+.scenario-tab-content ul {
+  padding-left: 1.25rem;
+}
+
+.scenario-tab-content li {
+  margin-bottom: 0.5rem;
+}
+
+.case-question-pane {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.question-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.question-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.question-domain {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.question-prompt {
+  font-size: 1.02rem;
+  line-height: 1.65;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+}
+
+.question-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.exam-option-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-color);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.exam-option-card:hover {
+  border-color: var(--brand-teal);
+  background: var(--bg-surface-alt);
+}
+
+.exam-option-card.selected {
+  border-color: var(--brand-teal);
+  background: var(--badge-teal-bg);
+}
+
+.exam-option-card input[type="radio"],
+.exam-option-card input[type="checkbox"] {
+  margin-top: 0.2rem;
+  accent-color: var(--brand-teal);
+  width: 1.15rem;
+  height: 1.15rem;
+  cursor: pointer;
+}
+
+.exam-nav-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.exam-score-banner {
+  background: var(--bg-surface);
+  border: 2px solid var(--brand-teal);
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.score-number {
+  font-size: 3.5rem;
+  font-weight: 800;
+  font-family: var(--font-display);
+  margin: 0.5rem 0;
+}
+
+.score-pass {
+  color: #2e7d32;
+}
+
+.score-fail {
+  color: #d32f2f;
+}
+
+/* ==========================================================================
+   ESTILOS DE EXPLICAÇÃO DETALHADA E SEÇÕES COMENTADAS
+   ========================================================================== */
+
+.quiz-feedback-box {
+  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.feedback-correct {
+  background: var(--callout-teal-bg);
+  border: 1.5px solid var(--brand-teal);
+  color: var(--text-primary);
+}
+
+.feedback-incorrect {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1.5px solid #ef4444;
+  color: var(--text-primary);
+}
+
+.explanation-correct {
+  background: rgba(16, 185, 129, 0.08);
+  border-left: 4px solid #10b981;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 0.85rem;
+}
+
+.explanation-distractors {
+  background: rgba(239, 68, 68, 0.06);
+  border-left: 4px solid #ef4444;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 0.85rem;
+}
+
+.explanation-distractors ul {
+  margin: 0.5rem 0 0 0;
+  padding-left: 1.25rem;
+}
+
+.explanation-distractors li {
+  margin-bottom: 0.4rem;
+}
+
+.explanation-tip {
+  background: rgba(245, 158, 11, 0.1);
+  border-left: 4px solid #f59e0b;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   BARRA DE FILTROS DO MODO TREINO
+   ========================================================================== */
+
+.exam-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.exam-filter-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.exam-filter-select {
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.88rem;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+}
+
+.exam-filter-select:focus {
+  border-color: var(--brand-teal);
+}
+
+/* ==========================================================================
+   BOTÃO DE MARCAR PARA REVISÃO (FLAG FOR REVIEW)
+   ========================================================================== */
+
+.btn-flag {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 0.45rem 0.9rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-flag:hover {
+  border-color: #f59e0b;
+  color: #f59e0b;
+}
+
+.btn-flag.active {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: #f59e0b;
+  color: #d97706;
+}
+
+/* ==========================================================================
+   MAPA DE QUESTÕES (QUESTION REVIEW MATRIX MODAL)
+   ========================================================================== */
+
+.matrix-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.matrix-modal-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 800px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.matrix-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-surface-alt);
+}
+
+.matrix-modal-header h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--text-primary);
+}
+
+.matrix-modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.matrix-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.85rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+}
+
+.legend-badge {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.matrix-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+  gap: 0.6rem;
+}
+
+.matrix-cell {
+  height: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1.5px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.matrix-cell:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.matrix-cell.cell-current {
+  border-color: var(--brand-teal);
+  box-shadow: 0 0 0 2px var(--brand-teal);
+}
+
+.matrix-cell.cell-answered {
+  background: var(--badge-teal-bg);
+  border-color: var(--brand-teal);
+  color: var(--brand-teal);
+}
+
+.matrix-cell.cell-flagged::after {
+  content: "🚩";
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  font-size: 11px;
+}
+
+.matrix-cell.cell-correct {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: #10b981;
+  color: #047857;
+}
+
+.matrix-cell.cell-wrong {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: #ef4444;
+  color: #b91c1c;
+}
+
+/* ==========================================================================
+   DESEMPENHO POR DOMÍNIO NO SCORE BANNER
+   ========================================================================== */
+
+.domain-breakdown-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 1.5rem auto 2rem auto;
+  max-width: 650px;
+  text-align: left;
+}
+
+.domain-card {
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+}
+
+.domain-card-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.domain-progress-bar {
+  height: 8px;
+  background: var(--border-color);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.domain-progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.6s ease;
+}
+
+
